@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import ui from "@nuxt/ui/vue-plugin";
 import App from "./App.vue";
 import IndexView from "./pages/IndexView.vue";
+import ErrorView from "./pages/ErrorView.vue";
 import ProfileView from "./pages/profile/ProfileView.vue";
 
 const app = createApp(App);
@@ -11,6 +12,7 @@ const router = createRouter({
   routes: [
     { path: "/", component: IndexView },
     { path: "/profile/:id", component: ProfileView },
+    { path: "*", component: ErrorView },
   ],
   history: createWebHistory(),
 });

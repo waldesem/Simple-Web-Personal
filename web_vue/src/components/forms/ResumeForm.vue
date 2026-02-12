@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { Person } from "@/types";
+import { ofetch } from "ofetch";
+import { PropType, toRef } from "vue";
 
 const emit = defineEmits(["update"]);
 
@@ -18,7 +20,7 @@ form.value.birthday = form.value.birthday
   : "";
 
 async function submitPerson() {
-  const { person_id, exists } = await $fetch<{
+  const { person_id, exists } = await ofetch<{
     person_id: number;
     exists: boolean;
   }>("/routes/persons", {

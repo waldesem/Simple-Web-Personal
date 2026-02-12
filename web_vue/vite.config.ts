@@ -1,10 +1,13 @@
 import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
 import ui from "@nuxt/ui/vite";
+import { fileURLToPath } from "url";
 
 export default defineConfig({
+  build: {
+    emptyOutDir: true,
+    outDir: "../server_flask/app/static",
+  },
   plugins: [
-    vue(),
     ui({
       ui: {
         colors: {
@@ -16,6 +19,7 @@ export default defineConfig({
             root: "mb-3",
           },
         },
+        fonts: false,
         input: {
           slots: {
             root: "w-full",
@@ -41,4 +45,20 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      "@/": fileURLToPath(new URL("./src", import.meta.url)),
+    },
+  },
+  server: {
+    host: "localhost",
+    port: 5000,
+    proxy: {
+      "/routes": {
+        target: "http://127.0.0.1:5000/routes/*",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/routes/, ""),
+      },
+    },
+  },
 });

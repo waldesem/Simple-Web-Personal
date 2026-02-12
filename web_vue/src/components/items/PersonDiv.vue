@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { Person } from "@/types";
+import { useClipboard } from "@vueuse/core";
+import { PropType } from "vue";
 
 const props = defineProps({
   item: {

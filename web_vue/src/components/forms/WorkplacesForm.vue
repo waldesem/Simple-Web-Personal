@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Work } from "@/types";
+import { PropType, ref, toRef } from "vue";
 
 const emit = defineEmits(["update"]);
 

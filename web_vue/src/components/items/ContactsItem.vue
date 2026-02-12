@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Contact } from "@/types";
+import { PropType } from "vue";
 
 const props = defineProps({
   item: {
