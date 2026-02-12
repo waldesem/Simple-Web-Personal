@@ -26,7 +26,6 @@ export default defineNuxtConfig({
       scan: true,
     },
   },
-  modules: ["@nuxt/ui", "@nuxt/eslint", "@vueuse/nuxt"],
   nitro: {
     output: {
       publicDir: "../server_flask/app/static",

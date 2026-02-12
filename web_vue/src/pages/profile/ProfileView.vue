@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router'
+import { ofetch } from "ofetch";
 import type { Person } from "@/types";
 
 // Получаем данные id кандидата из URL
@@ -10,14 +12,14 @@ provide("candId", candId);
 const edit = useEdit();
 
 // Определяем функцию для получения данных из API
-const { data, status } = await useAsyncData(
-  "person",
-  () => $fetch<Person>("/routes/persons/" + candId.value),
+async onBeforemount(
+  () => ofetch<Person>("/routes/persons/" + candId.value),
   { default: () => ({}) as Person },
 );
 </script>
 
 <template>
+  <LayoutsView>
   <UContainer>
     <UPageHeader
       :title="`${data.surname} ${data.firstname} ${data.patronymic ?? ''}`"
@@ -35,4 +37,5 @@ const { data, status } = await useAsyncData(
     </UPageHeader>
     <ContentTabsView />
   </UContainer>
+  </LayoutsView>
 </template>

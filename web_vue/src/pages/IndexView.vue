@@ -82,6 +82,7 @@ function submitPerson(person_id: string, exists: boolean) {
 </script>
 
 <template>
+  <LayoutsView>
   <UContainer>
     <UPageHeader title="КАНДИДАТЫ"> 
       <template #links>
@@ -186,4 +187,5 @@ function submitPerson(person_id: string, exists: boolean) {
       />
     </div>
   </UContainer>
+  </LayoutsView>
 </template>
