@@ -1,5 +1,16 @@
 <script setup lang="ts">
+import {
+  defineAsyncComponent,
+  inject,
+  PropType,
+  ref,
+  Ref,
+  shallowRef,
+} from "vue";
+import { useToast } from "@nuxt/ui/composables";
+import { ofetch } from "ofetch";
 import type { Items } from "@/types";
+import { useEdit } from "../../composables";
 
 const toast = useToast();
 
@@ -26,10 +37,10 @@ function capitalize(str: string) {
   else return "";
 }
 
-const ItemComponent = defineAsyncComponent<Component>(
+const ItemComponent = defineAsyncComponent(
   () => import(`../items/${capitalize(props.view)}Item.vue`),
 );
-const FormComponent = defineAsyncComponent<Component>(
+const FormComponent = defineAsyncComponent(
   () => import(`../forms/${capitalize(props.view)}Form.vue`),
 );
 
@@ -43,7 +54,7 @@ const modal = ref(false); // Флаг для открытия модальног
 
 // Определяем функцию для получения данных из API
 async function getItem() {
-  data.value = await $fetch(`/routes/${props.view}/${candId.value}`);
+  data.value = await ofetch(`/routes/${props.view}/${candId.value}`);
 }
 
 const fail = () => {
@@ -57,13 +68,10 @@ const fail = () => {
 // Определяем функцию для отправки данных формы на сервер
 async function submitItem(form: typeof item.value) {
   modal.value = false;
-  const { status } = (await $fetch.raw(
-    `/routes/${props.view}/${candId.value}`,
-    {
-      method: "POST",
-      body: form,
-    },
-  ));
+  const { status } = await ofetch.raw(`/routes/${props.view}/${candId.value}`, {
+    method: "POST",
+    body: form,
+  });
   item.value = {};
   await getItem();
   if (status === 201) {
@@ -78,9 +86,9 @@ async function submitItem(form: typeof item.value) {
 // Определяем функцию для удаления данных
 async function deleteItem(itemId: string) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
-  const { status } = (await $fetch.raw(`/routes/${props.view}/${itemId}`, {
+  const { status } = await ofetch.raw(`/routes/${props.view}/${itemId}`, {
     method: "DELETE",
-  }));
+  });
   await getItem();
   if (status === 204) {
     toast.add({
@@ -108,7 +116,7 @@ async function deleteItem(itemId: string) {
 
   <div v-for="(content, index) in data" :key="index" class="mx-2 py-2">
     <!-- Выводим кнопки редактирования/удаления данных, в режиме редактирования -->
-    <ElementDivMenu
+    <DivMenu
       v-if="edit"
       @update="
         item = content;

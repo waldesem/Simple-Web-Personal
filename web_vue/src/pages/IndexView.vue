@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import useToast from "@nuxt/ui"
-import type { Candidates, Person, TableColumns } from "@/types";
-import { refDebounced, useTimeAgoIntl } from "@vueuse/core";
 import { onBeforeMount, ref, watch } from "vue";
 import { useRouter } from "vue-router";
+import { refDebounced, useTimeAgoIntl } from "@vueuse/core";
+import { useToast } from "@nuxt/ui/composables";
 import { ofetch } from "ofetch";
+import type { Candidates, Person, TableColumns } from "@/types";
 
 const toast = useToast();
 const router = useRouter();
@@ -49,7 +49,7 @@ const page = ref(0); // Страница таблицы
 const search = ref(""); // Поисковый запрос
 const status = ref("string");
 
-onBeforeMount(() => getCandidates());
+onBeforeMount(async () => await getCandidates());
 
 // Определяем функцию для получения списка кандидатов из API
 async function getCandidates() {
@@ -57,7 +57,7 @@ async function getCandidates() {
     query: {
       search: search.value,
     },
-  })
+  });
 }
 
 // Наблюдаем: поиск
@@ -69,7 +69,7 @@ watch(refDebounced(search, 1000), async () => {
   }
 });
 
-watch(page, async () => await getCandidates())
+watch(page, async () => await getCandidates());
 
 // Обработчик результата загрузки данных
 function submitPerson(person_id: string, exists: boolean) {
@@ -87,7 +87,7 @@ function submitPerson(person_id: string, exists: boolean) {
 </script>
 
 <template>
-  <LayoutsView>
+  <LayoutView>
     <UContainer>
       <UPageHeader title="КАНДИДАТЫ">
         <template #links>
@@ -105,7 +105,7 @@ function submitPerson(person_id: string, exists: boolean) {
               @click="modal = true"
             />
             <template #body>
-              <FormsResumeForm @update="submitPerson" />
+              <ResumeForm @update="submitPerson" />
             </template>
           </UModal>
         </template>
@@ -190,5 +190,5 @@ function submitPerson(person_id: string, exists: boolean) {
         />
       </div>
     </UContainer>
-  </LayoutsView>
+  </LayoutView>
 </template>

@@ -11,6 +11,6 @@ const props = defineProps({
 </script>
 
 <template>
-  <ElementLabelValue label="Должность" :value="props.item.position" />
-  <ElementLabelValue label="Департамент" :value="props.item.department" />
+  <LabelValue label="Должность" :value="props.item.position" />
+  <LabelValue label="Департамент" :value="props.item.department" />
 </template>

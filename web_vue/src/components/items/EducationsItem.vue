@@ -11,11 +11,11 @@ const props = defineProps({
 </script>
 
 <template>
-  <ElementLabelValue label="Уровень образования" :value="props.item.view" />
-  <ElementLabelValue
+  <LabelValue label="Уровень образования" :value="props.item.view" />
+  <LabelValue
     label="Учебное заведение"
     :value="props.item.institution"
   />
-  <ElementLabelValue label="Год окончания" :value="props.item.finished" />
-  <ElementLabelValue label="Специальность" :value="props.item.specialty" />
+  <LabelValue label="Год окончания" :value="props.item.finished" />
+  <LabelValue label="Специальность" :value="props.item.specialty" />
 </template>

@@ -12,9 +12,9 @@ const props = defineProps({
 </script>
 
 <template>
-  <ElementLabelValue label="Тема проверки" :value="props.item.theme" />
-  <ElementLabelValue label="Результаты" :value="props.item.results" />
-  <ElementLabelValue label="Заключение">
+  <LabelValue label="Тема проверки" :value="props.item.theme" />
+  <LabelValue label="Результаты" :value="props.item.results" />
+  <LabelValue label="Заключение">
     <UBadge
       :color="
         props.item.conclusion === Decisions.agreed
@@ -27,8 +27,8 @@ const props = defineProps({
       "
       :label="props.item.conclusion"
     />
-  </ElementLabelValue>
-  <ElementLabelValue label="Дата записи">
+  </LabelValue>
+  <LabelValue label="Дата записи">
     {{ new Date(props.item.created).toLocaleDateString() }}
-  </ElementLabelValue>
+  </LabelValue>
 </template>

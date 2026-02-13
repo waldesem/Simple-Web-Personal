@@ -11,18 +11,18 @@ const props = defineProps({
 </script>
 
 <template>
-  <ElementLabelValue
+  <LabelValue
     label="Текущая работа"
     :value="props.item.finished ? 'Нет' : 'Да'"
   />
-  <ElementLabelValue label="Начало работы">
+  <LabelValue label="Начало работы">
     {{ new Date(props.item.starts).toLocaleDateString() }}
-  </ElementLabelValue>
-  <ElementLabelValue v-if="props.item.finished" label="Окончание работы">
+  </LabelValue>
+  <LabelValue v-if="props.item.finished" label="Окончание работы">
     {{ new Date(props.item.finished).toLocaleDateString() }}
-  </ElementLabelValue>
-  <ElementLabelValue label="Место" :value="props.item.workplace" />
-  <ElementLabelValue label="Адрес" :value="props.item.address" />
-  <ElementLabelValue label="Должность" :value="props.item.position" />
-  <ElementLabelValue label="Причина увольнения" :value="props.item.reason" />
+  </LabelValue>
+  <LabelValue label="Место" :value="props.item.workplace" />
+  <LabelValue label="Адрес" :value="props.item.address" />
+  <LabelValue label="Должность" :value="props.item.position" />
+  <LabelValue label="Причина увольнения" :value="props.item.reason" />
 </template>

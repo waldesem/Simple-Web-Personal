@@ -11,9 +11,9 @@ const props = defineProps({
 </script>
 
 <template>
-  <ElementLabelValue label="Информация" :value="props.item.info" />
-  <ElementLabelValue label="Иннициатор" :value="props.item.initiator" />
-  <ElementLabelValue label="Дата записи">
+  <LabelValue label="Информация" :value="props.item.info" />
+  <LabelValue label="Иннициатор" :value="props.item.initiator" />
+  <LabelValue label="Дата записи">
     {{ new Date(props.item.created).toLocaleDateString() }}
-  </ElementLabelValue>
+  </LabelValue>
 </template>

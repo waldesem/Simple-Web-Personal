@@ -12,7 +12,7 @@ const router = createRouter({
   routes: [
     { path: "/", component: IndexView },
     { path: "/profile/:id", component: ProfileView },
-    { path: "*", component: ErrorView },
+    { path: "/:catchAll(.*)", component: ErrorView },
   ],
   history: createWebHistory(),
 });

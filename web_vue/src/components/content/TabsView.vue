@@ -1,13 +1,19 @@
 <script setup lang="ts">
+import { onBeforeMount, inject, ref, Ref } from "vue";
+import { ofetch } from "ofetch";
 import type { Items } from "@/types";
+
+const emit = defineEmits(["update"]);
 
 const candId = inject("candId") as Ref<string>;
 
-const { data } = await useAsyncData(
-  "items",
-  () => $fetch<Items>("/routes/items/" + candId.value),
-  { default: () => ({}) as Items },
-);
+const data = ref({} as Items);
+
+onBeforeMount(async () => await getItems());
+
+async function getItems() {
+  data.value = await ofetch<Items>("/routes/items/" + candId.value);
+}
 
 // Определяем массив элементов табов
 const tabs = [
@@ -76,15 +82,15 @@ const accordion = [
     <!-- Слот вкладки для отображения анкеты -->
     <template #anketa>
       <div class="mt-4">
-        <ContentPersonView />
+        <PersonView @update="emit('update')" />
       </div>
       <USeparator />
       <!-- Aккордеон с данными staffs, educations и т.д. -->
       <UAccordion :items="accordion" :unmount-on-hide="false">
         <template v-for="accord in accordion" #[accord.slot] :key="accord.slot">
-          <ContentItemView
+          <ItemView
             :data="data[accord.slot]"
-            :view="(accord.slot as keyof Items)"
+            :view="accord.slot as keyof Items"
             :title="accord.label"
           />
         </template>
@@ -94,9 +100,9 @@ const accordion = [
     <!-- Вкладки проверки, полиграф и др. -->
     <template v-for="tab in tabs.slice(1)" #[tab.slot] :key="tab.slot">
       <div class="mt-2">
-        <ContentItemView
+        <ItemView
           :data="data[tab.slot as keyof Items]"
-          :view="(tab.slot as keyof Items)"
+          :view="tab.slot as keyof Items"
           :title="tab.label"
         />
       </div>

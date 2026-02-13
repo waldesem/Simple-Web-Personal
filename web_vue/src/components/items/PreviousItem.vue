@@ -11,9 +11,9 @@ const props = defineProps({
 </script>
 
 <template>
-  <ElementLabelValue label="Фамилия" :value="props.item.surname" />
-  <ElementLabelValue label="Имя" :value="props.item.firstname" />
-  <ElementLabelValue label="Отчество" :value="props.item.patronymic" />
-  <ElementLabelValue label="Год изменения" :value="props.item.changed" />
-  <ElementLabelValue label="Причина" :value="props.item.reason" />
+  <LabelValue label="Фамилия" :value="props.item.surname" />
+  <LabelValue label="Имя" :value="props.item.firstname" />
+  <LabelValue label="Отчество" :value="props.item.patronymic" />
+  <LabelValue label="Год изменения" :value="props.item.changed" />
+  <LabelValue label="Причина" :value="props.item.reason" />
 </template>

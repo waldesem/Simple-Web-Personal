@@ -1,9 +1,12 @@
 <template>
   <UApp>
-    <NuxtLoadingIndicator color="red" :height="3" />
-    <Transition name="fade">
-      <router-view> </router-view>
-    </Transition>
+    <template>
+      <Transition name="fade">
+        <div>
+          <router-view />
+        </div>
+      </Transition>
+    </template>
   </UApp>
 </template>
 

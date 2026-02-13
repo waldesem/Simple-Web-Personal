@@ -14,28 +14,28 @@ const { copy, copied } = useClipboard();
 </script>
 
 <template>
-  <ElementLabelValue label="Фамилия" :value="props.item.surname" />
-  <ElementLabelValue label="Имя" :value="props.item.firstname" />
-  <ElementLabelValue label="Отчество" :value="props.item.patronymic" />
-  <ElementLabelValue label="Дата рождения">
+  <LabelValue label="Фамилия" :value="props.item.surname" />
+  <LabelValue label="Имя" :value="props.item.firstname" />
+  <LabelValue label="Отчество" :value="props.item.patronymic" />
+  <LabelValue label="Дата рождения">
     {{ new Date(props.item.birthday).toLocaleDateString() }}
-  </ElementLabelValue>
-  <ElementLabelValue label="Место рождения" :value="props.item.birthplace" />
-  <ElementLabelValue label="Гражданство" :value="props.item.citizenship" />
-  <ElementLabelValue v-if="props.item.dual" label="Двойное гражданство">
+  </LabelValue>
+  <LabelValue label="Место рождения" :value="props.item.birthplace" />
+  <LabelValue label="Гражданство" :value="props.item.citizenship" />
+  <LabelValue v-if="props.item.dual" label="Двойное гражданство">
     <UBadge variant="outline" color="info" :label="props.item.dual" />
-  </ElementLabelValue>
-  <ElementLabelValue label="СНИЛС" :value="props.item.snils" />
-  <ElementLabelValue label="ИНН" :value="props.item.inn" />
-  <ElementLabelValue label="Семейное положение" :value="props.item.marital" />
-  <ElementLabelValue label="Дата записи">
+  </LabelValue>
+  <LabelValue label="СНИЛС" :value="props.item.snils" />
+  <LabelValue label="ИНН" :value="props.item.inn" />
+  <LabelValue label="Семейное положение" :value="props.item.marital" />
+  <LabelValue label="Дата записи">
     {{ new Date(props.item.created).toLocaleDateString() }}
-  </ElementLabelValue>
-  <ElementLabelValue
+  </LabelValue>
+  <LabelValue
     label="Дополнительная информация"
     :value="props.item.addition"
   />
-  <ElementLabelValue v-if="props.item.destination" label="Материалы проверок">
+  <LabelValue v-if="props.item.destination" label="Материалы проверок">
     <UButton
       variant="outline"
       :color="!copied ? 'info' : 'success'"
@@ -43,5 +43,5 @@ const { copy, copied } = useClipboard();
       :label="!copied ? 'Копировать ссылку' : 'Скопировано'"
       @click="copy(props.item.destination)"
     />
-  </ElementLabelValue>
+  </LabelValue>
 </template>

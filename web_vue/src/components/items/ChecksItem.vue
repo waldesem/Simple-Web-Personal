@@ -12,40 +12,40 @@ const props = defineProps({
 </script>
 
 <template>
-  <ElementLabelValue
+  <LabelValue
     label="Проверка по местам работы"
     :value="props.item.workplace"
   />
-  <ElementLabelValue label="Проверка документов" :value="props.item.document" />
-  <ElementLabelValue label="Проверка задолженностей" :value="props.item.debt" />
-  <ElementLabelValue
+  <LabelValue label="Проверка документов" :value="props.item.document" />
+  <LabelValue label="Проверка задолженностей" :value="props.item.debt" />
+  <LabelValue
     label="Проверка банкротства"
     :value="props.item.bankruptcy"
   />
-  <ElementLabelValue label="Проверка по БКИ" :value="props.item.bki" />
-  <ElementLabelValue
+  <LabelValue label="Проверка по БКИ" :value="props.item.bki" />
+  <LabelValue
     label="Проверка судебных решений"
     :value="props.item.courts"
   />
-  <ElementLabelValue
+  <LabelValue
     label="Проверка аффилированности"
     :value="props.item.affilation"
   />
-  <ElementLabelValue
+  <LabelValue
     label="Проверка по списку террористов"
     :value="props.item.terrorist"
   />
-  <ElementLabelValue
+  <LabelValue
     label="Проверка в открытых источниках"
     :value="props.item.internet"
   />
-  <ElementLabelValue label="Проверка Кронос" :value="props.item.cronos" />
-  <ElementLabelValue
+  <LabelValue label="Проверка Кронос" :value="props.item.cronos" />
+  <LabelValue
     label="Дополнительная информация"
     :value="props.item.addition"
   />
-  <ElementLabelValue label="Комментарии" :value="props.item.comment" />
-  <ElementLabelValue label="Результат">
+  <LabelValue label="Комментарии" :value="props.item.comment" />
+  <LabelValue label="Результат">
     <UBadge
       :color="
         props.item.conclusion === Conclusions.agreed
@@ -58,8 +58,8 @@ const props = defineProps({
       "
       :label="props.item.conclusion"
     />
-  </ElementLabelValue>
-  <ElementLabelValue label="Дата записи">
+  </LabelValue>
+  <LabelValue label="Дата записи">
     {{ new Date(props.item.created).toLocaleDateString() }}
-  </ElementLabelValue>
+  </LabelValue>
 </template>

@@ -3,7 +3,7 @@ import { useRoute } from "vue-router";
 import { ofetch } from "ofetch";
 import type { Person } from "@/types";
 import { onBeforeMount, computed, provide, ref } from "vue";
-import { useEdit } from "@/composables";
+import { useEdit } from "../../composables";
 
 // Получаем данные id кандидата из URL
 const route = useRoute();
@@ -22,10 +22,12 @@ onBeforeMount(() => getPerson());
 async function getPerson() {
   data.value = await ofetch<Person>("/routes/persons/" + candId.value);
 }
+provide("person", data);
+
 </script>
 
 <template>
-  <LayoutsView>
+  <LayoutView>
     <UContainer>
       <UPageHeader
         :title="`${data.surname} ${data.firstname} ${data.patronymic ?? ''}`"
@@ -41,7 +43,7 @@ async function getPerson() {
           />
         </template>
       </UPageHeader>
-      <ContentTabsView />
+      <TabsView @update="getPerson" />
     </UContainer>
-  </LayoutsView>
+  </LayoutView>
 </template>

@@ -1,9 +1,18 @@
 <script setup lang="ts">
+import { inject, Ref, ref } from "vue";
+import { useRouter } from "vue-router";
+import { ofetch } from "ofetch";
+import { useToast } from "@nuxt/ui/composables";
 import type { Person } from "@/types";
+import { useEdit } from "../../composables";
 
-const { data: person } = useNuxtData<Person>("person");
+const emit = defineEmits(["update"]);
+
+const person = inject("person") as Ref<Person>;
 
 const toast = useToast();
+
+const router = useRouter();
 
 const edit = useEdit();
 
@@ -12,7 +21,7 @@ const modal = ref(false); // Объявляем переменную модал�
 // Определяем функцию для отправки данных формы на сервер
 function submitPerson() {
   modal.value = false;
-  refreshNuxtData("person");
+  emit("update");
   toast.add({
     title: "Успех",
     description: "Информация успешно обновлена",
@@ -24,7 +33,7 @@ function submitPerson() {
 async function deletePerson() {
   if (!confirm("Вы действительно хотите удалить профиль и связанные записи?"))
     return;
-  const { status } = await $fetch.raw(
+  const { status } = await ofetch.raw(
     `/routes/persons/${person.value?.id}`,
     { method: "DELETE" },
   );
@@ -34,8 +43,7 @@ async function deletePerson() {
       description: "Информация успешно удалена",
       color: "success",
     });
-    refreshNuxtData("candidates");
-    return navigateTo("/");
+    return router.push("/");
   } else {
     toast.add({
       title: "Ошибка",
@@ -49,7 +57,7 @@ async function deletePerson() {
 <template>
   <div class="ms-2 mt-2">
     <!-- Выводим кнопки редактирования или удаления данных -->
-    <ElementDivMenu
+    <DivMenu
       v-if="edit"
       @update="modal = true"
       @delete="deletePerson()"
@@ -62,7 +70,7 @@ async function deletePerson() {
       description="Редактирование анкетные данные"
     >
       <template #body>
-        <FormsResumeForm :resume="person" @update="submitPerson" />
+        <ResumeForm :resume="person" @update="submitPerson" />
       </template>
     </UModal>
   </div>

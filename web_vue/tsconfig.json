@@ -1,14 +1,7 @@
 {
-  "extends": "./.nuxt/tsconfig.json",
-  "compilerOptions": {
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-    },
-    "module": "es2020",
-    "target": "es2020",
-    "moduleResolution": "node",
-    "strict": true,
-  },
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }
