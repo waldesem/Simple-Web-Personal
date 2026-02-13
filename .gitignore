@@ -215,4 +215,5 @@ logs
 # Project files & folders
 PersonalDB/
 settings.ini
-server_litestar/
+auto-imports.d.ts
+components.d.ts
