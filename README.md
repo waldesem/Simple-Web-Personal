@@ -13,7 +13,7 @@ StaffSec is a desktop webapp for managing local database.
 To use this project, you will need to have Python 3.12 or higher.
 
 ```
-git clone https://github.com/waldesem/Web-Personal-DB.git
+git clone https://github.com/waldesem/Simple-Web-Personal.git
 cd Web-Personal-DB/server_flask
 wget -qO- https://astral.sh/uv/install.sh | sh
 uv venv
@@ -31,12 +31,6 @@ path =
 
 Where path is a destination for files share.
 
-For creating new user:
-
-```
-source .venv/bin/activate
-```
-
 DEFAULT_PASSWORD for created user is `88888888`.
 
 ### Cli
@@ -51,14 +45,14 @@ python3 command.py --help
 First install Node.js. Then run in terminal:
 
 ```
-cd Web-Personal-DB/web_nuxt
+cd Simple_Web-Personal/web_vue
 npm i
 ```
 
-To build Nuxt with Client-side Rendering:
+To build app:
 
 ```
-npx nuxi generate
+npm run build
 ```
 
 Builded files can be found in `server_flask/app/static`.
