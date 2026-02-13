@@ -19,9 +19,6 @@
     "noFallthroughCasesInSwitch": true,
     /* Paths */
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
       "#build/ui": [
         "./node_modules/.nuxt-ui/ui"
       ]

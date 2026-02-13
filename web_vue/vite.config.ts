@@ -21,7 +21,6 @@ export default defineConfig({
             root: "mb-3",
           },
         },
-        fonts: false,
         input: {
           slots: {
             root: "w-full",
@@ -49,7 +48,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@/": fileURLToPath(new URL("./src", import.meta.url)),
+      find: "@/", repreplacement: fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   server: {
