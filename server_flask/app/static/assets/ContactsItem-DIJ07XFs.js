@@ -1,0 +1,1 @@
+import{d as l,o,c,a,_ as s,F as r}from"./index-DzVdYU-n.js";const _=l({__name:"ContactsItem",props:{item:{type:Object,required:!0}},setup(n){const e=n;return(u,m)=>{const t=s;return o(),c(r,null,[a(t,{label:"Вид",value:e.item.view},null,8,["value"]),a(t,{label:"Контакт",value:e.item.contact},null,8,["value"])],64)}}});export{_ as default};
