@@ -4,7 +4,6 @@ import { useRouter } from "vue-router";
 import { ofetch } from "ofetch";
 import { useToast } from "@nuxt/ui/composables";
 import type { Person } from "@/types";
-import { useEdit } from "../../composables";
 
 const emit = defineEmits(["update"]);
 
@@ -14,7 +13,7 @@ const toast = useToast();
 
 const router = useRouter();
 
-const edit = useEdit();
+const edit = inject("edit") as Ref<boolean>;
 
 const modal = ref(false); // Объявляем переменную модального окна
 

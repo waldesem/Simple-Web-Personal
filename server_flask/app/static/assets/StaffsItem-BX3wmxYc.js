@@ -1,1 +1,0 @@
-import{d as l,o,c as s,a,_ as r,F as c}from"./index-DzVdYU-n.js";const _=l({__name:"StaffsItem",props:{item:{type:Object,required:!0}},setup(n){const e=n;return(m,u)=>{const t=r;return o(),s(c,null,[a(t,{label:"Должность",value:e.item.position},null,8,["value"]),a(t,{label:"Департамент",value:e.item.department},null,8,["value"])],64)}}});export{_ as default};

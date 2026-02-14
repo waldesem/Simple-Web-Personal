@@ -1,1 +1,0 @@
-import{d as s,o as n,c as o,a as t,_ as r,F as c}from"./index-DzVdYU-n.js";const _=s({__name:"AddressesItem",props:{item:{type:Object,required:!0}},setup(l){const e=l;return(u,m)=>{const a=r;return n(),o(c,null,[t(a,{label:"Тип",value:e.item.view},null,8,["value"]),t(a,{label:"Адрес",value:e.item.address},null,8,["value"])],64)}}});export{_ as default};

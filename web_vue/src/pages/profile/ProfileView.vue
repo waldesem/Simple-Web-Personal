@@ -3,7 +3,6 @@ import { useRoute } from "vue-router";
 import { ofetch } from "ofetch";
 import type { Person } from "@/types";
 import { onBeforeMount, computed, provide, ref } from "vue";
-import { useEdit } from "../../composables";
 
 // Получаем данные id кандидата из URL
 const route = useRoute();
@@ -11,7 +10,8 @@ const route = useRoute();
 const candId = computed(() => route.params.id as string);
 provide("candId", candId);
 
-const edit = useEdit();
+const edit = ref(false);
+provide("edit", edit);
 
 const data = ref({} as Person);
 const status = ref("");

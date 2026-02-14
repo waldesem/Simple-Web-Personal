@@ -10,12 +10,11 @@ import {
 } from "vue";
 import { ofetch } from "ofetch";
 import { useToast } from "@nuxt/ui/composables";
-import { useEdit } from "../../composables";
 import type { Items } from "@/types";
 
 const toast = useToast();
 
-const edit = useEdit();
+const edit = inject("edit") as Ref<boolean>;
 
 // Определяем данные которые передаются из родительского компонента
 const props = defineProps({
