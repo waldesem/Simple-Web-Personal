@@ -2,15 +2,16 @@
 import {
   defineAsyncComponent,
   inject,
+  onMounted,
   PropType,
   ref,
   Ref,
   shallowRef,
 } from "vue";
-import { useToast } from "@nuxt/ui/composables";
 import { ofetch } from "ofetch";
-import type { Items } from "@/types";
+import { useToast } from "@nuxt/ui/composables";
 import { useEdit } from "../../composables";
+import type { Items } from "@/types";
 
 const toast = useToast();
 
@@ -18,10 +19,6 @@ const edit = useEdit();
 
 // Определяем данные которые передаются из родительского компонента
 const props = defineProps({
-  data: {
-    type: Array as PropType<Items[keyof Items]>,
-    default: () => [],
-  },
   title: {
     type: String,
     required: true,
@@ -31,6 +28,13 @@ const props = defineProps({
     required: true,
   },
 });
+
+onMounted(async () => await getItem());
+
+// Определяем функцию для получения данных из API
+async function getItem() {
+  data.value = await ofetch(`/routes/${props.view}/${candId.value}`);
+}
 
 function capitalize(str: string) {
   if (typeof str == "string") return str.charAt(0).toUpperCase() + str.slice(1);
@@ -48,14 +52,9 @@ const FormComponent = defineAsyncComponent(
 const candId = inject("candId") as Ref<string>;
 
 // Объявляем переменные для работы с данными
-const data = shallowRef(props.data); // Данные для вывода
+const data = ref<Items[keyof Items]>([]); // Данные для вывода
 const item = shallowRef<object>({}); // Данные для редактирования
 const modal = ref(false); // Флаг для открытия модального окна
-
-// Определяем функцию для получения данных из API
-async function getItem() {
-  data.value = await ofetch(`/routes/${props.view}/${candId.value}`);
-}
 
 const fail = () => {
   toast.add({

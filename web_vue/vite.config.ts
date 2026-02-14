@@ -56,7 +56,7 @@ export default defineConfig({
     port: 8000,
     proxy: {
       "/routes": {
-        target: "http://127.0.0.1:5000/routes/*",
+        target: "http://127.0.0.1:5000/routes/",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/routes/, ""),
       },

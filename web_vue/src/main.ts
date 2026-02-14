@@ -5,6 +5,7 @@ import App from "./App.vue";
 import IndexView from "./pages/IndexView.vue";
 import ErrorView from "./pages/ErrorView.vue";
 import ProfileView from "./pages/profile/ProfileView.vue";
+import './assets/main.css'
 
 const app = createApp(App);
 

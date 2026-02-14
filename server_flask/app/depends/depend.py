@@ -59,15 +59,6 @@ def make_dicts(cursor: sqlite3.Cursor, row: sqlite3.Row) -> dict:
     return {cursor.description[idx][0]: value for idx, value in enumerate(row)}
 
 
-def select_item(item: Item, person_id: int) -> list:
-    """Retrieve an item from the database based on the provided item."""
-    cur: sqlite3.Cursor = g.db.cursor()
-    return cur.execute(
-        f"SELECT * FROM {item} WHERE person_id = ?",  # noqa: S608
-        (person_id,),
-    ).fetchall()
-
-
 def create_query(query: dict) -> tuple:
     """Create statement with params query."""
     params = []

@@ -1,12 +1,10 @@
 <template>
   <UApp>
-    <template>
-      <Transition name="fade">
-        <div>
-          <router-view />
-        </div>
-      </Transition>
-    </template>
+    <Transition name="fade">
+      <div>
+        <router-view />
+      </div>
+    </Transition>
   </UApp>
 </template>
 

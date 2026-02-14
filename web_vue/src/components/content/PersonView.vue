@@ -62,7 +62,7 @@ async function deletePerson() {
       @update="modal = true"
       @delete="deletePerson()"
     />
-    <ItemsPersonDiv :item="person" />
+    <PersonDiv :item="person" />
     <!-- Выводим модальное окно для редактирования данных -->
     <UModal
       v-model:open="modal"

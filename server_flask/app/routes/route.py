@@ -11,7 +11,6 @@ from app.depends.depend import (
     create_query,
     get_user_id,
     make_dicts,
-    select_item,
 )
 
 bp = Blueprint("routes", __name__, url_prefix="/routes")
@@ -61,9 +60,7 @@ def post_person() -> Response:
     """Replace a record in persons table."""
     # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
     cur: sqlite3.Cursor = g.db.cursor()
-    if not (user_id := get_user_id(cur)):
-        return abort, 401
-
+    user_id = get_user_id(cur)
     resume: dict = request.get_json()
     resume["user_id"] = user_id
 
@@ -122,18 +119,16 @@ def delete_person(person_id: int) -> Response:
     return "", 204
 
 
-@bp.get("/items/<int:person_id>")
-def get_items(person_id: int) -> Response:
-    """Retrieve an all items from the database."""
-    return jsonify(
-        {item.value: select_item(item.value, person_id) for item in Item},
-    ), 200
-
-
 @bp.get("/<item>/<int:person_id>")
 def get_item(item: Item, person_id: int) -> Response:
     """Get an item based on the provided item."""
-    return jsonify(select_item(item, person_id)), 200
+    cur: sqlite3.Cursor = g.db.cursor()
+    return jsonify(
+        cur.execute(
+            f"SELECT * FROM {item} WHERE person_id = ?",  # noqa: S608
+            (person_id,),
+        ).fetchall()
+    ), 200
 
 
 @bp.post("/<item>/<int:person_id>")

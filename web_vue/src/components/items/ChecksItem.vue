@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Verification } from "@/types";
-import { Conclusions } from "@/types";
+import { Conclusions } from "../../types";
 import { PropType } from "vue";
 
 const props = defineProps({

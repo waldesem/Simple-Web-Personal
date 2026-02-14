@@ -155,7 +155,7 @@ function submitPerson(person_id: string, exists: boolean) {
       </div>
 
       <UEmpty
-        v-if="!data.candidates.length"
+        v-if="!data.candidates"
         title="Данные отсутствуют"
         size="sm"
         variant="naked"
