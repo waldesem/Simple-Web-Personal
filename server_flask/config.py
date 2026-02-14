@@ -12,5 +12,13 @@ class Config:
     """Configuration class."""
 
     SECRET_KEY = secrets.token_hex(16)
-    BASE_PATH = Path(setting["Destination"].get("path"))
+    BASE_PATH = (
+        Path(path)
+        if (path := setting["Destination"].get("path"))
+        else Path(
+            __file__,
+        )
+        .parent.resolve()
+        .joinpath("Persons")
+    )
     DATABASE_URI = BASE_PATH.joinpath("database.db")
