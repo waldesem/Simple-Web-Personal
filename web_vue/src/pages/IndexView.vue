@@ -98,9 +98,9 @@ function submitPerson(person_id: string, exists: boolean) {
             description="Введите анкетные данные"
           >
             <UButton
-              title="Добавить анкету"
-              variant="ghost"
-              icon="i-lucide-user-plus"
+              label="Добавить"
+              variant="outline"
+              size="sm"
               :loading="status === 'pending'"
               @click="modal = true"
             />
@@ -175,15 +175,13 @@ function submitPerson(person_id: string, exists: boolean) {
       <!-- Пагинация -->
       <div class="flex justify-center border-t border-default space-x-2 py-4">
         <UButton
-          title="Предыдущая страница"
-          icon="i-lucide-arrow-left"
+          label="Back"
           :disabled="!page || status == 'pending'"
           class="me-2 rounded-full"
           @click="page--"
         />
         <UButton
-          title="Следующая страница"
-          icon="i-lucide-arrow-right"
+          label="Next"
           :disabled="!data.has_next || status == 'pending'"
           class="ms-2 rounded-full"
           @click="page++"

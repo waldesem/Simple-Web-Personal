@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import vue from '@vitejs/plugin-vue'
+import vue from "@vitejs/plugin-vue";
 import ui from "@nuxt/ui/vite";
 import { fileURLToPath } from "url";
 
@@ -48,7 +48,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      find: "@/", repreplacement: fileURLToPath(new URL("./src", import.meta.url)),
+      find: "@/",
+      repreplacement: fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   server: {

@@ -25,9 +25,9 @@ const emits = defineEmits(["update", "delete"]);
       >
         <UButton
           color="neutral"
-          icon="i-lucide-ellipsis-vertical"
           variant="ghost"
           title="Выбор действия"
+          label="&#9776;"
         />
       </UDropdownMenu>
     </div>

@@ -23,7 +23,6 @@ async function getPerson() {
   data.value = await ofetch<Person>("/routes/persons/" + candId.value);
 }
 provide("person", data);
-
 </script>
 
 <template>
@@ -38,7 +37,6 @@ provide("person", data);
             :loading="status === 'pending'"
             :color="edit ? 'error' : 'primary'"
             :label="edit ? 'Откл.Редакт.' : 'Вкл.Редакт.'"
-            :icon="edit ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
             @click="edit = !edit"
           />
         </template>
