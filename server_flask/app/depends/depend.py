@@ -6,7 +6,7 @@ from enum import StrEnum
 from functools import lru_cache
 from pathlib import Path
 
-from flask import current_app, g
+from flask import current_app
 
 
 class Item(StrEnum):

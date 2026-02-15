@@ -3,7 +3,7 @@
 import sqlite3
 from datetime import datetime
 
-from flask import Blueprint, Response, abort, current_app, g, jsonify, request
+from flask import Blueprint, Response, current_app, g, jsonify, request
 
 from app.depends.depend import (
     Item,
@@ -127,7 +127,7 @@ def get_item(item: Item, person_id: int) -> Response:
         cur.execute(
             f"SELECT * FROM {item} WHERE person_id = ?",  # noqa: S608
             (person_id,),
-        ).fetchall()
+        ).fetchall(),
     ), 200
 
 
