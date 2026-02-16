@@ -2,14 +2,14 @@
 
 import getpass
 import sqlite3
-from enum import StrEnum
+from enum import Enum
 from functools import lru_cache
 from pathlib import Path
 
 from flask import current_app
 
 
-class Item(StrEnum):
+class Item(Enum):
     """Item categories."""
 
     ADDRESSES = "addresses"
@@ -27,7 +27,7 @@ class Item(StrEnum):
 
 
 @lru_cache
-def get_user_id(cur: sqlite3.Cursor) -> int:
+def get_user_id(cur: sqlite3.Cursor) -> int | None:
     """Retrieve the current user."""
     username = getpass.getuser()
     user = cur.execute(

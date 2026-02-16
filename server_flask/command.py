@@ -2,7 +2,7 @@
 
 import sqlite3
 from datetime import datetime, timezone
-from enum import StrEnum
+from enum import Enum
 from pathlib import Path
 
 import click
@@ -11,7 +11,7 @@ from werkzeug.security import generate_password_hash
 from config import Config
 
 
-class Actions(StrEnum):
+class Actions(Enum):
     """Actions."""
 
     BLOCK = "block"
@@ -19,7 +19,7 @@ class Actions(StrEnum):
     DELETE = "delete"
 
 
-class Roles(StrEnum):
+class Roles(Enum):
     """Roles."""
 
     ADMIN = "admin"

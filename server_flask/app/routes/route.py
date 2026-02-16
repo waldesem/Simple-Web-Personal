@@ -1,7 +1,7 @@
 """Routes."""
-
 import sqlite3
 from datetime import datetime
+from typing import Literal
 
 from flask import Blueprint, Response, current_app, g, jsonify, request
 
@@ -30,7 +30,7 @@ def _close_connection(_exception: Exception) -> None:
 
 
 @bp.get("/candidates/<int:page>")
-def get_candidates(page: int, per_page: int = 10) -> Response:
+def get_candidates(page: int, per_page: int = 10) -> tuple[Response, Literal[200]]:
     """Retrieve a paginated list of persons from the database."""
     query = request.args
     stmt, params = create_query(query)
@@ -47,7 +47,7 @@ def get_candidates(page: int, per_page: int = 10) -> Response:
 
 
 @bp.get("/persons/<int:person_id>")
-def get_person(person_id: int) -> Response:
+def get_person(person_id: int) -> tuple[Response, Literal[200]]:
     """Retrieve an item from the database based on the provided item ID."""
     cur: sqlite3.Cursor = g.db.cursor()
     return jsonify(
@@ -56,7 +56,7 @@ def get_person(person_id: int) -> Response:
 
 
 @bp.post("/persons")
-def post_person() -> Response:
+def post_person() -> tuple[Response, Literal[201]]:
     """Replace a record in persons table."""
     # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
     cur: sqlite3.Cursor = g.db.cursor()
@@ -106,7 +106,7 @@ def post_person() -> Response:
 
 
 @bp.delete("/persons/<int:person_id>")
-def delete_person(person_id: int) -> Response:
+def delete_person(person_id: int) -> tuple[Literal[""], Literal[204]]:
     """Delete person from the database based on ID."""
     cur: sqlite3.Cursor = g.db.cursor()
     for table in Item:
@@ -120,7 +120,7 @@ def delete_person(person_id: int) -> Response:
 
 
 @bp.get("/<item>/<int:person_id>")
-def get_item(item: Item, person_id: int) -> Response:
+def get_item(item: Item, person_id: int) -> tuple[Response, Literal[200]]:
     """Get an item based on the provided item."""
     cur: sqlite3.Cursor = g.db.cursor()
     return jsonify(
@@ -132,7 +132,7 @@ def get_item(item: Item, person_id: int) -> Response:
 
 
 @bp.post("/<item>/<int:person_id>")
-def post_item(item: Item, person_id: int) -> Response:
+def post_item(item: Item, person_id: int) -> tuple[Literal[""], Literal[201]]:
     """Insert or replaces a record in the specified table."""
     json_dict: dict = request.get_json()
     json_dict.update({"person_id": person_id, "created": datetime.now().isoformat()})
@@ -159,7 +159,7 @@ def post_item(item: Item, person_id: int) -> Response:
 
 
 @bp.delete("/<item>/<int:item_id>")
-def delete_item(item: Item, item_id: int) -> Response:
+def delete_item(item: Item, item_id: int) -> tuple[Literal[""], Literal[204]]:
     """Delete an item from the database with provided item name and item ID."""
     cur: sqlite3.Cursor = g.db.cursor()
     cur.execute(
