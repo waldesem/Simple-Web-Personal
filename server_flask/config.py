@@ -14,7 +14,7 @@ class Config:
     SECRET_KEY = secrets.token_hex(16)
     BASE_PATH = (
         Path(path)
-        if (path := setting["Destination"].get("path"))
+        if (path := setting.get("Destination", "path"))
         else Path(
             __file__,
         )

@@ -57,10 +57,10 @@ npm run build
 
 Builded files can be found in `server_flask/app/static`.
 
-### Start backend server
+### Start webapp
 
 To start server run the command in terminal:
 
 ```
-uv run serve.py
+uv run webgui.py
 ```

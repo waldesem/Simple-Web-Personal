@@ -7,9 +7,12 @@ import signal
 import subprocess
 import tempfile
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import psutil
+
+from app import create_app
 
 
 def start_browser(address: str, port: int) -> None:
@@ -44,3 +47,20 @@ def start_browser(address: str, port: int) -> None:
             except psutil.AccessDenied:
                 continue
             break
+
+
+def serve(host: str = "127.0.0.1", port: int = 5000) -> None:
+    """Run the application based on the provided arguments."""
+    app = create_app()
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        server_future = executor.submit(app.run, host, port)
+        browser_future = executor.submit(start_browser, host, port)
+        try:
+            server_future.result()
+            browser_future.result()
+        except KeyboardInterrupt:
+            executor.shutdown()
+
+
+if __name__ == "__main__":
+    serve()
