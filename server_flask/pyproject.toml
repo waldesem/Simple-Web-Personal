@@ -1,5 +1,5 @@
 [project]
-name = "server-flask"
+name = "webapp-flask"
 version = "1.0.0"
 description = "StaffSec"
 requires-python = ">=3.12"
