@@ -1,9 +1,11 @@
 <template>
   <UApp>
     <Transition name="fade">
-      <div>
-        <router-view />
-      </div>
+      <router-view v-slot="{ Component }">
+        <KeepAlive include="IndexView" :max="1">
+          <component :is="Component" />
+        </KeepAlive>
+      </router-view>
     </Transition>
   </UApp>
 </template>
