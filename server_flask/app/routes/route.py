@@ -29,8 +29,8 @@ def _close_connection(_exception: Exception) -> None:
         db.close()
 
 
-@bp.get("/candidates/<int:page>")
-def get_candidates(page: int, per_page: int = 10) -> tuple[Response, Literal[200]]:
+@bp.get("/candidates")
+def get_candidates(per_page: int = 10) -> tuple[Response, Literal[200]]:
     """Retrieve a paginated list of persons from the database."""
     query = request.args
     params = []
@@ -46,9 +46,13 @@ def get_candidates(page: int, per_page: int = 10) -> tuple[Response, Literal[200
                 stmt += " AND patronymic = ?"
                 params.append(search[2])
     stmt += " ORDER BY id DESC LIMIT ? OFFSET ?"
+
     # Пагинация списка кандидатов
     cur: sqlite3.Cursor = g.db.cursor()
-    candidates = cur.execute(stmt, (*params, per_page + 1, page * per_page)).fetchall()
+    candidates = cur.execute(
+        stmt,
+        (*params, per_page + 1, int(query["page"]) * per_page),
+    ).fetchall()
     has_next = len(candidates) > per_page
     return jsonify(
         {

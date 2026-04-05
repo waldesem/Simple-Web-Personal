@@ -15,15 +15,19 @@ export default {
 
 const router = createRouter({
   routes: [
-    { path: "/", redirect: "/index" },
-    { path: "/index", component: () => import("./pages/IndexView.vue") },
     {
+      name: "index",
+      path: "/index",
+      component: () => import("./pages/IndexView.vue"),
+    },
+    {
+      name: "profile",
       path: "/profile/:id",
       component: () => import("./pages/ProfileView.vue"),
     },
     {
       path: "/:catchAll(.*)",
-      component: () => import("./pages/ErrorView.vue"),
+      redirect: "/index",
     },
   ],
   history: createWebHistory(),

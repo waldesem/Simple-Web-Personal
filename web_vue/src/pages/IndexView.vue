@@ -47,15 +47,16 @@ const data = ref({ has_next: false, candidates: [] } as Candidates);
 const modal = ref(false); // Состояние модального окна
 const page = ref(0); // Страница таблицы
 const search = ref(""); // Поисковый запрос
-const status = ref("string");
+const status = ref("success");
 
 onBeforeMount(async () => await getCandidates());
 
 // Определяем функцию для получения списка кандидатов из API
 async function getCandidates() {
-  data.value = await ofetch<Candidates>("/routes/candidates/" + page.value, {
+  data.value = await ofetch<Candidates>("/routes/candidates", {
     query: {
       search: search.value,
+      page: page.value,
     },
   });
 }
@@ -81,7 +82,7 @@ function submitPerson(person_id: string, exists: boolean) {
       color: "info",
     });
   }
-  return router.push("/profile/" + person_id);
+  return router.push({ name: "profile", params: { id: person_id } });
 }
 </script>
 
@@ -140,7 +141,9 @@ function submitPerson(person_id: string, exists: boolean) {
               v-for="(candidate, index) in data.candidates"
               :key="index"
               class="hover:bg-gray-100 cursor-pointer"
-              @click="router.push('/profile/' + candidate.id)"
+              @click="
+                router.push({ name: 'profile', params: { id: candidate.id } })
+              "
             >
               <td
                 v-for="(row, idx) in cols"

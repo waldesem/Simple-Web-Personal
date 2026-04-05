@@ -32,17 +32,16 @@ function submitPerson() {
 async function deletePerson() {
   if (!confirm("Вы действительно хотите удалить профиль и связанные записи?"))
     return;
-  const { status } = await ofetch.raw(
-    `/routes/persons/${person.value?.id}`,
-    { method: "DELETE" },
-  );
+  const { status } = await ofetch.raw(`/routes/persons/${person.value?.id}`, {
+    method: "DELETE",
+  });
   if (status === 204) {
     toast.add({
       title: "Успех",
       description: "Информация успешно удалена",
       color: "success",
     });
-    return router.push("/");
+    return router.push({ name: "index" });
   } else {
     toast.add({
       title: "Ошибка",
@@ -56,11 +55,7 @@ async function deletePerson() {
 <template>
   <div class="ms-2 mt-2">
     <!-- Выводим кнопки редактирования или удаления данных -->
-    <DivMenu
-      v-if="edit"
-      @update="modal = true"
-      @delete="deletePerson()"
-    />
+    <DivMenu v-if="edit" @update="modal = true" @delete="deletePerson()" />
     <PersonDiv :item="person" />
     <!-- Выводим модальное окно для редактирования данных -->
     <UModal
