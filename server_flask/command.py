@@ -8,7 +8,7 @@ from pathlib import Path
 import click
 from werkzeug.security import generate_password_hash
 
-from config import Config
+from constants import DATABASE_URI
 
 
 class Actions(Enum):
@@ -43,7 +43,7 @@ def initdb(filename: Path) -> None:
     """
     with (
         Path.open(filename, "r", encoding="utf-8") as f,
-        sqlite3.connect(Config.DATABASE_URI) as conn,
+        sqlite3.connect(DATABASE_URI) as conn,
     ):
         file = f.read()
         cur = conn.cursor()
@@ -62,7 +62,7 @@ def user(user_id: int) -> None:
         python3 command.py user --user_id=1
 
     """
-    with sqlite3.connect(Config.DATABASE_URI) as conn:
+    with sqlite3.connect(DATABASE_URI) as conn:
         conn.row_factory = sqlite3.Row
         cur = conn.cursor()
         stmt = """
@@ -84,7 +84,7 @@ def user(user_id: int) -> None:
 @click.argument("fullname")
 @click.argument("username")
 @click.argument("email")
-@click.option("--role", type=click.Choice(Roles))
+@click.option("--role", type=click.Choice([role.value for role in Roles]))
 def create(
     fullname: str,
     username: str,
@@ -97,7 +97,7 @@ def create(
         python3 command.py create "Super User" superadmin 'super@host.ru' --role=admin
 
     """
-    with sqlite3.connect(Config.DATABASE_URI) as conn:
+    with sqlite3.connect(DATABASE_URI) as conn:
         cur = conn.cursor()
         if cur.execute(
             "SELECT * FROM users WHERE username = ? OR email = ?",
@@ -117,7 +117,7 @@ def create(
                     email.strip(),
                     role,
                     datetime.now(timezone.utc).isoformat(),  # noqa: UP017
-                    generate_password_hash(Config.DEFAULT_PASSWORD),
+                    generate_password_hash("88888888"),
                     datetime.now(timezone.utc).isoformat(),  # noqa: UP017
                     True,
                     False,
@@ -131,7 +131,7 @@ def create(
 
 @cli.command()
 @click.argument("user_id", type=int)
-@click.option("--action", type=click.Choice(Actions))
+@click.option("--action", type=click.Choice([action.value for action in Actions]))
 def edit(user_id: int, action: Actions) -> None:
     """Change a user's information in the database.
 
@@ -139,7 +139,7 @@ def edit(user_id: int, action: Actions) -> None:
         python3 command.py edit 1 --action=block
 
     """
-    with sqlite3.connect(Config.DATABASE_URI) as conn:
+    with sqlite3.connect(DATABASE_URI) as conn:
         cur = conn.cursor()
         if not cur.execute("SELECT id FROM users WHERE id = ?", (user_id,)).fetchone():
             click.secho(f"User ID {user_id} not found", bg="red")
@@ -153,7 +153,7 @@ def edit(user_id: int, action: Actions) -> None:
                         passhash = ?, attempt = 0, blocked = 0, change_pswd = 1
                         WHERE id = ?
                         """,
-                        (generate_password_hash(Config.DEFAULT_PASSWORD), user_id),
+                        (generate_password_hash("88888888"), user_id),
                     )
                 case "block":
                     # Заблокировать или разблокировать пользователя
@@ -172,7 +172,7 @@ def edit(user_id: int, action: Actions) -> None:
 
 @cli.command()
 @click.argument("user_id", type=int)
-@click.option("--role", type=click.Choice(Roles))
+@click.option("--role", type=click.Choice([role.value for role in Roles]))
 def role(user_id: int, role: Roles) -> None:
     """Change a user's role in the database.
 
@@ -180,7 +180,7 @@ def role(user_id: int, role: Roles) -> None:
         python3 command.py role 1 --role=user
 
     """
-    with sqlite3.connect(Config.DATABASE_URI) as conn:
+    with sqlite3.connect(DATABASE_URI) as conn:
         cur = conn.cursor()
         if not cur.execute("SELECT id FROM users WHERE id = ?", (user_id,)).fetchone():
             click.secho(f"User ID {user_id} not found", bg="red")

@@ -1,25 +1,52 @@
 """Routes."""
 
+import getpass
 import sqlite3
 from datetime import datetime
+from enum import Enum
+from functools import lru_cache
+from pathlib import Path
 from typing import Literal
 
-from flask import Blueprint, Response, current_app, g, jsonify, request
+from flask import Blueprint, Response, g, jsonify, request
 
-from app.depends.depend import (
-    Item,
-    create_dest,
-    get_user_id,
-    make_dicts,
-)
+from constants import BASE_PATH, DATABASE_URI
 
 bp = Blueprint("routes", __name__, url_prefix="/routes")
 
 
+class Item(Enum):
+    """Item categories."""
+
+    ADDRESSES = "addresses"
+    AFFILATIONS = "affilations"
+    CHECKS = "checks"
+    CONTACTS = "contacts"
+    DOCUMENTS = "documents"
+    EDUCATIONS = "educations"
+    INQUIRIES = "inquiries"
+    INVESTIGATIONS = "investigations"
+    PREVIOUS = "previous"
+    POLIGRAFS = "poligrafs"
+    STAFFS = "staffs"
+    WORKPLACES = "workplaces"
+
+
+@lru_cache
+def get_user_id(cur: sqlite3.Cursor) -> int | None:
+    """Retrieve the current user."""
+    username = getpass.getuser()
+    user = cur.execute(
+        "SELECT id FROM users WHERE username = ?",
+        (username.lower(),),
+    ).fetchone()
+    return user[0] if user else None
+
+
 @bp.before_request
 def _load_connection() -> None:
-    db = sqlite3.connect(current_app.config["DATABASE_URI"])
-    db.row_factory = make_dicts  # ty:ignore[invalid-assignment]
+    db = sqlite3.connect(DATABASE_URI)
+    db.row_factory = sqlite3.Row
     g.db = db
 
 
@@ -57,7 +84,9 @@ def get_candidates(per_page: int = 10) -> tuple[Response, Literal[200]]:
     return jsonify(
         {
             "has_next": has_next,
-            "candidates": candidates[:-1] if has_next else candidates,
+            "candidates": [
+                dict(cand) for cand in (candidates[:-1] if has_next else candidates)
+            ],
         },
     ), 200
 
@@ -67,7 +96,9 @@ def get_person(person_id: int) -> tuple[Response, Literal[200]]:
     """Retrieve an item from the database based on the provided item ID."""
     cur: sqlite3.Cursor = g.db.cursor()
     return jsonify(
-        cur.execute("SELECT * FROM persons WHERE id = ?", (person_id,)).fetchone(),
+        dict(
+            cur.execute("SELECT * FROM persons WHERE id = ?", (person_id,)).fetchone(),
+        ),
     ), 200
 
 
@@ -103,10 +134,22 @@ def post_person() -> tuple[Response, Literal[201]]:
                 tuple(resume.values()),
             ).lastrowid
 
-            destination = create_dest(resume | {"id": cand_id})
+            destination = Path(
+                BASE_PATH,
+                "Главный офис",
+                resume["surname"][0],
+                "{}-{} {} {}".format(
+                    cand_id,
+                    resume["surname"],
+                    resume["firstname"],
+                    resume.get("patronymic", ""),
+                ).rstrip(),
+            )
+            destination.mkdir(parents=True, exist_ok=True)
+
             cur.execute(
                 "UPDATE persons SET destination = ? WHERE id = ?",
-                (destination, cand_id),
+                (str(destination), cand_id),
             )
             g.db.commit()
             return jsonify({"person_id": cand_id, "exists": False}), 201
@@ -139,12 +182,11 @@ def delete_person(person_id: int) -> tuple[Literal[""], Literal[204]]:
 def get_item(item: Item, person_id: int) -> tuple[Response, Literal[200]]:
     """Get an item based on the provided item."""
     cur: sqlite3.Cursor = g.db.cursor()
-    return jsonify(
-        cur.execute(
-            f"SELECT * FROM {item} WHERE person_id = ?",  # noqa: S608
-            (person_id,),
-        ).fetchall(),
-    ), 200
+    items = cur.execute(
+        f"SELECT * FROM {item} WHERE person_id = ?",  # noqa: S608
+        (person_id,),
+    ).fetchall()
+    return jsonify([dict(itm) for itm in items]), 200
 
 
 @bp.post("/<item>/<int:person_id>")
