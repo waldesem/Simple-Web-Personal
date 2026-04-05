@@ -9,7 +9,6 @@ from flask import Blueprint, Response, current_app, g, jsonify, request
 from app.depends.depend import (
     Item,
     create_dest,
-    create_query,
     get_user_id,
     make_dicts,
 )
@@ -20,11 +19,11 @@ bp = Blueprint("routes", __name__, url_prefix="/routes")
 @bp.before_request
 def _load_connection() -> None:
     db = sqlite3.connect(current_app.config["DATABASE_URI"])
-    db.row_factory = make_dicts
+    db.row_factory = make_dicts  # ty:ignore[invalid-assignment]
     g.db = db
 
 
-@bp.teardown_app_request
+@bp.teardown_app_request  # ty:ignore[invalid-argument-type]
 def _close_connection(_exception: Exception) -> None:
     if db := g.pop("db", None):
         db.close()
@@ -34,7 +33,19 @@ def _close_connection(_exception: Exception) -> None:
 def get_candidates(page: int, per_page: int = 10) -> tuple[Response, Literal[200]]:
     """Retrieve a paginated list of persons from the database."""
     query = request.args
-    stmt, params = create_query(query)
+    params = []
+    stmt = "SELECT id, surname, firstname, patronymic, birthday, created FROM persons"
+    if query.get("search"):
+        search = query["search"].upper().split(maxsplit=3)
+        stmt += " WHERE surname = ?"
+        params.append(search[0])
+        if len(search) > 1:
+            stmt += " AND firstname = ?"
+            params.append(search[1])
+            if len(search) > 2:
+                stmt += " AND patronymic = ?"
+                params.append(search[2])
+    stmt += " ORDER BY id DESC LIMIT ? OFFSET ?"
     # Пагинация списка кандидатов
     cur: sqlite3.Cursor = g.db.cursor()
     candidates = cur.execute(stmt, (*params, per_page + 1, page * per_page)).fetchall()

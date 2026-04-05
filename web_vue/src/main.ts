@@ -15,7 +15,8 @@ export default {
 
 const router = createRouter({
   routes: [
-    { path: "/", component: () => import("./pages/IndexView.vue") },
+    { path: "/", redirect: "/index" },
+    { path: "/index", component: () => import("./pages/IndexView.vue") },
     {
       path: "/profile/:id",
       component: () => import("./pages/ProfileView.vue"),

@@ -1,14 +1,9 @@
 <template>
   <UError
-    :clear="{
-      color: 'neutral',
-      size: 'xl',
-      class: 'rounded-full',
-      label: 'Вернуться назад',
-    }"
-    ,
     :error="{
-      statusMessage: 'Error',
+      statusCode: 404,
+      statusMessage: 'Page not found',
+      message: 'The page you are looking for does not exist.',
     }"
   />
 </template>

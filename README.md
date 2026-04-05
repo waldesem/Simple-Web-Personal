@@ -8,7 +8,7 @@ StaffSec is a desktop webapp for managing local database.
 - Sqlite;
 - Vue;
 
-### Installation
+## Installation
 
 To use this project, you will need to have Python 3.12 or higher.
 
@@ -16,15 +16,14 @@ To use this project, you will need to have Python 3.12 or higher.
 git clone https://github.com/waldesem/Simple-Web-Personal.git
 cd Web-Personal-DB/server_flask
 wget -qO- https://astral.sh/uv/install.sh | sh
-uv venv
 uv sync
 ```
 
 ## Settings
 
-You need creating settings.ini file run with:
+You need creating settings.ini file with:
 
-```bash
+```ini
 [Destination]
 path =
 ```
@@ -48,19 +47,20 @@ First install Node.js. Then run in terminal:
 ```bash
 cd Simple_Web-Personal/web_vue
 npm i
-```
-
-To build app:
-
-```bash
 npm run build
 ```
 
 Builded files can be found in `server_flask/app/static`.
 
-## Start webapp
+## Start
 
 To start server run the command in terminal:
+
+```bash
+uv run server.py
+```
+
+or as desktop app:
 
 ```bash
 uv run webgui.py

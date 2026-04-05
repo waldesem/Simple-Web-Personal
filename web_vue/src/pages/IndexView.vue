@@ -60,7 +60,8 @@ async function getCandidates() {
   });
 }
 
-// Наблюдаем: поиск
+watch(page, async () => await getCandidates());
+
 watch(refDebounced(search, 1000), async () => {
   if (page.value === 0) {
     await getCandidates();
@@ -68,8 +69,6 @@ watch(refDebounced(search, 1000), async () => {
     page.value = 0;
   }
 });
-
-watch(page, async () => await getCandidates());
 
 // Обработчик результата загрузки данных
 function submitPerson(person_id: string, exists: boolean) {
