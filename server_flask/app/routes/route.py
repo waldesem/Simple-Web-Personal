@@ -107,61 +107,68 @@ def post_person() -> tuple[Response, Literal[201]]:
     """Replace a record in persons table."""
     # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
     cur: sqlite3.Cursor = g.db.cursor()
-    user_id = get_user_id(cur)
     resume: dict = request.get_json()
-    resume["user_id"] = user_id
+    person = cur.execute(
+        """
+        SELECT id FROM persons WHERE
+        surname=? AND firstname=? AND patronymic=? AND birthday=DATE(?)
+        """,
+        (
+            resume["surname"],
+            resume["firstname"],
+            resume.get("patronymic", ""),
+            resume["birthday"],
+        ),
+    ).fetchone()
 
-    if not (cand_id := resume.pop("id", None)):
-        person = cur.execute(
-            """
-                SELECT * FROM persons WHERE
-                surname=? AND firstname=? AND patronymic=? AND birthday=DATE(?)
-            """,
-            (
+    if not (cand_id := person[0] if person else None):
+        resume["editable"] = True
+        resume["user_id"] = get_user_id(cur)
+        cand_id = cur.execute(
+            "INSERT INTO persons ({}) VALUES ({})".format(  # noqa: S608
+                ",".join(resume.keys()),
+                ",".join(["?"] * len(resume)),
+            ),
+            tuple(resume.values()),
+        ).lastrowid
+
+        destination = Path(
+            BASE_PATH,
+            "Главный офис",
+            resume["surname"][0],
+            "{}-{} {} {}".format(
+                cand_id,
                 resume["surname"],
                 resume["firstname"],
                 resume.get("patronymic", ""),
-                resume["birthday"],
-            ),
-        ).fetchone()
+            ).rstrip(),
+        )
+        destination.mkdir(parents=True, exist_ok=True)
 
-        if not person:
-            cand_id = cur.execute(
-                "INSERT INTO persons ({}) VALUES ({})".format(  # noqa: S608
-                    ",".join(resume.keys()),
-                    ",".join(["?"] * len(resume)),
-                ),
-                tuple(resume.values()),
-            ).lastrowid
+        cur.execute(
+            "UPDATE persons SET destination = ? WHERE id = ?",
+            (str(destination), cand_id),
+        )
+        g.db.commit()
+    return jsonify({"person_id": cand_id}), 201
 
-            destination = Path(
-                BASE_PATH,
-                "Главный офис",
-                resume["surname"][0],
-                "{}-{} {} {}".format(
-                    cand_id,
-                    resume["surname"],
-                    resume["firstname"],
-                    resume.get("patronymic", ""),
-                ).rstrip(),
-            )
-            destination.mkdir(parents=True, exist_ok=True)
 
-            cur.execute(
-                "UPDATE persons SET destination = ? WHERE id = ?",
-                (str(destination), cand_id),
-            )
-            g.db.commit()
-            return jsonify({"person_id": cand_id, "exists": False}), 201
-
+@bp.patch("/persons/<int:person_id")
+def patch_person(person_id: int) -> tuple[Literal[""], Literal[200]]:
+    """Replace a record in persons table."""
+    # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
+    cur: sqlite3.Cursor = g.db.cursor()
+    resume: dict = request.get_json()
+    resume["editable"] = True
+    resume["user_id"] = get_user_id(cur)
     cur.execute(
         "UPDATE persons SET {} WHERE id = ?".format(  # noqa: S608
             ",".join(f"{k}=?" for k in resume),
         ),
-        (*resume.values(), cand_id),
+        (*resume.values(), person_id),
     )
     g.db.commit()
-    return jsonify({"person_id": cand_id, "exists": True}), 201
+    return "", 200
 
 
 @bp.delete("/persons/<int:person_id>")

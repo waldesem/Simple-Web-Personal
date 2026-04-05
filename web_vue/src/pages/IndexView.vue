@@ -72,17 +72,23 @@ watch(refDebounced(search, 1000), async () => {
 });
 
 // Обработчик результата загрузки данных
-function submitPerson(person_id: string, exists: boolean) {
+async function submitPerson(form: Person) {
   modal.value = false;
+  status.value = "pending";
+  const resp = await ofetch.raw("/routes/persons", {
+    method: "POST",
+    body: { ...form, created: new Date().toISOString() },
+  });
   status.value = "success";
-  if (exists) {
+  if (resp.status === 201) {
+    router.push({ name: "profile", params: { id: resp._data.person_id } });
+  } else {
     toast.add({
-      title: "Информация",
-      description: "Анкета уже была загружена ранее.",
-      color: "info",
+      title: "Ошибка",
+      description: "Невозможно выполнить действие.",
+      color: "error",
     });
   }
-  return router.push({ name: "profile", params: { id: person_id } });
 }
 </script>
 

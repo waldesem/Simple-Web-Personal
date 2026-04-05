@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Person } from "@/types";
-import { ofetch } from "ofetch";
 import { PropType, toRef } from "vue";
 
 const emit = defineEmits(["update"]);
@@ -18,17 +17,6 @@ const form = toRef(props.resume);
 form.value.birthday = form.value.birthday
   ? new Date(form.value.birthday).toISOString().substring(0, 10)
   : "";
-
-async function submitPerson() {
-  const { person_id, exists } = await ofetch<{
-    person_id: number;
-    exists: boolean;
-  }>("/routes/persons", {
-    method: "POST",
-    body: { ...form.value, created: new Date().toISOString(), editable: false },
-  });
-  emit("update", person_id, exists);
-}
 
 const validate = (state: Partial<Person>) => {
   const errors = [];
@@ -58,7 +46,7 @@ const validate = (state: Partial<Person>) => {
 </script>
 
 <template>
-  <UForm :state="form" :validate="validate" @submit.prevent="submitPerson()">
+  <UForm :state="form" :validate="validate" @submit.prevent="emit('update')">
     <UFormField label="Фамилия" name="surname" required>
       <UInput
         v-model.lazy.trim="form.surname"
@@ -83,13 +71,7 @@ const validate = (state: Partial<Person>) => {
       />
     </UFormField>
     <UFormField label="Дата рождения" name="birthday" required>
-      <UInput
-        v-model="form.birthday"
-        type="date"
-        :max="new Date().toISOString().split('T')[0]"
-        min="1990-01-01"
-        required
-      />
+      <UInput v-model="form.birthday" type="date" required />
     </UFormField>
     <UFormField label="Место рождения" name="birthplace">
       <UInput

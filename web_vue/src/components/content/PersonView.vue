@@ -18,14 +18,25 @@ const edit = inject("edit") as Ref<boolean>;
 const modal = ref(false); // Объявляем переменную модального окна
 
 // Определяем функцию для отправки данных формы на сервер
-function submitPerson() {
+async function submitPerson(form: Person) {
   modal.value = false;
-  emit("update");
-  toast.add({
-    title: "Успех",
-    description: "Информация успешно обновлена",
-    color: "success",
+  const { status } = await ofetch.raw("/routes/persons" + person.value.id, {
+    method: "PATCH",
+    body: { ...form, created: new Date().toISOString() },
   });
+  if (status === 200) {
+    toast.add({
+      title: "Успех",
+      description: "Информация успешно обновлена",
+      color: "success",
+    });
+  } else {
+    toast.add({
+      title: "Ошибка",
+      description: "Невозможно выполнить действие.",
+      color: "error",
+    });
+  }
 }
 
 // Определяем функцию для удаления данных

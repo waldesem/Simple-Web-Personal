@@ -19,9 +19,10 @@ const workNow = ref(false);
 form.value.starts = form.value.starts
   ? new Date(form.value.starts).toISOString().substring(0, 10)
   : "";
-form.value.finished = form.value.finished
-  ? new Date(form.value.finished).toISOString().substring(0, 10)
-  : "";
+form.value.finished =
+  form.value.finished && !workNow.value
+    ? new Date(form.value.finished).toISOString().substring(0, 10)
+    : "";
 </script>
 
 <template>
@@ -30,13 +31,7 @@ form.value.finished = form.value.finished
       <UCheckbox v-model="workNow" />
     </UFormField>
     <UFormField label="Начало работы" name="starts" required>
-      <UInput
-        v-model="form.starts"
-        type="date"
-        :max="new Date().toISOString().split('T')[0]"
-        min="1900-01-01"
-        required
-      />
+      <UInput v-model="form.starts" type="date" required />
     </UFormField>
     <UFormField v-if="!workNow" label="Окончание работы" name="finished">
       <UInput v-model="form.finished" type="date" />

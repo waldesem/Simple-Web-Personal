@@ -32,16 +32,14 @@ form.value.issue = form.value.issue
       <UInput
         v-model.trim.lazy="form.series"
         placeholder="Серия документа"
-        maxlength="6"
-        pattern="[0-9]*"
+        maxlength="12"
       />
     </UFormField>
     <UFormField label="Номер документа" name="digits" required>
       <UInput
         v-model.trim.lazy="form.digits"
         placeholder="Номер документа"
-        maxlength="10"
-        pattern="[0-9]*"
+        maxlength="12"
         required
       />
     </UFormField>
