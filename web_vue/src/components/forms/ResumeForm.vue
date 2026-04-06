@@ -46,7 +46,11 @@ const validate = (state: Partial<Person>) => {
 </script>
 
 <template>
-  <UForm :state="form" :validate="validate" @submit.prevent="emit('update')">
+  <UForm
+    :state="form"
+    :validate="validate"
+    @submit.prevent="emit('update', form)"
+  >
     <UFormField label="Фамилия" name="surname" required>
       <UInput
         v-model.lazy.trim="form.surname"

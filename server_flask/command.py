@@ -3,7 +3,6 @@
 import sqlite3
 from datetime import datetime, timezone
 from enum import Enum
-from pathlib import Path
 
 import click
 from werkzeug.security import generate_password_hash
@@ -33,33 +32,11 @@ def cli() -> None:
 
 
 @cli.command()
-@click.argument("filename", type=click.Path(exists=True))
-def initdb(filename: Path) -> None:
-    """Init database.
-
-    Example:
-        python3 command.py initdb tables.sql
-
-    """
-    with (
-        Path.open(filename, "r", encoding="utf-8") as f,
-        sqlite3.connect(DATABASE_URI) as conn,
-    ):
-        file = f.read()
-        cur = conn.cursor()
-        cur.executescript(file)
-        conn.commit()
-        click.secho("Database successfully created.", bg="green")
-
-
-@cli.command()
-@click.option("--user_id", type=int, default=None)
-def user(user_id: int) -> None:
+def user() -> None:
     """Retrieve a list of users or once user by id.
 
     Example:
         python3 command.py user
-        python3 command.py user --user_id=1
 
     """
     with sqlite3.connect(DATABASE_URI) as conn:
@@ -69,11 +46,7 @@ def user(user_id: int) -> None:
             SELECT id, fullname, username, email, role, created,
             pswd_create, change_pswd, blocked, deleted, attempt FROM users
             """
-        args = ()
-        if user_id:
-            stmt += " WHERE id = ?"
-            args = (user_id,)
-        for user in cur.execute(stmt, args).fetchall():
+        for user in cur.execute(stmt).fetchall():
             for col, row in dict(user).items():
                 click.echo(f"| {col} | {row} |")
                 click.echo("-" * (len(col) + len(str(row)) + 7))

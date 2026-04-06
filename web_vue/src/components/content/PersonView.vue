@@ -20,7 +20,7 @@ const modal = ref(false); // Объявляем переменную модал�
 // Определяем функцию для отправки данных формы на сервер
 async function submitPerson(form: Person) {
   modal.value = false;
-  const { status } = await ofetch.raw("/routes/persons" + person.value.id, {
+  const { status } = await ofetch.raw("/routes/persons/" + person.value.id, {
     method: "PATCH",
     body: { ...form, created: new Date().toISOString() },
   });
@@ -37,6 +37,7 @@ async function submitPerson(form: Person) {
       color: "error",
     });
   }
+  emit("update");
 }
 
 // Определяем функцию для удаления данных

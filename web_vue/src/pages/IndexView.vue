@@ -173,7 +173,8 @@ async function submitPerson(form: Person) {
       <!-- Кнопка обновления -->
       <div class="py-3">
         <UButton
-          variant="outline"
+          :label="'Обновлено в ' + new Date().toLocaleTimeString()"
+          variant="ghost"
           icon="i-lucide-refresh-cw"
           title="Обновить данные"
           :loading="status === 'pending'"

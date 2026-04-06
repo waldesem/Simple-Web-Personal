@@ -153,7 +153,7 @@ def post_person() -> tuple[Response, Literal[201]]:
     return jsonify({"person_id": cand_id}), 201
 
 
-@bp.patch("/persons/<int:person_id")
+@bp.patch("/persons/<int:person_id>")
 def patch_person(person_id: int) -> tuple[Literal[""], Literal[200]]:
     """Replace a record in persons table."""
     # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
