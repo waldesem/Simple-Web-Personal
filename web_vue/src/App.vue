@@ -1,19 +1,19 @@
 <template>
   <UApp>
-    <Transition name="fade">
-      <router-view v-slot="{ Component }">
+    <router-view v-slot="{ Component }">
+      <Transition name="fade">
         <KeepAlive include="IndexView" :max="1">
           <component :is="Component" />
         </KeepAlive>
-      </router-view>
-    </Transition>
+      </Transition>
+    </router-view>
   </UApp>
 </template>
 
 <style>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.1s ease;
 }
 
 .fade-enter-from,

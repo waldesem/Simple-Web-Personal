@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { onBeforeMount, ref, watch } from "vue";
+import { watchEffect, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { refDebounced, useTimeAgoIntl } from "@vueuse/core";
-import { useToast } from "@nuxt/ui/composables";
 import { ofetch } from "ofetch";
+import { useToast } from "@nuxt/ui/composables";
 import type { Candidates, Person, TableColumns } from "@/types";
 
 const toast = useToast();
+
 const router = useRouter();
 
 const cols: TableColumns<Person>[] = [
@@ -42,44 +43,33 @@ const cols: TableColumns<Person>[] = [
   },
 ];
 
-// Объявляем переменные для работы с данными
 const data = ref({ has_next: false, candidates: [] } as Candidates);
 const modal = ref(false); // Состояние модального окна
 const page = ref(0); // Страница таблицы
 const search = ref(""); // Поисковый запрос
-const status = ref("success");
 
-onBeforeMount(async () => await getCandidates());
+const debounced = refDebounced(search, 1000);
 
-// Определяем функцию для получения списка кандидатов из API
-async function getCandidates() {
+watch(debounced, () => {
+  page.value = 0;
+});
+
+watchEffect(async () => {
   data.value = await ofetch<Candidates>("/routes/candidates", {
     query: {
-      search: search.value,
+      search: debounced.value,
       page: page.value,
     },
   });
-}
-
-watch(page, async () => await getCandidates());
-
-watch(refDebounced(search, 1000), async () => {
-  if (page.value === 0) {
-    await getCandidates();
-  } else {
-    page.value = 0;
-  }
 });
 
 // Обработчик результата загрузки данных
 async function submitPerson(form: Person) {
   modal.value = false;
-  status.value = "pending";
   const resp = await ofetch.raw("/routes/persons", {
     method: "POST",
     body: { ...form, created: new Date().toISOString() },
   });
-  status.value = "success";
   if (resp.status === 201) {
     router.push({ name: "profile", params: { id: resp._data.person_id } });
   } else {
@@ -108,7 +98,6 @@ async function submitPerson(form: Person) {
               title="Добавить"
               variant="outline"
               size="sm"
-              :loading="status === 'pending'"
               @click="modal = true"
             />
             <template #body>
@@ -172,15 +161,14 @@ async function submitPerson(form: Person) {
 
       <!-- Кнопка обновления -->
       <div class="py-3">
-        <UButton
+        <!-- <UButton
           :label="'Обновлено в ' + new Date().toLocaleTimeString()"
           variant="ghost"
           icon="i-lucide-refresh-cw"
           title="Обновить данные"
-          :loading="status === 'pending'"
           size="sm"
           @click="getCandidates()"
-        />
+        /> -->
       </div>
 
       <!-- Пагинация -->
@@ -188,14 +176,14 @@ async function submitPerson(form: Person) {
         <UButton
           icon="i-lucide-arrow-left"
           title="Вперед"
-          :disabled="!page || status == 'pending'"
+          :disabled="!page"
           class="me-2 rounded-full"
           @click="page--"
         />
         <UButton
           icon="i-lucide-arrow-right"
           title="Назад"
-          :disabled="!data.has_next || status == 'pending'"
+          :disabled="!data.has_next"
           class="ms-2 rounded-full"
           @click="page++"
         />

@@ -1,28 +1,84 @@
 <script setup lang="ts">
+import { onBeforeMount, computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { ofetch } from "ofetch";
-import type { Person } from "@/types";
-import { onBeforeMount, computed, provide, ref } from "vue";
+import type { Items, Person } from "@/types";
 
 // Получаем данные id кандидата из URL
-const route = useRoute();
-
-const candId = computed(() => route.params.id as string);
-provide("candId", candId);
+const candId = computed(() => useRoute().params.id as string);
 
 const edit = ref(false);
-provide("edit", edit);
 
 const data = ref({} as Person);
-const status = ref("");
 
-// Определяем функцию для получения данных из API
 onBeforeMount(() => getPerson());
 
+// Определяем функцию для получения данных из API
 async function getPerson() {
   data.value = await ofetch<Person>("/routes/persons/" + candId.value);
 }
-provide("person", data);
+
+const anketa = [
+  {
+    label: "Анкета",
+    slot: "anketa" as const,
+  },
+];
+
+const subjects = [
+  {
+    label: "Проверки",
+    slot: "checks" as keyof Items,
+  },
+  {
+    label: "Полиграф",
+    slot: "poligrafs" as keyof Items,
+  },
+  {
+    label: "Расследования",
+    slot: "investigations" as keyof Items,
+  },
+  {
+    label: "Запросы",
+    slot: "inquiries" as keyof Items,
+  },
+];
+
+// Определяем массив элементов аккордеона
+const accordion = [
+  {
+    label: "Должности",
+    slot: "staffs" as keyof Items,
+  },
+  {
+    label: "Образование",
+    slot: "educations" as keyof Items,
+  },
+  {
+    label: "Места работы",
+    slot: "workplaces" as keyof Items,
+  },
+  {
+    label: "Документы",
+    slot: "documents" as keyof Items,
+  },
+  {
+    label: "Адреса",
+    slot: "addresses" as keyof Items,
+  },
+  {
+    label: "Контакты",
+    slot: "contacts" as keyof Items,
+  },
+  {
+    label: "Изменения имени",
+    slot: "previous" as keyof Items,
+  },
+  {
+    label: "Аффилированность",
+    slot: "affilations" as keyof Items,
+  },
+];
 </script>
 
 <template>
@@ -33,16 +89,55 @@ provide("person", data);
       >
         <template #links>
           <UButton
-            variant="outline"
-            :loading="status === 'pending'"
-            :icon="edit ? 'i-lucide-pencil-off' : 'i-lucide-pencil'"
-            :color="edit ? 'error' : 'primary'"
+            :icon="edit ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
+            :color="edit ? 'success' : 'error'"
             :title="edit ? 'Откл.Редакт.' : 'Вкл.Редакт.'"
             @click="edit = !edit"
           />
         </template>
       </UPageHeader>
-      <TabsView @update="getPerson" />
+
+      <UTabs
+        :items="[...anketa, ...subjects]"
+        :unmount-on-hide="false"
+        variant="pill"
+        class="mt-4"
+      >
+        <!-- Слот вкладки для отображения анкеты -->
+        <template #anketa>
+          <div class="mt-4">
+            <PersonView :person="data" :edit="edit" @update="getPerson" />
+          </div>
+          <USeparator />
+          <!-- Aккордеон с данными staffs, educations и т.д. -->
+          <UAccordion :items="accordion" :unmount-on-hide="false">
+            <template
+              v-for="accord in accordion"
+              #[accord.slot]
+              :key="accord.slot"
+            >
+              <ItemView
+                :view="accord.slot"
+                :title="accord.label"
+                :cand-id="candId"
+                :edit="edit"
+              />
+            </template>
+          </UAccordion>
+        </template>
+
+        <!-- Вкладки проверки, полиграф и др. -->
+        <template v-for="tab in subjects" #[tab.slot] :key="tab.slot">
+          <div class="mt-2">
+            <ItemView
+              :view="tab.slot"
+              :title="tab.label"
+              :cand-id="candId"
+              :edit="edit"
+            />
+          </div>
+        </template>
+      </UTabs>
     </UContainer>
   </LayoutView>
 </template>

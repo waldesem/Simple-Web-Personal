@@ -1,20 +1,10 @@
 <script setup lang="ts">
-import {
-  defineAsyncComponent,
-  inject,
-  onMounted,
-  PropType,
-  ref,
-  Ref,
-  shallowRef,
-} from "vue";
+import { defineAsyncComponent, onBeforeMount, PropType, ref } from "vue";
 import { ofetch } from "ofetch";
 import { useToast } from "@nuxt/ui/composables";
 import type { Items } from "@/types";
 
 const toast = useToast();
-
-const edit = inject("edit") as Ref<boolean>;
 
 // Определяем данные которые передаются из родительского компонента
 const props = defineProps({
@@ -26,18 +16,29 @@ const props = defineProps({
     type: String as PropType<keyof Items>,
     required: true,
   },
+  candId: {
+    type: String,
+    required: true,
+  },
+  edit: {
+    type: Boolean,
+    required: true,
+  },
 });
 
-onMounted(async () => await getItem());
+onBeforeMount(async () => await getItem());
+
+const data = ref<Items[keyof Items]>([]);
+const item = ref<object>({}); // Данные для редактирования
+const modal = ref(false); // Флаг для открытия модального окна
 
 // Определяем функцию для получения данных из API
 async function getItem() {
-  data.value = await ofetch(`/routes/${props.view}/${candId.value}`);
+  data.value = await ofetch(`/routes/${props.view}/${props.candId}`);
 }
 
 function capitalize(str: string) {
-  if (typeof str == "string") return str.charAt(0).toUpperCase() + str.slice(1);
-  else return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 const ItemComponent = defineAsyncComponent(
@@ -47,26 +48,10 @@ const FormComponent = defineAsyncComponent(
   () => import(`../forms/${capitalize(props.view)}Form.vue`),
 );
 
-// Инжектируем данные (id кандидата и доступна ли анкета для редактирования)
-const candId = inject("candId") as Ref<string>;
-
-// Объявляем переменные для работы с данными
-const data = ref<Items[keyof Items]>([]); // Данные для вывода
-const item = shallowRef<object>({}); // Данные для редактирования
-const modal = ref(false); // Флаг для открытия модального окна
-
-const fail = () => {
-  toast.add({
-    title: "Ошибка",
-    description: "Невозможно выполнить действие.",
-    color: "error",
-  });
-};
-
 // Определяем функцию для отправки данных формы на сервер
 async function submitItem(form: typeof item.value) {
   modal.value = false;
-  const { status } = await ofetch.raw(`/routes/${props.view}/${candId.value}`, {
+  const { status } = await ofetch.raw(`/routes/${props.view}/${props.candId}`, {
     method: "POST",
     body: form,
   });
@@ -78,7 +63,12 @@ async function submitItem(form: typeof item.value) {
       description: "Информация успешно обновлена",
       color: "success",
     });
-  } else fail();
+  } else
+    toast.add({
+      title: "Ошибка",
+      description: "Невозможно выполнить действие.",
+      color: "error",
+    });
 }
 
 // Определяем функцию для удаления данных
@@ -94,7 +84,12 @@ async function deleteItem(itemId: string) {
       description: "Информация успешно удалена",
       color: "success",
     });
-  } else fail();
+  } else
+    toast.add({
+      title: "Ошибка",
+      description: "Невозможно выполнить действие.",
+      color: "error",
+    });
 }
 </script>
 
@@ -103,7 +98,7 @@ async function deleteItem(itemId: string) {
   <UEmpty v-if="!data?.length" class="m-4" title="Данные отсутствуют" size="sm">
     <template #body>
       <UButton
-        v-if="edit"
+        v-if="props.edit"
         label="Добавить запись"
         variant="outline"
         size="sm"
@@ -115,7 +110,7 @@ async function deleteItem(itemId: string) {
   <div v-for="(content, index) in data" :key="index" class="mx-2 py-2">
     <!-- Выводим кнопки редактирования/удаления данных, в режиме редактирования -->
     <DivMenu
-      v-if="edit"
+      v-if="props.edit"
       @update="
         item = content;
         modal = true;
@@ -134,7 +129,7 @@ async function deleteItem(itemId: string) {
     description="Добавить/редактировать данные"
   >
     <UButton
-      v-if="edit && data?.length"
+      v-if="props.edit && data?.length"
       class="mb-2"
       label="Добавить запись"
       variant="outline"

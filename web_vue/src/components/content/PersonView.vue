@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, Ref, ref } from "vue";
+import { PropType, ref } from "vue";
 import { useRouter } from "vue-router";
 import { ofetch } from "ofetch";
 import { useToast } from "@nuxt/ui/composables";
@@ -7,20 +7,27 @@ import type { Person } from "@/types";
 
 const emit = defineEmits(["update"]);
 
-const person = inject("person") as Ref<Person>;
+const props = defineProps({
+  person: {
+    type: Object as PropType<Person>,
+    required: true,
+  },
+  edit: {
+    type: Boolean,
+    required: true,
+  },
+});
 
 const toast = useToast();
 
 const router = useRouter();
-
-const edit = inject("edit") as Ref<boolean>;
 
 const modal = ref(false); // Объявляем переменную модального окна
 
 // Определяем функцию для отправки данных формы на сервер
 async function submitPerson(form: Person) {
   modal.value = false;
-  const { status } = await ofetch.raw("/routes/persons/" + person.value.id, {
+  const { status } = await ofetch.raw("/routes/persons/" + props.person.id, {
     method: "PATCH",
     body: { ...form, created: new Date().toISOString() },
   });
@@ -44,7 +51,7 @@ async function submitPerson(form: Person) {
 async function deletePerson() {
   if (!confirm("Вы действительно хотите удалить профиль и связанные записи?"))
     return;
-  const { status } = await ofetch.raw(`/routes/persons/${person.value?.id}`, {
+  const { status } = await ofetch.raw(`/routes/persons/${props.person.id}`, {
     method: "DELETE",
   });
   if (status === 204) {
@@ -67,7 +74,7 @@ async function deletePerson() {
 <template>
   <div class="ms-2 mt-2">
     <!-- Выводим кнопки редактирования или удаления данных -->
-    <DivMenu v-if="edit" @update="modal = true" @delete="deletePerson()" />
+    <DivMenu v-if="props.edit" @update="modal = true" @delete="deletePerson" />
     <PersonDiv :item="person" />
     <!-- Выводим модальное окно для редактирования данных -->
     <UModal
