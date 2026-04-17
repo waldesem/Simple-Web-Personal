@@ -159,18 +159,6 @@ async function submitPerson(form: Person) {
         variant="naked"
       />
 
-      <!-- Кнопка обновления -->
-      <div class="py-3">
-        <!-- <UButton
-          :label="'Обновлено в ' + new Date().toLocaleTimeString()"
-          variant="ghost"
-          icon="i-lucide-refresh-cw"
-          title="Обновить данные"
-          size="sm"
-          @click="getCandidates()"
-        /> -->
-      </div>
-
       <!-- Пагинация -->
       <div class="flex justify-center border-t border-default space-x-2 py-4">
         <UButton

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import * as v from "valibot";
 import type { Person } from "@/types";
 import { PropType, toRef } from "vue";
 
@@ -13,110 +14,98 @@ const props = defineProps({
 
 const form = toRef(props.resume);
 
-// Преобразование даты в формат YYYY-MM-DD
-form.value.birthday = form.value.birthday
-  ? new Date(form.value.birthday).toISOString().substring(0, 10)
-  : "";
-
-const validate = (state: Partial<Person>) => {
-  const errors = [];
-  if (!state.surname?.match(/^[А-ЯЁ][А-ЯЁIV\-.,'()\s]*[А-ЯЁ]$/)) {
-    errors.push({
-      name: "surname",
-      message: "Введите корректную фамилию",
-    });
-  }
-  if (!state.firstname?.match(/^[А-ЯЁ][А-ЯЁIV\-.,'()\s]*[А-ЯЁ]$/)) {
-    errors.push({
-      name: "firstname",
-      message: "Введите корректное имя",
-    });
-  }
-  if (
-    state.patronymic &&
-    !state.patronymic?.match(/^[А-ЯЁ][А-ЯЁIV\-.,'()\s]*[А-ЯЁ]$/)
-  ) {
-    errors.push({
-      name: "patronymic",
-      message: "Введите корректное отчество",
-    });
-  }
-  return errors;
-};
+const schema = v.object({
+  surname: v.optional(
+    v.pipe(
+      v.string(),
+      v.nonEmpty("Обязательное поле!"),
+      v.regex(/^[А-ЯЁ][А-ЯЁIV\-.,'()\s]*[А-ЯЁ]$/, "Недопустимые символы!"),
+      v.maxLength(255, "Не более 255 символов!"),
+    ),
+    "",
+  ),
+  firstname: v.optional(
+    v.pipe(
+      v.string(),
+      v.nonEmpty("Обязательное поле!"),
+      v.regex(/^[А-ЯЁ][А-ЯЁIV\-.,'()\s]*[А-ЯЁ]$/, "Недопустимые символы!"),
+      v.maxLength(255, "Не более 255 символов!"),
+    ),
+    "",
+  ),
+  patronymic: v.optional(
+    v.pipe(
+      v.string(),
+      v.regex(/^[А-ЯЁ][А-ЯЁIV\-.,'()\s]*[А-ЯЁ]$/, "Недопустимые символы!"),
+      v.maxLength(255, "Не более 255 символов!"),
+    ),
+  ),
+  birthday: v.optional(
+    v.pipe(
+      v.string(),
+      v.nonEmpty("Обязательное поле!"),
+      v.toDate(),
+      v.maxValue(new Date(), "Проверьте дату!"),
+      v.minValue(new Date(1900, 0, 1), "Проверьте дату!"),
+    ),
+    "",
+  ),
+  birthplace: v.optional(
+    v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
+  ),
+  citizenship: v.optional(
+    v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
+  ),
+  dual: v.optional(
+    v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
+  ),
+  snils: v.optional(
+    v.pipe(v.string(), v.regex(/[0-9]{11}/, "Только 11 цифр!")),
+  ),
+  inn: v.optional(v.pipe(v.string(), v.regex(/[0-9]{12}/, "Только 12 цифр!"))),
+  marital: v.optional(
+    v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
+  ),
+  addition: v.optional(v.string()),
+});
 </script>
 
 <template>
-  <UForm
-    :state="form"
-    :validate="validate"
-    @submit.prevent="emit('update', form)"
-  >
+  <UForm :state="form" :schema="schema" @submit.prevent="emit('update', form)">
     <UFormField label="Фамилия" name="surname" required>
-      <UInput
-        v-model.lazy.trim="form.surname"
-        placeholder="Фамилия"
-        maxlength="255"
-        required
-      />
+      <UInput v-model.lazy.trim="form.surname" placeholder="Фамилия" />
     </UFormField>
     <UFormField label="Имя" name="firstname" required>
-      <UInput
-        v-model.lazy.trim="form.firstname"
-        placeholder="Имя"
-        maxlength="255"
-        required
-      />
+      <UInput v-model.lazy.trim="form.firstname" placeholder="Имя" />
     </UFormField>
     <UFormField label="Отчество" name="patronymic">
-      <UInput
-        v-model.lazy.trim="form.patronymic"
-        placeholder="Отчество"
-        maxlength="255"
-      />
+      <UInput v-model.lazy.trim="form.patronymic" placeholder="Отчество" />
     </UFormField>
     <UFormField label="Дата рождения" name="birthday" required>
-      <UInput v-model="form.birthday" type="date" required />
+      <UInput v-model="form.birthday" type="date" />
     </UFormField>
     <UFormField label="Место рождения" name="birthplace">
       <UInput
         v-model.lazy.trim="form.birthplace"
         placeholder="Место рождения"
-        maxlength="255"
       />
     </UFormField>
     <UFormField label="Гражданство" name="citizenship">
-      <UInput
-        v-model.lazy.trim="form.citizenship"
-        placeholder="Гражданство"
-        maxlength="255"
-      />
+      <UInput v-model.lazy.trim="form.citizenship" placeholder="Гражданство" />
     </UFormField>
     <UFormField label="Двойное гражданство" name="dual">
-      <UInput
-        v-model.lazy.trim="form.dual"
-        placeholder="Двойное гражданство"
-        maxlength="255"
-      />
+      <UInput v-model.lazy.trim="form.dual" placeholder="Двойное гражданство" />
     </UFormField>
     <UFormField label="СНИЛС" name="snils">
-      <UInput
-        v-model.lazy.trim="form.snils"
-        placeholder="СНИЛС"
-        pattern="^[0-9]{11}$"
-      />
+      <UInput v-model.lazy.trim="form.snils" placeholder="СНИЛС" />
     </UFormField>
     <UFormField label="ИНН" name="inn">
-      <UInput
-        v-model.lazy.trim="form.inn"
-        placeholder="ИНН"
-        pattern="^[0-9]{12}$"
-      />
+      <UInput v-model.lazy.trim="form.inn" placeholder="ИНН" />
     </UFormField>
     <UFormField label="Семейное положение" name="marital">
       <UInput
         v-model.lazy.trim="form.marital"
         placeholder="Семейное положение"
-        maxlength="255"
       />
     </UFormField>
     <UFormField label="Дополнительно" name="addition">

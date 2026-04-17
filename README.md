@@ -25,7 +25,7 @@ You need creating settings.ini file with:
 
 ```ini
 [Destination]
-path =
+path=
 ```
 
 Where path is a destination for files share.
