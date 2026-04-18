@@ -33,12 +33,13 @@ const schema = v.object({
     ),
     "",
   ),
-  patronymic: v.optional(
+  patronymic: v.fallback(
     v.pipe(
       v.string(),
       v.regex(/^[А-ЯЁ][А-ЯЁIV\-.,'()\s]*[А-ЯЁ]$/, "Недопустимые символы!"),
       v.maxLength(255, "Не более 255 символов!"),
     ),
+    "",
   ),
   birthday: v.optional(
     v.pipe(
@@ -50,23 +51,31 @@ const schema = v.object({
     ),
     "",
   ),
-  birthplace: v.optional(
+  birthplace: v.fallback(
     v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
+    "",
   ),
-  citizenship: v.optional(
+  citizenship: v.fallback(
     v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
+    "",
   ),
-  dual: v.optional(
+  dual: v.fallback(
     v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
+    "",
   ),
-  snils: v.optional(
+  snils: v.fallback(
     v.pipe(v.string(), v.regex(/[0-9]{11}/, "Только 11 цифр!")),
+    "",
   ),
-  inn: v.optional(v.pipe(v.string(), v.regex(/[0-9]{12}/, "Только 12 цифр!"))),
-  marital: v.optional(
+  inn: v.fallback(
+    v.pipe(v.string(), v.regex(/[0-9]{12}/, "Только 12 цифр!")),
+    "",
+  ),
+  marital: v.fallback(
     v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
+    "",
   ),
-  addition: v.optional(v.string()),
+  addition: v.fallback(v.string(), ""),
 });
 </script>
 
