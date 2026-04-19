@@ -3,7 +3,6 @@
 import getpass
 import sqlite3
 from datetime import datetime
-from enum import Enum
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
@@ -13,23 +12,6 @@ from flask import Blueprint, Response, g, jsonify, request
 from constants import BASE_PATH, DATABASE_URI
 
 bp = Blueprint("routes", __name__, url_prefix="/routes")
-
-
-class Item(Enum):
-    """Item categories."""
-
-    ADDRESSES = "addresses"
-    AFFILATIONS = "affilations"
-    CHECKS = "checks"
-    CONTACTS = "contacts"
-    DOCUMENTS = "documents"
-    EDUCATIONS = "educations"
-    INQUIRIES = "inquiries"
-    INVESTIGATIONS = "investigations"
-    PREVIOUS = "previous"
-    POLIGRAFS = "poligrafs"
-    STAFFS = "staffs"
-    WORKPLACES = "workplaces"
 
 
 @lru_cache
@@ -122,7 +104,7 @@ def post_person() -> tuple[Response, Literal[201]]:
     ).fetchone()
 
     if not (cand_id := person[0] if person else None):
-        resume["editable"] = True
+        resume["editable"] = False
         resume["user_id"] = get_user_id(cur)
         cand_id = cur.execute(
             "INSERT INTO persons ({}) VALUES ({})".format(  # noqa: S608
@@ -159,7 +141,6 @@ def patch_person(person_id: int) -> tuple[Literal[""], Literal[200]]:
     # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
     cur: sqlite3.Cursor = g.db.cursor()
     resume: dict = request.get_json()
-    resume["editable"] = True
     resume["user_id"] = get_user_id(cur)
     cur.execute(
         "UPDATE persons SET {} WHERE id = ?".format(  # noqa: S608
@@ -171,22 +152,8 @@ def patch_person(person_id: int) -> tuple[Literal[""], Literal[200]]:
     return "", 200
 
 
-@bp.delete("/persons/<int:person_id>")
-def delete_person(person_id: int) -> tuple[Literal[""], Literal[204]]:
-    """Delete person from the database based on ID."""
-    cur: sqlite3.Cursor = g.db.cursor()
-    for table in Item:
-        cur.execute(
-            f"DELETE FROM {table.value} WHERE person_id = ?",  # noqa: S608
-            (person_id,),
-        )
-    cur.execute("DELETE FROM persons WHERE id = ?", (person_id,))
-    g.db.commit()
-    return "", 204
-
-
 @bp.get("/<item>/<int:person_id>")
-def get_item(item: Item, person_id: int) -> tuple[Response, Literal[200]]:
+def get_item(item: str, person_id: int) -> tuple[Response, Literal[200]]:
     """Get an item based on the provided item."""
     cur: sqlite3.Cursor = g.db.cursor()
     items = cur.execute(
@@ -197,7 +164,7 @@ def get_item(item: Item, person_id: int) -> tuple[Response, Literal[200]]:
 
 
 @bp.post("/<item>/<int:person_id>")
-def post_item(item: Item, person_id: int) -> tuple[Literal[""], Literal[201]]:
+def post_item(item: str, person_id: int) -> tuple[Literal[""], Literal[201]]:
     """Insert or replaces a record in the specified table."""
     json_dict: dict = request.get_json()
     json_dict.update({"person_id": person_id, "created": datetime.now().isoformat()})
@@ -224,7 +191,7 @@ def post_item(item: Item, person_id: int) -> tuple[Literal[""], Literal[201]]:
 
 
 @bp.delete("/<item>/<int:item_id>")
-def delete_item(item: Item, item_id: int) -> tuple[Literal[""], Literal[204]]:
+def delete_item(item: str, item_id: int) -> tuple[Literal[""], Literal[204]]:
     """Delete an item from the database with provided item name and item ID."""
     cur: sqlite3.Cursor = g.db.cursor()
     cur.execute(

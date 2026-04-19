@@ -4,11 +4,17 @@ import { useRouter } from "vue-router";
 import { refDebounced, useTimeAgoIntl } from "@vueuse/core";
 import { ofetch } from "ofetch";
 import { useToast } from "@nuxt/ui/composables";
-import type { Candidates, Person, TableColumns } from "@/types";
+import type { Candidates, Person } from "@/types";
 
 const toast = useToast();
 
 const router = useRouter();
+
+export interface TableColumns<T> {
+  name: keyof T;
+  header: string;
+  cell?: (row: T) => string;
+}
 
 const cols: TableColumns<Person>[] = [
   {
@@ -47,6 +53,7 @@ const data = ref({ has_next: false, candidates: [] } as Candidates);
 const modal = ref(false); // Состояние модального окна
 const page = ref(0); // Страница таблицы
 const search = ref(""); // Поисковый запрос
+const updated = ref(new Date().toLocaleTimeString());
 
 const debounced = refDebounced(search, 1000);
 
@@ -63,6 +70,8 @@ watchEffect(async () => {
   });
 });
 
+watch(data, () => (updated.value = new Date().toLocaleTimeString()));
+
 // Обработчик результата загрузки данных
 async function submitPerson(form: Person) {
   modal.value = false;
@@ -71,7 +80,15 @@ async function submitPerson(form: Person) {
     body: { ...form, created: new Date().toISOString() },
   });
   if (resp.status === 201) {
-    router.push({ name: "profile", params: { id: resp._data.person_id } });
+    if (resp._data.person_id) {
+      router.push({ name: "profile", params: { id: resp._data.person_id } });
+    } else {
+      toast.add({
+        title: "Внимание",
+        description: "Анкета уже существует!",
+        color: "info",
+      });
+    }
   } else {
     toast.add({
       title: "Ошибка",
@@ -94,10 +111,10 @@ async function submitPerson(form: Person) {
             description="Введите анкетные данные"
           >
             <UButton
-              icon="i-lucide-upload"
-              title="Добавить"
-              variant="outline"
-              size="sm"
+              icon="i-lucide-user-plus"
+              title="Добавить анкету"
+              variant="ghost"
+              size="xl"
               @click="modal = true"
             />
             <template #body>
@@ -158,6 +175,11 @@ async function submitPerson(form: Person) {
         size="sm"
         variant="naked"
       />
+
+      <!-- Время последнего обновления -->
+      <div class="text-sm text-muted mt-4">
+        Последнее обновление: {{ updated }}
+      </div>
 
       <!-- Пагинация -->
       <div class="flex justify-center border-t border-default space-x-2 py-4">

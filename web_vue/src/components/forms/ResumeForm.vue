@@ -25,6 +25,11 @@ const form = ref({
   marital: props.resume.marital ?? "",
   addition: props.resume.addition ?? "",
 });
+
+const upperCase = (ev: { target: HTMLInputElement }) => {
+  let field = ev.target.name;
+  form.value[field as keyof typeof form.value] = ev.target.value.toUpperCase();
+};
 </script>
 
 <template>
@@ -34,13 +39,17 @@ const form = ref({
     @submit.prevent="emit('update', form)"
   >
     <UFormField label="Фамилия" name="surname" required>
-      <UInput v-model.lazy.trim="form.surname" placeholder="Фамилия" />
+      <UInput :value="form.surname" @input="upperCase" placeholder="Фамилия" />
     </UFormField>
     <UFormField label="Имя" name="firstname" required>
-      <UInput v-model.lazy.trim="form.firstname" placeholder="Имя" />
+      <UInput :value="form.firstname" @input="upperCase" placeholder="Имя" />
     </UFormField>
     <UFormField label="Отчество" name="patronymic">
-      <UInput v-model.lazy.trim="form.patronymic" placeholder="Отчество" />
+      <UInput
+        :value="form.patronymic"
+        @input="upperCase"
+        placeholder="Отчество"
+      />
     </UFormField>
     <UFormField label="Дата рождения" name="birthday" required>
       <UInput v-model="form.birthday" type="date" />

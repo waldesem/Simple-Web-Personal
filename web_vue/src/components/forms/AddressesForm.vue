@@ -25,11 +25,11 @@ const form = toRef(props.item);
       />
     </UFormField>
     <UFormField label="Адрес" name="address" required>
-      <UTextarea
+      <UInput
         v-model.trim.lazy="form.address"
         placeholder="Адрес"
         required
-        maxlength="4096"
+        maxlength="255"
       />
     </UFormField>
     <UButton label="Принять" color="success" variant="outline" type="submit" />

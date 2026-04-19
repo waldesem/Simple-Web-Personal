@@ -12,12 +12,6 @@ export enum Decisions {
   denied = "НЕГАТИВ",
 }
 
-export interface TableColumns<T> {
-  name: keyof T;
-  header: string;
-  cell?: (row: T) => string;
-}
-
 export interface Person {
   id: string;
   surname: string;

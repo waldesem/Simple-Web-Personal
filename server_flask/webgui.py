@@ -31,10 +31,10 @@ def start_browser(address: str, port: int) -> None:
                 browser_path,
                 f"--app=http://{address}:{port}",
                 f"--user-data-dir={profile_dir}",
-                "--disable-extensions",
                 "--new-window",
-                "--no-default-browser-check",
                 "--no-first-run",
+                "--disable-extensions",
+                "--no-default-browser-check",
                 "--window-size=1280,960",
             ],
         ).wait()

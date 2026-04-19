@@ -5,7 +5,7 @@ export const schemaName = v.object({
     v.string(),
     v.nonEmpty("Обязательное поле!"),
     v.regex(
-      /^[А-ЯЁ][А-ЯЁIV\-.,'()\s]*[А-ЯЁ]$|^[А-ЯЁ]$/,
+      /^[А-ЯЁа-яё][А-ЯЁа-яёIV\-.,'()\s]*[А-ЯЁа-яё]$|^[А-ЯЁа-яё]$/,
       "Недопустимые символы!",
     ),
     v.maxLength(255, "Не более 255 символов!"),
@@ -14,7 +14,7 @@ export const schemaName = v.object({
     v.string(),
     v.nonEmpty("Обязательное поле!"),
     v.regex(
-      /^[А-ЯЁ][А-ЯЁIV\-.,'()\s]*[А-ЯЁ]$|^[А-ЯЁ]$/,
+      /^[А-ЯЁа-яё][А-ЯЁа-яёIV\-.,'()\s]*[А-ЯЁа-яё]$|^[А-ЯЁа-яё]$/,
       "Недопустимые символы!",
     ),
     v.maxLength(255, "Не более 255 символов!"),
@@ -23,7 +23,8 @@ export const schemaName = v.object({
     v.string(),
     v.check(
       (value) =>
-        value === "" || /^[А-ЯЁ][А-ЯЁIV\-.,'()\s]*[А-ЯЁ]$|^[А-ЯЁ]$/.test(value),
+        value === "" ||
+        /^[А-ЯЁа-яё][А-ЯЁа-яёIV\-.,'()\s]*[А-ЯЁа-яё]$|^[А-ЯЁа-яё]$/.test(value),
       "Недопустимые символы!",
     ),
     v.maxLength(255, "Не более 255 символов!"),
@@ -37,7 +38,7 @@ export const schemaResume = v.intersect([
       v.string(),
       v.nonEmpty("Обязательное поле!"),
       v.toDate(),
-      v.maxValue(new Date(), "Дата не может быть в будущем!"),
+      v.maxValue(new Date(), "Дата находится в будущем!"),
       v.minValue(new Date(1900, 0, 1), "Дата слишком старая!"),
     ),
     birthplace: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
@@ -95,7 +96,7 @@ export const schemaDoc = v.object({
   issue: v.pipe(
     v.string(),
     v.toDate(),
-    v.maxValue(new Date(), "Дата не может быть в будущем!"),
+    v.maxValue(new Date(), "Дата находится в будущем!"),
     v.minValue(new Date(1900, 0, 1), "Дата слишком старая!"),
   ),
 });

@@ -1,0 +1,1 @@
+import{K as e,t}from"./vue.runtime.esm-bundler-DhbJf3fe.js";import{o as n}from"./VisuallyHidden-BxyVJHLc.js";var r=0;function i(i,a=`reka`){if(i)return i;let o;return o=`useId`in t?e?.():n({useId:void 0}).useId?.()??`${++r}`,a?`${a}-${o}`:o}export{i as t};
