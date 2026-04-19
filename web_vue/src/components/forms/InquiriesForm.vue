@@ -22,6 +22,7 @@ const form = toRef(props.item);
         autoresize
         placeholder="Информация"
         required
+        maxlength="4096"
       />
     </UFormField>
     <UFormField label="Инициатор" name="initiator" required>

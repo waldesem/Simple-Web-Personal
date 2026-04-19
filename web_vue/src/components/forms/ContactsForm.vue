@@ -30,7 +30,13 @@ const form = toRef(props.item);
         placeholder="Контакт"
         maxlength="255"
         required
-        :type="form.view === 'Электронная почта' ? 'email' : 'text'"
+        :type="
+          form.view === 'Электронная почта'
+            ? 'email'
+            : form.view === 'Телефон'
+              ? 'tel'
+              : 'text'
+        "
       />
     </UFormField>
     <UButton label="Принять" color="success" variant="outline" type="submit" />

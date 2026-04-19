@@ -36,6 +36,7 @@ const form = toRef(props.item);
         autoresize
         placeholder="Результат"
         required
+        maxlength="4096"
       />
     </UFormField>
     <UFormField label="Результат" name="conclusion" required>

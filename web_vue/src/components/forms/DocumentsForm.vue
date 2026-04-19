@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { PropType, ref } from "vue";
 import type { Passport } from "@/types";
-import { PropType, toRef } from "vue";
+import { schemaDoc } from "@/schema";
 
 const emit = defineEmits(["update"]);
 
@@ -11,21 +12,27 @@ const props = defineProps({
   },
 });
 
-const form = toRef(props.item);
-
-form.value.issue = form.value.issue
-  ? new Date(form.value.issue).toISOString().substring(0, 10)
-  : "";
+const form = ref({
+  id: props.item.id ?? null,
+  view: props.item.view || "",
+  series: props.item.series || "",
+  digits: props.item.digits || "",
+  agency: props.item.agency || "",
+  issue: props.item.issue || "",
+});
 </script>
 
 <template>
-  <UForm :state="form" @submit.prevent="emit('update', form)">
+  <UForm
+    :state="form"
+    :schema="schemaDoc"
+    @submit.prevent="emit('update', form)"
+  >
     <UFormField label="Вид документа" name="view" required>
       <USelect
         v-model="form.view"
         :items="['Паспорт', 'Иностранный паспорт', 'Другое']"
         placeholder="Выберите вид документа"
-        required
       />
     </UFormField>
     <UFormField label="Серия документа" name="series">

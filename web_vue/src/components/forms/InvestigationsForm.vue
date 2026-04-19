@@ -30,6 +30,7 @@ const form = toRef(props.item);
         autoresize
         placeholder="Информация"
         required
+        maxlength="4096"
       />
     </UFormField>
     <UButton label="Принять" color="success" variant="outline" type="submit" />

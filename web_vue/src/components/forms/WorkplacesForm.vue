@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { PropType, ref } from "vue";
+import { schemaWork } from "@/schema";
 import type { Work } from "@/types";
-import { PropType, ref, toRef } from "vue";
 
 const emit = defineEmits(["update"]);
 
@@ -11,22 +12,25 @@ const props = defineProps({
   },
 });
 
-const form = toRef(props.item);
-
 const workNow = ref(false);
 
-// Преобразование даты в формат YYYY-MM-DD для корректного отображения в форме
-form.value.starts = form.value.starts
-  ? new Date(form.value.starts).toISOString().substring(0, 10)
-  : "";
-form.value.finished =
-  form.value.finished && !workNow.value
-    ? new Date(form.value.finished).toISOString().substring(0, 10)
-    : "";
+const form = ref({
+  id: props.item.id ?? null,
+  starts: props.item.starts || "",
+  finished: props.item.finished || "",
+  workplace: props.item.workplace || "",
+  position: props.item.position || "",
+  address: props.item.address || "",
+  reason: props.item.reason || "",
+});
 </script>
 
 <template>
-  <UForm :state="form" @submit.prevent="emit('update', form)">
+  <UForm
+    :state="form"
+    :schema="schemaWork"
+    @submit.prevent="emit('update', form)"
+  >
     <UFormField label="Текущая работа" name="now_work">
       <UCheckbox v-model="workNow" />
     </UFormField>
@@ -37,23 +41,13 @@ form.value.finished =
       <UInput v-model="form.finished" type="date" />
     </UFormField>
     <UFormField label="Место работы" name="workplace" required>
-      <UInput
-        v-model.trim.lazy="form.workplace"
-        placeholder="Место работы"
-        maxlength="255"
-        required
-      />
+      <UInput v-model.trim.lazy="form.workplace" placeholder="Место работы" />
     </UFormField>
     <UFormField label="Должность" name="position" required>
-      <UInput
-        v-model.trim.lazy="form.position"
-        placeholder="Должность"
-        maxlength="255"
-        required
-      />
+      <UInput v-model.trim.lazy="form.position" placeholder="Должность" />
     </UFormField>
     <UFormField label="Адрес организации" name="address">
-      <UTextarea
+      <UInput
         v-model.trim.lazy="form.address"
         placeholder="Адрес организации"
       />

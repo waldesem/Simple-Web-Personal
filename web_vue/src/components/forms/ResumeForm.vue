@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import * as v from "valibot";
+import { ref, PropType } from "vue";
+import { schemaResume } from "@/schema";
 import type { Person } from "@/types";
-import { PropType, toRef } from "vue";
 
 const emit = defineEmits(["update"]);
 
@@ -12,75 +12,27 @@ const props = defineProps({
   },
 });
 
-const form = toRef(props.resume);
-
-const schema = v.object({
-  surname: v.optional(
-    v.pipe(
-      v.string(),
-      v.nonEmpty("Обязательное поле!"),
-      v.regex(/^[А-ЯЁ][А-ЯЁIV\-.,'()\s]*[А-ЯЁ]$/, "Недопустимые символы!"),
-      v.maxLength(255, "Не более 255 символов!"),
-    ),
-    "",
-  ),
-  firstname: v.optional(
-    v.pipe(
-      v.string(),
-      v.nonEmpty("Обязательное поле!"),
-      v.regex(/^[А-ЯЁ][А-ЯЁIV\-.,'()\s]*[А-ЯЁ]$/, "Недопустимые символы!"),
-      v.maxLength(255, "Не более 255 символов!"),
-    ),
-    "",
-  ),
-  patronymic: v.fallback(
-    v.pipe(
-      v.string(),
-      v.regex(/^[А-ЯЁ][А-ЯЁIV\-.,'()\s]*[А-ЯЁ]$/, "Недопустимые символы!"),
-      v.maxLength(255, "Не более 255 символов!"),
-    ),
-    "",
-  ),
-  birthday: v.optional(
-    v.pipe(
-      v.string(),
-      v.nonEmpty("Обязательное поле!"),
-      v.toDate(),
-      v.maxValue(new Date(), "Проверьте дату!"),
-      v.minValue(new Date(1900, 0, 1), "Проверьте дату!"),
-    ),
-    "",
-  ),
-  birthplace: v.fallback(
-    v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
-    "",
-  ),
-  citizenship: v.fallback(
-    v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
-    "",
-  ),
-  dual: v.fallback(
-    v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
-    "",
-  ),
-  snils: v.fallback(
-    v.pipe(v.string(), v.regex(/[0-9]{11}/, "Только 11 цифр!")),
-    "",
-  ),
-  inn: v.fallback(
-    v.pipe(v.string(), v.regex(/[0-9]{12}/, "Только 12 цифр!")),
-    "",
-  ),
-  marital: v.fallback(
-    v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
-    "",
-  ),
-  addition: v.fallback(v.string(), ""),
+const form = ref({
+  surname: props.resume.surname ?? "",
+  firstname: props.resume.firstname ?? "",
+  patronymic: props.resume.patronymic ?? "",
+  birthday: props.resume.birthday ?? "",
+  birthplace: props.resume.birthplace ?? "",
+  citizenship: props.resume.citizenship ?? "",
+  dual: props.resume.dual ?? "",
+  snils: props.resume.snils ?? "",
+  inn: props.resume.inn ?? "",
+  marital: props.resume.marital ?? "",
+  addition: props.resume.addition ?? "",
 });
 </script>
 
 <template>
-  <UForm :state="form" :schema="schema" @submit.prevent="emit('update', form)">
+  <UForm
+    :state="form"
+    :schema="schemaResume"
+    @submit.prevent="emit('update', form)"
+  >
     <UFormField label="Фамилия" name="surname" required>
       <UInput v-model.lazy.trim="form.surname" placeholder="Фамилия" />
     </UFormField>

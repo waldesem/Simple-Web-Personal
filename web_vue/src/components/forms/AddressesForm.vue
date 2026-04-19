@@ -29,6 +29,7 @@ const form = toRef(props.item);
         v-model.trim.lazy="form.address"
         placeholder="Адрес"
         required
+        maxlength="4096"
       />
     </UFormField>
     <UButton label="Принять" color="success" variant="outline" type="submit" />

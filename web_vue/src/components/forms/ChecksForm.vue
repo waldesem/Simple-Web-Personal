@@ -45,6 +45,7 @@ watch(noNegative, () => {
         v-model.trim.lazy="form.workplace"
         autoresize
         placeholder="Проверка по местам работы"
+        maxlength="4096"
       />
     </UFormField>
     <UFormField label="Проверка документов" name="document">
@@ -52,6 +53,7 @@ watch(noNegative, () => {
         v-model.trim.lazy="form.document"
         autoresize
         placeholder="Проверка документов"
+        maxlength="4096"
       />
     </UFormField>
     <UFormField label="Проверка задолженностей" name="debt">
@@ -59,6 +61,7 @@ watch(noNegative, () => {
         v-model.trim.lazy="form.debt"
         autoresize
         placeholder="Проверка задолженностей"
+        maxlength="4096"
       />
     </UFormField>
     <UFormField label="Проверка банкротства" name="bankruptcy">
@@ -66,6 +69,7 @@ watch(noNegative, () => {
         v-model.trim.lazy="form.bankruptcy"
         autoresize
         placeholder="Проверка банкротства"
+        maxlength="4096"
       />
     </UFormField>
     <UFormField label="Проверка Кредитной истории" name="bki">
@@ -73,6 +77,7 @@ watch(noNegative, () => {
         v-model.trim.lazy="form.bki"
         autoresize
         placeholder="Проверка Кредитной истории"
+        maxlength="4096"
       />
     </UFormField>
     <UFormField label="Проверка судебных дел" name="courts">
@@ -80,6 +85,7 @@ watch(noNegative, () => {
         v-model.trim.lazy="form.courts"
         autoresize
         placeholder="Проверка судебных дел"
+        maxlength="4096"
       />
     </UFormField>
     <UFormField label="Проверка аффилированности" name="affilation">
@@ -87,6 +93,7 @@ watch(noNegative, () => {
         v-model.trim.lazy="form.affilation"
         autoresize
         placeholder="Проверка аффилированности"
+        maxlength="4096"
       />
     </UFormField>
     <UFormField label="Проверка в списке террористов" name="terrorist">
@@ -94,6 +101,7 @@ watch(noNegative, () => {
         v-model.trim.lazy="form.terrorist"
         autoresize
         placeholder="Проверка в списке террористов"
+        maxlength="4096"
       />
     </UFormField>
     <UFormField label="Проверка в открытых источниках" name="internet">
@@ -101,6 +109,7 @@ watch(noNegative, () => {
         v-model.trim.lazy="form.internet"
         autoresize
         placeholder="Проверка в открытых источниках"
+        maxlength="4096"
       />
     </UFormField>
     <UFormField label="Проверка в Кронос" name="cronos">
@@ -108,6 +117,7 @@ watch(noNegative, () => {
         v-model.trim.lazy="form.cronos"
         autoresize
         placeholder="Проверка в Кронос"
+        maxlength="4096"
       />
     </UFormField>
     <UFormField label="Дополнительная информация" name="addition">
@@ -115,6 +125,7 @@ watch(noNegative, () => {
         v-model.trim.lazy="form.addition"
         autoresize
         placeholder="Дополнительная информация"
+        maxlength="4096"
       />
     </UFormField>
     <UFormField label="Результат" name="conclusion" required>

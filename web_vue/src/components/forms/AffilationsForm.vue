@@ -41,7 +41,7 @@ const form = toRef(props.item);
       <UInput
         v-model.trim.lazy="form.inn"
         placeholder="ИНН"
-        pattern="^[0-9]{10,12}$"
+        pattern="^\d{10,12}$"
       />
     </UFormField>
     <UButton label="Принять" color="success" variant="outline" type="submit" />
