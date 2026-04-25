@@ -12,9 +12,17 @@ const props = defineProps({
 
 <template>
   <LabelValue label="Вид документа" :value="props.item.view" />
-  <LabelValue label="Серия документа" :value="props.item.series" />
+  <LabelValue
+    v-if="props.item.series"
+    label="Серия документа"
+    :value="props.item.series"
+  />
   <LabelValue label="Номер документа" :value="props.item.digits" />
-  <LabelValue label="Кем выдан" :value="props.item.agency" />
+  <LabelValue
+    v-if="props.item.agency"
+    label="Кем выдан"
+    :value="props.item.agency"
+  />
   <LabelValue label="Дата выдачи">
     {{ new Date(props.item.issue).toLocaleDateString() }}
   </LabelValue>

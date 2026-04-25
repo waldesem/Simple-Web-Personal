@@ -13,6 +13,10 @@ const props = defineProps({
 <template>
   <LabelValue label="Тип участия" :value="props.item.view" />
   <LabelValue label="Организация" :value="props.item.organization" />
-  <LabelValue label="ИНН" :value="props.item.inn" />
-  <LabelValue label="Деятельность" :value="props.item.activity" />
+  <LabelValue v-if="props.item.inn" label="ИНН" :value="props.item.inn" />
+  <LabelValue
+    v-if="props.item.activity"
+    label="Деятельность"
+    :value="props.item.activity"
+  />
 </template>

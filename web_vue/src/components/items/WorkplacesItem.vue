@@ -21,8 +21,16 @@ const props = defineProps({
   <LabelValue v-if="props.item.finished" label="Окончание работы">
     {{ new Date(props.item.finished).toLocaleDateString() }}
   </LabelValue>
-  <LabelValue label="Место" :value="props.item.workplace" />
-  <LabelValue label="Адрес" :value="props.item.address" />
+  <LabelValue label="Организация" :value="props.item.workplace" />
+  <LabelValue
+    v-if="props.item.address"
+    label="Адрес"
+    :value="props.item.address"
+  />
   <LabelValue label="Должность" :value="props.item.position" />
-  <LabelValue label="Причина увольнения" :value="props.item.reason" />
+  <LabelValue
+    v-if="props.item.reason"
+    label="Причина увольнения"
+    :value="props.item.reason"
+  />
 </template>

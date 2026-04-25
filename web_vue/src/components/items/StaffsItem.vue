@@ -12,5 +12,9 @@ const props = defineProps({
 
 <template>
   <LabelValue label="Должность" :value="props.item.position" />
-  <LabelValue label="Департамент" :value="props.item.department" />
+  <LabelValue
+    v-if="props.item.department"
+    label="Департамент"
+    :value="props.item.department"
+  />
 </template>
