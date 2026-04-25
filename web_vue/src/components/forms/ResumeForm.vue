@@ -8,7 +8,7 @@ const emit = defineEmits(["update"]);
 const props = defineProps({
   resume: {
     type: Object as PropType<Person>,
-    default: () => ({}),
+    default: () => {},
   },
 });
 
@@ -26,10 +26,10 @@ const form = ref({
   addition: props.resume.addition ?? "",
 });
 
-const upperCase = (ev: { target: HTMLInputElement }) => {
+function upperCase(ev: { target: HTMLInputElement }) {
   let field = ev.target.name;
   form.value[field as keyof typeof form.value] = ev.target.value.toUpperCase();
-};
+}
 </script>
 
 <template>
