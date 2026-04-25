@@ -13,10 +13,6 @@ const props = defineProps({
 <template>
   <LabelValue label="Уровень образования" :value="props.item.view" />
   <LabelValue label="Учебное заведение" :value="props.item.institution" />
-  <LabelValue
-    v-if="props.item.finished"
-    label="Год окончания"
-    :value="props.item.finished"
-  />
+  <LabelValue label="Год окончания" :value="props.item.finished" />
   <LabelValue label="Специальность" :value="props.item.specialty" />
 </template>

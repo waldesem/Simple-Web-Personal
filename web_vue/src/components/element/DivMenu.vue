@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// Компонент для отображения выпадающего списка действий
 const emits = defineEmits(["update", "delete"]);
 </script>
 
@@ -10,12 +9,14 @@ const emits = defineEmits(["update", "delete"]);
         :items="[
           {
             label: 'Изменить',
+            icon: 'i-lucide-square-pen',
             onSelect() {
               emits('update');
             },
           },
           {
             label: 'Удалить',
+            icon: 'i-lucide-trash',
             onSelect() {
               emits('delete');
             },

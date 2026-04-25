@@ -1,0 +1,1 @@
+var e=e=>e?new Date(e).toLocaleDateString():``;export{e as t};

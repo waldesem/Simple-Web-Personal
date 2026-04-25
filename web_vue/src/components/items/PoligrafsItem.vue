@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import type { Pfo } from "@/types";
-import { Decisions } from "../../types";
 import { PropType } from "vue";
+import type { Pfo } from "@/types";
+import { Decisions } from "@/types";
+import { localStr } from "@/utils";
 
 const props = defineProps({
   item: {
@@ -20,15 +21,15 @@ const props = defineProps({
         props.item.conclusion === Decisions.agreed
           ? 'success'
           : props.item.conclusion === Decisions.comments
-          ? 'warning'
-          : props.item.conclusion === Decisions.cancel
-          ? 'neutral'
-          : 'error'
+            ? 'warning'
+            : props.item.conclusion === Decisions.cancel
+              ? 'neutral'
+              : 'error'
       "
       :label="props.item.conclusion"
     />
   </LabelValue>
   <LabelValue label="Дата записи">
-    {{ new Date(props.item.created).toLocaleDateString() }}
+    {{ localStr(props.item.created) }}
   </LabelValue>
 </template>

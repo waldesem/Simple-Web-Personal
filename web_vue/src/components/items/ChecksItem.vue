@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import type { Verification } from "@/types";
-import { Conclusions } from "../../types";
 import { PropType } from "vue";
+import type { Verification } from "@/types";
+import { Conclusions } from "@/types";
+import { localStr } from "@/utils";
 
 const props = defineProps({
   item: {
@@ -12,66 +13,27 @@ const props = defineProps({
 </script>
 
 <template>
+  <LabelValue label="Проверка по местам работы" :value="props.item.workplace" />
+  <LabelValue label="Проверка документов" :value="props.item.document" />
+  <LabelValue label="Проверка задолженностей" :value="props.item.debt" />
+  <LabelValue label="Проверка банкротства" :value="props.item.bankruptcy" />
+  <LabelValue label="Проверка по БКИ" :value="props.item.bki" />
+  <LabelValue label="Проверка судебных решений" :value="props.item.courts" />
   <LabelValue
-    v-if="props.item.workplace"
-    label="Проверка по местам работы"
-    :value="props.item.workplace"
-  />
-  <LabelValue
-    v-if="props.item.document"
-    label="Проверка документов"
-    :value="props.item.document"
-  />
-  <LabelValue
-    v-if="props.item.debt"
-    label="Проверка задолженностей"
-    :value="props.item.debt"
-  />
-  <LabelValue
-    v-if="props.item.bankruptcy"
-    label="Проверка банкротства"
-    :value="props.item.bankruptcy"
-  />
-  <LabelValue
-    v-if="props.item.bki"
-    label="Проверка по БКИ"
-    :value="props.item.bki"
-  />
-  <LabelValue
-    v-if="props.item.courts"
-    label="Проверка судебных решений"
-    :value="props.item.courts"
-  />
-  <LabelValue
-    v-if="props.item.affilation"
     label="Проверка аффилированности"
     :value="props.item.affilation"
   />
   <LabelValue
-    v-if="props.item.terrorist"
-    label="Проверка по списку террористов"
+    label="Проверка списка террористов"
     :value="props.item.terrorist"
   />
   <LabelValue
-    v-if="props.item.internet"
     label="Проверка в открытых источниках"
     :value="props.item.internet"
   />
-  <LabelValue
-    v-if="props.item.cronos"
-    label="Проверка Кронос"
-    :value="props.item.cronos"
-  />
-  <LabelValue
-    v-if="props.item.addition"
-    label="Дополнительная информация"
-    :value="props.item.addition"
-  />
-  <LabelValue
-    v-if="props.item.comment"
-    label="Комментарии"
-    :value="props.item.comment"
-  />
+  <LabelValue label="Проверка Кронос" :value="props.item.cronos" />
+  <LabelValue label="Дополнительная информация" :value="props.item.addition" />
+  <LabelValue label="Комментарии" :value="props.item.comment" />
   <LabelValue label="Результат">
     <UBadge
       :color="
@@ -87,6 +49,6 @@ const props = defineProps({
     />
   </LabelValue>
   <LabelValue label="Дата записи">
-    {{ new Date(props.item.created).toLocaleDateString() }}
+    {{ localStr(props.item.created) }}
   </LabelValue>
 </template>

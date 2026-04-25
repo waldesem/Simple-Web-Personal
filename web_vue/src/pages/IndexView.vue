@@ -5,6 +5,7 @@ import { refDebounced, useTimeAgoIntl } from "@vueuse/core";
 import { ofetch } from "ofetch";
 import { useToast } from "@nuxt/ui/composables";
 import type { Candidates, Person } from "@/types";
+import { localStr } from "@/utils";
 
 const toast = useToast();
 
@@ -37,7 +38,7 @@ const cols: TableColumns<Person>[] = [
     name: "birthday",
     header: "Дата рождения",
     cell: (row) => {
-      return new Date(row.birthday).toLocaleDateString();
+      return localStr(row.birthday);
     },
   },
   {
