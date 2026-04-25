@@ -14,4 +14,5 @@ const props = defineProps({
   <LabelValue label="Тип участия" :value="props.item.view" />
   <LabelValue label="Организация" :value="props.item.organization" />
   <LabelValue label="ИНН" :value="props.item.inn" />
+  <LabelValue label="Деятельность" :value="props.item.activity" />
 </template>

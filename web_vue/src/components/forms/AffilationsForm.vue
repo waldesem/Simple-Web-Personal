@@ -44,6 +44,9 @@ const form = toRef(props.item);
         pattern="^\d{10,12}$"
       />
     </UFormField>
+    <UFormField label="Деятельность" name="activity">
+      <UTextarea v-model.trim.lazy="form.activity" placeholder="Деятельность" />
+    </UFormField>
     <UButton label="Принять" color="success" variant="outline" type="submit" />
   </UForm>
 </template>
