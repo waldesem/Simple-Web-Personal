@@ -1,6 +1,6 @@
 import { useStorage } from "@vueuse/core";
 
-export const flag = useStorage("flag", false); // returns Ref<boolean>
+export const flag = useStorage("flag", false, sessionStorage);
 
 export function localStr(data: string): string {
   return data ? new Date(data).toLocaleDateString() : "";

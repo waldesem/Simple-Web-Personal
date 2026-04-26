@@ -1,54 +1,19 @@
 <script setup lang="ts">
-import { watchEffect, ref, watch } from "vue";
+import { watchEffect, ref, watch, defineAsyncComponent } from "vue";
 import { useRouter } from "vue-router";
 import { refDebounced, useTimeAgoIntl } from "@vueuse/core";
 import { ofetch } from "ofetch";
 import { useToast } from "@nuxt/ui/composables";
 import { localStr } from "@/utils";
-import type { Candidates, Person } from "@/types";
+import type { Candidates, Person, TableColumns } from "@/types";
+
+const FormResume = defineAsyncComponent(
+  () => import("@/components/forms/ResumeForm.vue"),
+);
 
 const toast = useToast();
 
 const router = useRouter();
-
-export interface TableColumns<T> {
-  name: keyof T;
-  header: string;
-  cell?: (row: T) => string;
-}
-
-const cols: TableColumns<Person>[] = [
-  {
-    name: "id",
-    header: "#",
-  },
-  {
-    name: "surname",
-    header: "Фамилия",
-  },
-  {
-    name: "firstname",
-    header: "Имя",
-  },
-  {
-    name: "patronymic",
-    header: "Отчество",
-  },
-  {
-    name: "birthday",
-    header: "Дата рождения",
-    cell: (row) => {
-      return localStr(row.birthday);
-    },
-  },
-  {
-    name: "created",
-    header: "Обновлено",
-    cell: (row) => {
-      return useTimeAgoIntl(row.created).value;
-    },
-  },
-];
 
 const data = ref({ has_next: false, candidates: [] } as Candidates);
 const modal = ref(false); // Состояние модального окна
@@ -98,6 +63,39 @@ async function submitPerson(form: Person) {
     });
   }
 }
+
+const cols: TableColumns<Person>[] = [
+  {
+    name: "id",
+    header: "#",
+  },
+  {
+    name: "surname",
+    header: "Фамилия",
+  },
+  {
+    name: "firstname",
+    header: "Имя",
+  },
+  {
+    name: "patronymic",
+    header: "Отчество",
+  },
+  {
+    name: "birthday",
+    header: "Дата рождения",
+    cell: (row) => {
+      return localStr(row.birthday);
+    },
+  },
+  {
+    name: "created",
+    header: "Обновлено",
+    cell: (row) => {
+      return useTimeAgoIntl(row.created).value;
+    },
+  },
+];
 </script>
 
 <template>
@@ -119,7 +117,7 @@ async function submitPerson(form: Person) {
               @click="modal = true"
             />
             <template #body>
-              <ResumeForm @update="submitPerson" />
+              <FormResume @update="submitPerson" />
             </template>
           </UModal>
         </template>
@@ -136,39 +134,11 @@ async function submitPerson(form: Person) {
       </div>
 
       <!-- Таблица с данными кандидатов -->
-      <div class="relative overflow-auto">
-        <table class="table-fixed min-w-full overflow-clip">
-          <thead class="relative">
-            <tr>
-              <th
-                v-for="(row, index) in cols"
-                :key="index"
-                class="p-4 text-sm text-highlighted text-left"
-              >
-                {{ row.header }}
-              </th>
-            </tr>
-          </thead>
-          <tbody class="isolate divide-y divide-default">
-            <tr
-              v-for="(candidate, index) in data.candidates"
-              :key="index"
-              class="hover:bg-gray-100 cursor-pointer"
-              @click="
-                router.push({ name: 'profile', params: { id: candidate.id } })
-              "
-            >
-              <td
-                v-for="(row, idx) in cols"
-                :key="idx"
-                class="p-4 text-sm text-muted whitespace-nowrap"
-              >
-                {{ row.cell ? row.cell(candidate) : candidate[row.name] }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <TableDiv
+        :cols="cols"
+        :data="data.candidates"
+        @select="(id) => router.push({ name: 'profile', params: { id: id } })"
+      />
 
       <UEmpty
         v-if="!data.candidates"

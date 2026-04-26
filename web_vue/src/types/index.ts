@@ -1,3 +1,9 @@
+export interface TableColumns<T> {
+  name: keyof T;
+  header: string;
+  cell?: (row: T) => string;
+}
+
 export enum Conclusions {
   agreed = "СОГЛАСОВАНО",
   comments = "СОГЛАСОВАНО С КОММЕНТАРИЕМ",

@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { PropType, ref } from "vue";
+import { defineAsyncComponent, PropType, ref } from "vue";
 import { ofetch } from "ofetch";
 import { useToast } from "@nuxt/ui/composables";
 import { flag } from "@/utils";
 import type { Person } from "@/types";
+
+const FormResume = defineAsyncComponent(
+  () => import("@/components/forms/ResumeForm.vue"),
+);
 
 const emit = defineEmits(["update"]);
 
@@ -45,7 +49,7 @@ async function submitPerson(form: Person) {
 <template>
   <div class="ms-2 mt-2">
     <!-- Выводим кнопки редактирования или удаления данных -->
-    <DivMenu v-if="flag" @update="modal = true" @delete="null" />
+    <DivMenu v-show="flag" @update="modal = true" @delete="null" />
     <PersonDiv :item="person" />
     <!-- Выводим модальное окно для редактирования данных -->
     <UModal
@@ -54,7 +58,7 @@ async function submitPerson(form: Person) {
       description="Редактирование анкетные данные"
     >
       <template #body>
-        <ResumeForm :resume="person" @update="submitPerson" />
+        <FormResume :resume="person" @update="submitPerson" />
       </template>
     </UModal>
   </div>
