@@ -19,6 +19,7 @@ const data = ref({ has_next: false, candidates: [] } as Candidates);
 const modal = ref(false); // Состояние модального окна
 const page = ref(0); // Страница таблицы
 const search = ref(""); // Поисковый запрос
+const loading = ref(false);
 const updated = ref(new Date().toLocaleTimeString());
 
 const debounced = refDebounced(search, 1000);
@@ -28,12 +29,14 @@ watch(debounced, () => {
 });
 
 watchEffect(async () => {
+  loading.value = true;
   data.value = await ofetch<Candidates>("/routes/candidates", {
     query: {
       search: debounced.value,
       page: page.value,
     },
   });
+  loading.value = false;
 });
 
 watch(data, () => (updated.value = new Date().toLocaleTimeString()));
@@ -128,6 +131,8 @@ const cols: TableColumns<Person>[] = [
         <UInput
           id="search"
           v-model.trim="search"
+          :loading="loading"
+          icon="i-lucide-search"
           type="search"
           placeholder="поиск по фаимилии, имени, отчеству"
         />
@@ -139,9 +144,16 @@ const cols: TableColumns<Person>[] = [
         :data="data.candidates"
         @select="(id) => router.push({ name: 'profile', params: { id: id } })"
       />
-
+      <!-- <div
+        class="absolute inset-0 bg-white/60 flex flex-col items-center justify-center gap-4"
+      >
+        <div
+          class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"
+        ></div>
+        <div class="font-bold">Загрузка...</div>
+      </div> -->
       <UEmpty
-        v-if="!data.candidates"
+        v-if="!data.candidates.length"
         title="Данные отсутствуют"
         size="sm"
         variant="naked"
@@ -153,18 +165,21 @@ const cols: TableColumns<Person>[] = [
       </div>
 
       <!-- Пагинация -->
-      <div class="flex justify-center border-t border-default space-x-2 py-4">
+      <div
+        v-show="data.candidates && (page || data.has_next)"
+        class="flex justify-center border-t border-default space-x-2 py-4"
+      >
         <UButton
           icon="i-lucide-arrow-left"
           title="Вперед"
-          :disabled="!page"
+          :disabled="!page || loading"
           class="me-2 rounded-full"
           @click="page--"
         />
         <UButton
           icon="i-lucide-arrow-right"
           title="Назад"
-          :disabled="!data.has_next"
+          :disabled="!data.has_next || loading"
           class="ms-2 rounded-full"
           @click="page++"
         />
