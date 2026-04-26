@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Person } from "@/types";
-import { localStr } from "@/utils";
-import { useClipboard } from "@vueuse/core";
 import { PropType } from "vue";
+import { useClipboard } from "@vueuse/core";
+import { localStr } from "@/utils";
+import type { Person } from "@/types";
 
 const props = defineProps({
   item: {

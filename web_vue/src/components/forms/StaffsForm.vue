@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Staff } from "@/types";
 import { PropType, toRef } from "vue";
+import type { Staff } from "@/types";
 
 const emit = defineEmits(["update"]);
 

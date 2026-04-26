@@ -4,8 +4,8 @@ import { useRouter } from "vue-router";
 import { refDebounced, useTimeAgoIntl } from "@vueuse/core";
 import { ofetch } from "ofetch";
 import { useToast } from "@nuxt/ui/composables";
-import type { Candidates, Person } from "@/types";
 import { localStr } from "@/utils";
+import type { Candidates, Person } from "@/types";
 
 const toast = useToast();
 

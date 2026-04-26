@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Affilation } from "@/types";
 import { PropType, toRef } from "vue";
+import type { Affilation } from "@/types";
 
 const emit = defineEmits(["update"]);
 

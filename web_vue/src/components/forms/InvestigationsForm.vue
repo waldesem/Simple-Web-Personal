@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Inquisition } from "@/types";
 import { PropType, toRef } from "vue";
+import type { Inquisition } from "@/types";
 
 const emit = defineEmits(["update"]);
 

@@ -8,7 +8,7 @@ const emit = defineEmits(["update"]);
 const props = defineProps({
   resume: {
     type: Object as PropType<Person>,
-    default: () => {},
+    default: () => ({}),
   },
 });
 

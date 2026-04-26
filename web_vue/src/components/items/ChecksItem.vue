@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import type { Verification } from "@/types";
-import { Conclusions } from "@/types";
 import { localStr } from "@/utils";
+import { Conclusions } from "@/types";
+import type { Verification } from "@/types";
 
 const props = defineProps({
   item: {

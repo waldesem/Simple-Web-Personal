@@ -2,12 +2,11 @@
 import { onBeforeMount, computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { ofetch } from "ofetch";
+import { flag } from "@/utils";
 import type { Items, Person } from "@/types";
 
 // Получаем данные id кандидата из URL
 const candId = computed(() => useRoute().params.id as string);
-
-const edit = ref(false);
 
 const data = ref({} as Person);
 
@@ -89,10 +88,10 @@ const accordion = [
       >
         <template #links>
           <UButton
-            :icon="edit ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
-            :color="edit ? 'success' : 'error'"
-            :title="edit ? 'Откл.Редакт.' : 'Вкл.Редакт.'"
-            @click="edit = !edit"
+            :icon="flag ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
+            :color="flag ? 'success' : 'error'"
+            :title="flag ? 'Откл.Редакт.' : 'Вкл.Редакт.'"
+            @click="flag = !flag"
           />
         </template>
       </UPageHeader>
@@ -106,7 +105,7 @@ const accordion = [
         <!-- Слот вкладки для отображения анкеты -->
         <template #anketa>
           <div class="mt-4">
-            <PersonView :person="data" :edit="edit" @update="getPerson" />
+            <PersonView :person="data" @update="getPerson" />
           </div>
           <USeparator />
           <!-- Aккордеон с данными staffs, educations и т.д. -->
@@ -120,7 +119,6 @@ const accordion = [
                 :view="accord.slot"
                 :title="accord.label"
                 :cand-id="candId"
-                :edit="edit"
               />
             </template>
           </UAccordion>
@@ -129,12 +127,7 @@ const accordion = [
         <!-- Вкладки проверки, полиграф и др. -->
         <template v-for="tab in subjects" #[tab.slot] :key="tab.slot">
           <div class="mt-2">
-            <ItemView
-              :view="tab.slot"
-              :title="tab.label"
-              :cand-id="candId"
-              :edit="edit"
-            />
+            <ItemView :view="tab.slot" :title="tab.label" :cand-id="candId" />
           </div>
         </template>
       </UTabs>

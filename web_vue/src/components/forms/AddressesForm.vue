@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Address } from "@/types";
 import { PropType, toRef } from "vue";
+import type { Address } from "@/types";
 
 const emit = defineEmits(["update"]);
 

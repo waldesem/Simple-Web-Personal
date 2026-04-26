@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Previous } from "@/types";
 import { PropType } from "vue";
+import type { Previous } from "@/types";
 
 const props = defineProps({
   item: {

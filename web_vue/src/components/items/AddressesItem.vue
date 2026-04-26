@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Address } from "@/types";
 import { PropType } from "vue";
+import type { Address } from "@/types";
 
 const props = defineProps({
   item: {

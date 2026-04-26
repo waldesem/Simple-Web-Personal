@@ -2,6 +2,7 @@
 import { PropType, ref } from "vue";
 import { ofetch } from "ofetch";
 import { useToast } from "@nuxt/ui/composables";
+import { flag } from "@/utils";
 import type { Person } from "@/types";
 
 const emit = defineEmits(["update"]);
@@ -9,10 +10,6 @@ const emit = defineEmits(["update"]);
 const props = defineProps({
   person: {
     type: Object as PropType<Person>,
-    required: true,
-  },
-  edit: {
-    type: Boolean,
     required: true,
   },
 });
@@ -48,7 +45,7 @@ async function submitPerson(form: Person) {
 <template>
   <div class="ms-2 mt-2">
     <!-- Выводим кнопки редактирования или удаления данных -->
-    <DivMenu v-if="props.edit" @update="modal = true" @delete="null" />
+    <DivMenu v-if="flag" @update="modal = true" @delete="null" />
     <PersonDiv :item="person" />
     <!-- Выводим модальное окно для редактирования данных -->
     <UModal

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Contact } from "@/types";
 import { PropType, toRef } from "vue";
+import type { Contact } from "@/types";
 
 const emit = defineEmits(["update"]);
 

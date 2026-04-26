@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Education } from "@/types";
 import { PropType, toRef } from "vue";
+import type { Education } from "@/types";
 
 const emit = defineEmits(["update"]);
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PropType, ref } from "vue";
-import type { Passport } from "@/types";
 import { schemaDoc } from "@/schema";
+import type { Passport } from "@/types";
 
 const emit = defineEmits(["update"]);
 

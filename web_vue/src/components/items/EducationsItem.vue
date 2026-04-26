@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Education } from "@/types";
 import { PropType } from "vue";
+import type { Education } from "@/types";
 
 const props = defineProps({
   item: {

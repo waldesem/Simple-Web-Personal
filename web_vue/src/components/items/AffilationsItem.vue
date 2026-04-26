@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Affilation } from "@/types";
 import { PropType } from "vue";
+import type { Affilation } from "@/types";
 
 const props = defineProps({
   item: {

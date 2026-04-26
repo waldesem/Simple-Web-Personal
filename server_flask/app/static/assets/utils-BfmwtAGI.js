@@ -1,0 +1,1 @@
+import{f as e}from"./dist-BINJXfxx.js";var t=e(`flag`,!1);function n(e){return e?new Date(e).toLocaleDateString():``}function r(e){return e.charAt(0).toUpperCase()+e.slice(1)}export{t as n,n as r,r as t};

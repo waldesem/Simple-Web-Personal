@@ -2,6 +2,7 @@
 import { defineAsyncComponent, onBeforeMount, PropType, ref } from "vue";
 import { ofetch } from "ofetch";
 import { useToast } from "@nuxt/ui/composables";
+import { capitalize, flag } from "@/utils";
 import type { Items } from "@/types";
 
 const toast = useToast();
@@ -20,10 +21,6 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  edit: {
-    type: Boolean,
-    required: true,
-  },
 });
 
 onBeforeMount(async () => await getItem());
@@ -35,10 +32,6 @@ const modal = ref(false); // Флаг для открытия модальног
 // Определяем функцию для получения данных из API
 async function getItem() {
   data.value = await ofetch(`/routes/${props.view}/${props.candId}`);
-}
-
-function capitalize(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 const ItemComponent = defineAsyncComponent(
@@ -98,7 +91,7 @@ async function deleteItem(itemId: string) {
   <UEmpty v-if="!data?.length" class="m-4" title="Данные отсутствуют" size="sm">
     <template #body>
       <UButton
-        v-if="props.edit"
+        v-if="flag"
         label="Добавить запись"
         variant="outline"
         size="sm"
@@ -110,7 +103,7 @@ async function deleteItem(itemId: string) {
   <div v-for="(content, index) in data" :key="index" class="mx-2 py-2">
     <!-- Выводим кнопки редактирования/удаления данных, в режиме редактирования -->
     <DivMenu
-      v-if="props.edit"
+      v-if="flag"
       @update="
         item = content;
         modal = true;
@@ -129,7 +122,7 @@ async function deleteItem(itemId: string) {
     description="Добавить/редактировать данные"
   >
     <UButton
-      v-if="props.edit && data?.length"
+      v-if="flag && data?.length"
       class="mb-2"
       label="Добавить запись"
       variant="outline"

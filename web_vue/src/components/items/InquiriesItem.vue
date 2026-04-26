@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import type { Needs } from "@/types";
 import { localStr } from "@/utils";
+import type { Needs } from "@/types";
 
 const props = defineProps({
   item: {

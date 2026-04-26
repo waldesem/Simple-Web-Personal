@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import type { Inquisition } from "@/types";
 import { localStr } from "@/utils";
+import type { Inquisition } from "@/types";
 
 const props = defineProps({
   item: {

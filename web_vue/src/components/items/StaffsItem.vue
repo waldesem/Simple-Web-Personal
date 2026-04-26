@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Staff } from "@/types";
 import { PropType } from "vue";
+import type { Staff } from "@/types";
 
 const props = defineProps({
   item: {
