@@ -2,7 +2,7 @@
   <UPage>
     <UHeader to="/">
       <template #title>
-        <div class="inline-flex items-center text-xl font-bold space-x-1">
+        <div v-once class="inline-flex items-center text-xl font-bold space-x-1">
           <div class="text-blue-600">КАДРОВАЯ</div>
           <div class="text-red-600">БЕЗОПАСНОСТЬ</div>
         </div>
