@@ -1,8 +1,8 @@
 <template>
   <UPage>
-    <UHeader to="/">
+    <UHeader v-once to="/">
       <template #title>
-        <div v-once class="inline-flex items-center text-xl font-bold space-x-1">
+        <div class="inline-flex items-center text-xl font-bold space-x-1">
           <div class="text-blue-600">КАДРОВАЯ</div>
           <div class="text-red-600">БЕЗОПАСНОСТЬ</div>
         </div>
