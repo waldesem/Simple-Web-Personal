@@ -17,7 +17,7 @@ const router = createRouter({
   routes: [
     {
       name: "index",
-      path: "/index",
+      path: "/",
       component: () => import("./pages/IndexView.vue"),
     },
     {
@@ -27,16 +27,12 @@ const router = createRouter({
     },
     {
       path: "/:catchAll(.*)",
-      redirect: "/index",
+      redirect: "/",
     },
   ],
   history: createWebHistory(),
 });
 
-const app = createApp(App);
-
-app.use(router);
-
-app.use(ui);
+const app = createApp(App).use(router).use(ui);
 
 app.mount("#app");

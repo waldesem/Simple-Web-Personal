@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType, toRef } from "vue";
-import { Decisions } from "@/types";
+import { Decisions } from "@/utils";
 import type { Pfo } from "@/types";
 
 const emit = defineEmits(["update"]);

@@ -1,21 +1,9 @@
+import type { Conclusions, Decisions } from "@/utils";
+
 export interface TableColumns<T> {
   name: keyof T;
   header: string;
   cell?: (row: T) => string;
-}
-
-export enum Conclusions {
-  agreed = "СОГЛАСОВАНО",
-  comments = "СОГЛАСОВАНО С КОММЕНТАРИЕМ",
-  cancel = "СНЯТ С ПРОВЕРКИ",
-  denied = "ОТКАЗАНО В СОГЛАСОВАНИИ",
-}
-
-export enum Decisions {
-  agreed = "БЕЗ ЗАМЕЧАНИЙ",
-  comments = "С КОММЕНТАРИЯМИ",
-  cancel = "ОТКАЗ ОТ ПРОВЕРКИ",
-  denied = "НЕГАТИВ",
 }
 
 export interface Person {

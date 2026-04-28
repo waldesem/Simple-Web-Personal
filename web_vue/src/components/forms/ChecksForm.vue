@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType, ref, toRef, watch } from "vue";
-import { Conclusions } from "@/types";
+import { Conclusions } from "@/utils";
 import type { Verification } from "@/types";
 
 const emit = defineEmits(["update"]);

@@ -1,30 +1,24 @@
 import * as v from "valibot";
 
+const pattern = /^[А-ЯЁа-яё][А-ЯЁа-яёIV\-.,'()\s]*[А-ЯЁа-яё]$|^[А-ЯЁа-яё]$/;
+
 export const schemaName = v.object({
   surname: v.pipe(
     v.string(),
     v.nonEmpty("Обязательное поле!"),
-    v.regex(
-      /^[А-ЯЁа-яё][А-ЯЁа-яёIV\-.,'()\s]*[А-ЯЁа-яё]$|^[А-ЯЁа-яё]$/,
-      "Недопустимые символы!",
-    ),
+    v.regex(pattern, "Недопустимые символы!"),
     v.maxLength(255, "Не более 255 символов!"),
   ),
   firstname: v.pipe(
     v.string(),
     v.nonEmpty("Обязательное поле!"),
-    v.regex(
-      /^[А-ЯЁа-яё][А-ЯЁа-яёIV\-.,'()\s]*[А-ЯЁа-яё]$|^[А-ЯЁа-яё]$/,
-      "Недопустимые символы!",
-    ),
+    v.regex(pattern, "Недопустимые символы!"),
     v.maxLength(255, "Не более 255 символов!"),
   ),
   patronymic: v.pipe(
     v.string(),
     v.check(
-      (value) =>
-        value === "" ||
-        /^[А-ЯЁа-яё][А-ЯЁа-яёIV\-.,'()\s]*[А-ЯЁа-яё]$|^[А-ЯЁа-яё]$/.test(value),
+      (value) => value === "" || pattern.test(value),
       "Недопустимые символы!",
     ),
     v.maxLength(255, "Не более 255 символов!"),

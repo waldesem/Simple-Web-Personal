@@ -9,3 +9,17 @@ export function localStr(data: string): string {
 export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+export enum Conclusions {
+  agreed = "СОГЛАСОВАНО",
+  comments = "СОГЛАСОВАНО С КОММЕНТАРИЕМ",
+  cancel = "СНЯТ С ПРОВЕРКИ",
+  denied = "ОТКАЗАНО В СОГЛАСОВАНИИ",
+}
+
+export enum Decisions {
+  agreed = "БЕЗ ЗАМЕЧАНИЙ",
+  comments = "С КОММЕНТАРИЯМИ",
+  cancel = "ОТКАЗ ОТ ПРОВЕРКИ",
+  denied = "НЕГАТИВ",
+}
