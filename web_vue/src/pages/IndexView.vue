@@ -102,49 +102,50 @@ const cols: TableColumns<Person>[] = [
 </script>
 
 <template>
-  <LayoutView>
-    <UContainer>
-      <UPageHeader title="КАНДИДАТЫ">
-        <template #links>
-          <!-- Модальное окно для добавления анкеты -->
-          <UModal
-            v-model:open="modal"
-            title="Анкета"
-            description="Введите анкетные данные"
-          >
-            <UButton
-              icon="i-lucide-user-plus"
-              title="Добавить анкету"
-              variant="ghost"
-              size="xl"
-              @click="modal = true"
-            />
-            <template #body>
-              <FormResume @update="submitPerson" />
-            </template>
-          </UModal>
-        </template>
-      </UPageHeader>
+  <UContainer>
+    <UPageHeader title="КАНДИДАТЫ">
+      <template #links>
+        <!-- Модальное окно для добавления анкеты -->
+        <UModal
+          v-model:open="modal"
+          title="Анкета"
+          description="Введите анкетные данные"
+        >
+          <UButton
+            icon="i-lucide-user-plus"
+            title="Добавить анкету"
+            variant="ghost"
+            size="xl"
+            @click="modal = true"
+          />
+          <template #body>
+            <FormResume @update="submitPerson" />
+          </template>
+        </UModal>
+      </template>
+    </UPageHeader>
 
-      <!-- Строка поиска -->
-      <div class="my-6">
-        <UInput
-          id="search"
-          v-model.trim="search"
-          :loading="loading"
-          icon="i-lucide-search"
-          type="search"
-          placeholder="поиск по фаимилии, имени, отчеству"
-        />
-      </div>
-
-      <!-- Таблица с данными кандидатов -->
-      <TableDiv
-        :cols="cols"
-        :data="data.candidates"
-        @select="(id) => router.push({ name: 'profile', params: { id: id } })"
+    <!-- Строка поиска -->
+    <div class="my-6">
+      <UInput
+        id="search"
+        v-model.trim="search"
+        :loading="loading"
+        icon="i-lucide-search"
+        type="search"
+        placeholder="поиск по фаимилии, имени, отчеству"
       />
-      <!-- <div
+    </div>
+
+    <!-- Таблица с данными кандидатов -->
+    <TableDiv
+      :cols="cols"
+      :data="data.candidates"
+      @select="
+        (id: any) => router.push({ name: 'profile', params: { id: id } })
+      "
+    />
+    <!-- <div
         class="absolute inset-0 bg-white/60 flex flex-col items-center justify-center gap-4"
       >
         <div
@@ -152,38 +153,37 @@ const cols: TableColumns<Person>[] = [
         ></div>
         <div class="font-bold">Загрузка...</div>
       </div> -->
-      <UEmpty
-        v-if="!data.candidates.length"
-        title="Данные отсутствуют"
-        size="sm"
-        variant="naked"
+    <UEmpty
+      v-if="!data.candidates.length"
+      title="Данные отсутствуют"
+      size="sm"
+      variant="naked"
+    />
+
+    <!-- Время последнего обновления -->
+    <div class="text-sm text-muted mt-4">
+      Последнее обновление: {{ updated }}
+    </div>
+
+    <!-- Пагинация -->
+    <div
+      v-show="data.candidates && (page || data.has_next)"
+      class="flex justify-center border-t border-default space-x-2 py-4"
+    >
+      <UButton
+        icon="i-lucide-arrow-left"
+        title="Вперед"
+        :disabled="!page || loading"
+        class="me-2 rounded-full"
+        @click="page--"
       />
-
-      <!-- Время последнего обновления -->
-      <div class="text-sm text-muted mt-4">
-        Последнее обновление: {{ updated }}
-      </div>
-
-      <!-- Пагинация -->
-      <div
-        v-show="data.candidates && (page || data.has_next)"
-        class="flex justify-center border-t border-default space-x-2 py-4"
-      >
-        <UButton
-          icon="i-lucide-arrow-left"
-          title="Вперед"
-          :disabled="!page || loading"
-          class="me-2 rounded-full"
-          @click="page--"
-        />
-        <UButton
-          icon="i-lucide-arrow-right"
-          title="Назад"
-          :disabled="!data.has_next || loading"
-          class="ms-2 rounded-full"
-          @click="page++"
-        />
-      </div>
-    </UContainer>
-  </LayoutView>
+      <UButton
+        icon="i-lucide-arrow-right"
+        title="Назад"
+        :disabled="!data.has_next || loading"
+        class="ms-2 rounded-full"
+        @click="page++"
+      />
+    </div>
+  </UContainer>
 </template>

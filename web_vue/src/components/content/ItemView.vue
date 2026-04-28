@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-  Component,
   defineAsyncComponent,
   onBeforeMount,
   PropType,
@@ -29,10 +28,10 @@ const props = defineProps({
   },
 });
 
-const ItemComponent: Component = defineAsyncComponent(
+const ItemComponent = defineAsyncComponent(
   () => import(`../items/${capitalize(props.view)}Item.vue`),
 );
-const FormComponent: Component = defineAsyncComponent(
+const FormComponent = defineAsyncComponent(
   () => import(`../forms/${capitalize(props.view)}Form.vue`),
 );
 

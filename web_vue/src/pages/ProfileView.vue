@@ -81,56 +81,54 @@ const accordion = [
 </script>
 
 <template>
-  <LayoutView>
-    <UContainer>
-      <UPageHeader
-        :title="`${data.surname} ${data.firstname} ${data.patronymic ?? ''}`"
-      >
-        <template #links>
-          <UButton
-            :icon="flag ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
-            :color="flag ? 'success' : 'error'"
-            :title="flag ? 'Откл.Редакт.' : 'Вкл.Редакт.'"
-            @click="flag = !flag"
-          />
-        </template>
-      </UPageHeader>
+  <UContainer>
+    <UPageHeader
+      :title="`${data.surname} ${data.firstname} ${data.patronymic ?? ''}`"
+    >
+      <template #links>
+        <UButton
+          :icon="flag ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
+          :color="flag ? 'success' : 'error'"
+          :title="flag ? 'Откл.Редакт.' : 'Вкл.Редакт.'"
+          @click="flag = !flag"
+        />
+      </template>
+    </UPageHeader>
 
-      <UTabs
-        :items="[...anketa, ...subjects]"
-        :unmount-on-hide="false"
-        variant="pill"
-        class="mt-4"
-      >
-        <!-- Слот вкладки для отображения анкеты -->
-        <template #anketa>
-          <div class="mt-4">
-            <PersonView :person="data" @update="getPerson" />
-          </div>
-          <USeparator />
-          <!-- Aккордеон с данными staffs, educations и т.д. -->
-          <UAccordion :items="accordion" :unmount-on-hide="false">
-            <template
-              v-for="accord in accordion"
-              #[accord.slot]
-              :key="accord.slot"
-            >
-              <ItemView
-                :view="accord.slot"
-                :title="accord.label"
-                :cand-id="candId"
-              />
-            </template>
-          </UAccordion>
-        </template>
+    <UTabs
+      :items="[...anketa, ...subjects]"
+      :unmount-on-hide="false"
+      variant="pill"
+      class="mt-4"
+    >
+      <!-- Слот вкладки для отображения анкеты -->
+      <template #anketa>
+        <div class="mt-4">
+          <PersonView :person="data" @update="getPerson" />
+        </div>
+        <USeparator />
+        <!-- Aккордеон с данными staffs, educations и т.д. -->
+        <UAccordion :items="accordion" :unmount-on-hide="false">
+          <template
+            v-for="accord in accordion"
+            #[accord.slot]
+            :key="accord.slot"
+          >
+            <ItemView
+              :view="accord.slot"
+              :title="accord.label"
+              :cand-id="candId"
+            />
+          </template>
+        </UAccordion>
+      </template>
 
-        <!-- Вкладки проверки, полиграф и др. -->
-        <template v-for="tab in subjects" #[tab.slot] :key="tab.slot">
-          <div class="mt-2">
-            <ItemView :view="tab.slot" :title="tab.label" :cand-id="candId" />
-          </div>
-        </template>
-      </UTabs>
-    </UContainer>
-  </LayoutView>
+      <!-- Вкладки проверки, полиграф и др. -->
+      <template v-for="tab in subjects" #[tab.slot] :key="tab.slot">
+        <div class="mt-2">
+          <ItemView :view="tab.slot" :title="tab.label" :cand-id="candId" />
+        </div>
+      </template>
+    </UTabs>
+  </UContainer>
 </template>
