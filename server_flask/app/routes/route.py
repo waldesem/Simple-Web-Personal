@@ -46,11 +46,11 @@ def get_candidates(per_page: int = 10) -> tuple[Response, Literal[200]]:
     stmt = "SELECT id, surname, firstname, patronymic, birthday, created FROM persons"
     if query.get("search"):
         search = query["search"].upper().split(maxsplit=3)
-        stmt += " WHERE surname like ?"
-        params.append(search[0] + "%")
+        stmt += " WHERE surname = ?"
+        params.append(search[0])
         if len(search) > 1:
-            stmt += " AND firstname like ?"
-            params.append(search[1] + "%")
+            stmt += " AND firstname = ?"
+            params.append(search[1])
             if len(search) > 2:
                 stmt += " AND patronymic = ?"
                 params.append(search[2])
