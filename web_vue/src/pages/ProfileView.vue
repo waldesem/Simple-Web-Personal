@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, computed, ref } from "vue";
+import { onBeforeMount, computed, shallowRef } from "vue";
 import { useRoute } from "vue-router";
 import { ofetch } from "ofetch";
 import { flag } from "@/utils";
@@ -8,7 +8,7 @@ import type { Items, Person } from "@/types";
 // Получаем данные id кандидата из URL
 const candId = computed(() => useRoute().params.id as string);
 
-const data = ref({} as Person);
+const data = shallowRef({} as Person);
 
 onBeforeMount(() => getPerson());
 

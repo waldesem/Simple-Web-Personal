@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { watchEffect, ref, watch, defineAsyncComponent } from "vue";
+import { watchEffect, ref, watch, defineAsyncComponent, shallowRef } from "vue";
 import { useRouter } from "vue-router";
 import { refDebounced, useTimeAgoIntl } from "@vueuse/core";
 import { ofetch } from "ofetch";
-import { useToast } from "@nuxt/ui/composables";
 import { localStr } from "@/utils";
 import type { Candidates, Person, TableColumns } from "@/types";
 
@@ -11,11 +10,9 @@ const FormResume = defineAsyncComponent(
   () => import("@/components/forms/ResumeForm.vue"),
 );
 
-const toast = useToast();
-
 const router = useRouter();
 
-const data = ref({ has_next: false, candidates: [] } as Candidates);
+const data = shallowRef({ has_next: false, candidates: [] } as Candidates);
 const modal = ref(false); // Состояние модального окна
 const page = ref(0); // Страница таблицы
 const search = ref(""); // Поисковый запрос
@@ -52,18 +49,10 @@ async function submitPerson(form: Person) {
     if (resp._data.person_id) {
       router.push({ name: "profile", params: { id: resp._data.person_id } });
     } else {
-      toast.add({
-        title: "Внимание",
-        description: "Анкета уже существует!",
-        color: "info",
-      });
+      alert("Анкета уже существует!");
     }
   } else {
-    toast.add({
-      title: "Ошибка",
-      description: "Невозможно выполнить действие.",
-      color: "error",
-    });
+    alert("Невозможно выполнить действие.");
   }
 }
 

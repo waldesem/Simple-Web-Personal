@@ -4,13 +4,11 @@ import {
   onBeforeMount,
   PropType,
   ref,
+  shallowRef,
 } from "vue";
 import { ofetch } from "ofetch";
-import { useToast } from "@nuxt/ui/composables";
 import { capitalize, flag } from "@/utils";
 import type { Items } from "@/types";
-
-const toast = useToast();
 
 // Определяем данные которые передаются из родительского компонента
 const props = defineProps({
@@ -37,8 +35,8 @@ const FormComponent = defineAsyncComponent(
 
 onBeforeMount(async () => await getItem());
 
-const data = ref<Items[keyof Items]>([]);
-const item = ref<object>({}); // Данные для редактирования
+const data = shallowRef<Items[keyof Items]>([]);
+const item = shallowRef<object>({}); // Данные для редактирования
 const modal = ref(false); // Флаг для открытия модального окна
 
 // Определяем функцию для получения данных из API
@@ -55,18 +53,7 @@ async function submitItem(form: typeof item.value) {
   });
   item.value = {};
   await getItem();
-  if (status === 201) {
-    toast.add({
-      title: "Успех",
-      description: "Информация успешно обновлена",
-      color: "success",
-    });
-  } else
-    toast.add({
-      title: "Ошибка",
-      description: "Невозможно выполнить действие.",
-      color: "error",
-    });
+  if (status !== 201) alert("Невозможно выполнить действие!");
 }
 
 // Определяем функцию для удаления данных
@@ -76,18 +63,7 @@ async function deleteItem(itemId: string) {
     method: "DELETE",
   });
   await getItem();
-  if (status === 204) {
-    toast.add({
-      title: "Успех",
-      description: "Информация успешно удалена",
-      color: "success",
-    });
-  } else
-    toast.add({
-      title: "Ошибка",
-      description: "Невозможно выполнить действие.",
-      color: "error",
-    });
+  if (status !== 204) alert("Невозможно выполнить действие!");
 }
 </script>
 

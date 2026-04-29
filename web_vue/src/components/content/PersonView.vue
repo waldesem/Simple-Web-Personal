@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent, PropType, ref } from "vue";
 import { ofetch } from "ofetch";
-import { useToast } from "@nuxt/ui/composables";
 import { flag } from "@/utils";
 import type { Person } from "@/types";
 
@@ -18,8 +17,6 @@ const props = defineProps({
   },
 });
 
-const toast = useToast();
-
 const modal = ref(false); // Объявляем переменную модального окна
 
 // Определяем функцию для отправки данных формы на сервер
@@ -29,19 +26,7 @@ async function submitPerson(form: Person) {
     method: "PATCH",
     body: { ...form, created: new Date().toISOString() },
   });
-  if (status === 200) {
-    toast.add({
-      title: "Успех",
-      description: "Информация успешно обновлена",
-      color: "success",
-    });
-  } else {
-    toast.add({
-      title: "Ошибка",
-      description: "Невозможно выполнить действие.",
-      color: "error",
-    });
-  }
+  if (status !== 200) alert("Невозможно выполнить действие!");
   emit("update");
 }
 </script>
