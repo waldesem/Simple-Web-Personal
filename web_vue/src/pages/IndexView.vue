@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { watchEffect, ref, watch, defineAsyncComponent, shallowRef } from "vue";
-import { useRouter } from "vue-router";
 import { refDebounced, useTimeAgoIntl } from "@vueuse/core";
+import { useRouter } from "vue-router";
 import { ofetch } from "ofetch";
 import { localStr } from "@/utils";
 import type { Candidates, Person, TableColumns } from "@/types";
@@ -18,7 +18,6 @@ const page = ref(0); // Страница таблицы
 const search = ref(""); // Поисковый запрос
 const loading = ref(false);
 const updated = ref(new Date().toLocaleTimeString());
-
 const debounced = refDebounced(search, 1000);
 
 watch(debounced, () => {
@@ -34,9 +33,8 @@ watchEffect(async () => {
     },
   });
   loading.value = false;
+  updated.value = new Date().toLocaleTimeString();
 });
-
-watch(data, () => (updated.value = new Date().toLocaleTimeString()));
 
 // Обработчик результата загрузки данных
 async function submitPerson(form: Person) {
@@ -119,7 +117,6 @@ const cols: TableColumns<Person>[] = [
       <UInput
         id="search"
         v-model.trim="search"
-        :loading="loading"
         icon="i-lucide-search"
         type="search"
         placeholder="поиск по фаимилии, имени, отчеству"
@@ -134,14 +131,15 @@ const cols: TableColumns<Person>[] = [
         (id: any) => router.push({ name: 'profile', params: { id: id } })
       "
     />
-    <!-- <div
-        class="absolute inset-0 bg-white/60 flex flex-col items-center justify-center gap-4"
-      >
-        <div
-          class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"
-        ></div>
-        <div class="font-bold">Загрузка...</div>
-      </div> -->
+    <div
+      v-if="loading"
+      class="absolute inset-0 bg-white/60 flex flex-col items-center justify-center gap-4"
+    >
+      <div
+        class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"
+      ></div>
+      <div class="font-medium">Обновление данных...</div>
+    </div>
     <UEmpty
       v-if="!data.candidates.length"
       title="Данные отсутствуют"

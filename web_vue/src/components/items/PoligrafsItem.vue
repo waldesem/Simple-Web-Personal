@@ -14,7 +14,7 @@ const props = defineProps({
 <template>
   <LabelValue label="Тема проверки" :value="props.item.theme" />
   <LabelValue label="Результаты" :value="props.item.results" />
-  <LabelValue label="Заключение">
+  <LabelSlot v-if="props.item.conclusion" label="Заключение">
     <UBadge
       :color="
         props.item.conclusion === Decisions.agreed
@@ -27,8 +27,6 @@ const props = defineProps({
       "
       :label="props.item.conclusion"
     />
-  </LabelValue>
-  <LabelValue label="Дата записи">
-    {{ localStr(props.item.created) }}
-  </LabelValue>
+  </LabelSlot>
+  <LabelValue label="Дата записи" :value="localStr(props.item.created)" />
 </template>

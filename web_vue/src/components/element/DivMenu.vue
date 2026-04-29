@@ -3,7 +3,7 @@ const emits = defineEmits(["update", "delete"]);
 </script>
 
 <template>
-  <div class="relative">
+  <div v-once class="relative">
     <div class="absolute right-0">
       <UDropdownMenu
         :items="[

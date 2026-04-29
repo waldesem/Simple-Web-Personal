@@ -16,12 +16,8 @@ const props = defineProps({
     label="Текущая работа"
     :value="props.item.finished ? 'Нет' : 'Да'"
   />
-  <LabelValue label="Начало работы">
-    {{ localStr(props.item.starts) }}
-  </LabelValue>
-  <LabelValue label="Окончание работы">
-    {{ localStr(props.item.finished) }}
-  </LabelValue>
+  <LabelValue label="Начало работы" :value="localStr(props.item.starts)" />
+  <LabelValue label="Окончание работы" :value="localStr(props.item.finished)" />
   <LabelValue label="Организация" :value="props.item.workplace" />
   <LabelValue label="Адрес" :value="props.item.address" />
   <LabelValue label="Должность" :value="props.item.position" />

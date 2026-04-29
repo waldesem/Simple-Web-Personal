@@ -33,7 +33,7 @@ const props = defineProps({
   <LabelValue label="Проверка Кронос" :value="props.item.cronos" />
   <LabelValue label="Дополнительная информация" :value="props.item.addition" />
   <LabelValue label="Комментарии" :value="props.item.comment" />
-  <LabelValue label="Результат">
+  <LabelSlot v-if="props.item.conclusion" label="Результат">
     <UBadge
       :color="
         props.item.conclusion === Conclusions.agreed
@@ -46,8 +46,6 @@ const props = defineProps({
       "
       :label="props.item.conclusion"
     />
-  </LabelValue>
-  <LabelValue label="Дата записи">
-    {{ localStr(props.item.created) }}
-  </LabelValue>
+  </LabelSlot>
+  <LabelValue label="Дата записи" :value="localStr(props.item.created)" />
 </template>

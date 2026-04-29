@@ -14,7 +14,5 @@ const props = defineProps({
 <template>
   <LabelValue label="Тема проверки" :value="props.item.theme" />
   <LabelValue label="Информация" :value="props.item.info" />
-  <LabelValue label="Дата записи">
-    {{ localStr(props.item.created) }}
-  </LabelValue>
+  <LabelValue label="Дата записи" :value="localStr(props.item.created)" />
 </template>

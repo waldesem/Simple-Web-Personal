@@ -16,7 +16,5 @@ const props = defineProps({
   <LabelValue label="Серия документа" :value="props.item.series" />
   <LabelValue label="Номер документа" :value="props.item.digits" />
   <LabelValue label="Кем выдан" :value="props.item.agency" />
-  <LabelValue label="Дата выдачи">
-    {{ localStr(props.item.issue) }}
-  </LabelValue>
+  <LabelValue label="Дата выдачи" :value="localStr(props.item.issue)" />
 </template>
