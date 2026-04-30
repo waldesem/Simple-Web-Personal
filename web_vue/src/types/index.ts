@@ -1,5 +1,3 @@
-import type { Conclusions, Decisions } from "@/utils";
-
 export interface TableColumns<T> {
   name: keyof T;
   header: string;
@@ -108,7 +106,7 @@ export interface Verification {
   internet?: string;
   cronos?: string;
   addition?: string;
-  conclusion: Conclusions;
+  conclusion: string;
   comment?: string;
   created: string;
 }
@@ -117,7 +115,7 @@ export interface Pfo {
   id: string;
   theme: string;
   results: string;
-  conclusion: Decisions;
+  conclusion: string;
   created: string;
 }
 

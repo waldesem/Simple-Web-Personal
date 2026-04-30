@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType, toRef } from "vue";
-import { Decisions } from "@/utils";
+import { decisions } from "@/utils";
 import type { Pfo } from "@/types";
 
 const emit = defineEmits(["update"]);
@@ -42,7 +42,7 @@ const form = toRef(props.item);
     <UFormField label="Результат" name="conclusion" required>
       <USelect
         v-model="form.conclusion"
-        :items="Object.values(Decisions)"
+        :items="Object.values(decisions)"
         placeholder="Выберите результат"
         required
       />

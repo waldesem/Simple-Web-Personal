@@ -1,1 +1,0 @@
-var e=function(e){return e.agreed=`СОГЛАСОВАНО`,e.comments=`СОГЛАСОВАНО С КОММЕНТАРИЕМ`,e.cancel=`СНЯТ С ПРОВЕРКИ`,e.denied=`ОТКАЗАНО В СОГЛАСОВАНИИ`,e}({}),t=function(e){return e.agreed=`БЕЗ ЗАМЕЧАНИЙ`,e.comments=`С КОММЕНТАРИЯМИ`,e.cancel=`ОТКАЗ ОТ ПРОВЕРКИ`,e.denied=`НЕГАТИВ`,e}({});export{t as n,e as t};

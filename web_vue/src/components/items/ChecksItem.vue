@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import { Conclusions, localStr } from "@/utils";
+import { conclusions, localStr } from "@/utils";
 import type { Verification } from "@/types";
 
 const props = defineProps({
@@ -36,11 +36,11 @@ const props = defineProps({
   <LabelSlot v-if="props.item.conclusion" label="Результат">
     <UBadge
       :color="
-        props.item.conclusion === Conclusions.agreed
+        props.item.conclusion === conclusions.agreed
           ? 'success'
-          : props.item.conclusion === Conclusions.comments
+          : props.item.conclusion === conclusions.comments
             ? 'warning'
-            : props.item.conclusion === Conclusions.cancel
+            : props.item.conclusion === conclusions.cancel
               ? 'neutral'
               : 'error'
       "

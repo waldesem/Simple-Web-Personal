@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import { Decisions, localStr } from "@/utils";
+import { decisions, localStr } from "@/utils";
 import type { Pfo } from "@/types";
 
 const props = defineProps({
@@ -17,11 +17,11 @@ const props = defineProps({
   <LabelSlot v-if="props.item.conclusion" label="Заключение">
     <UBadge
       :color="
-        props.item.conclusion === Decisions.agreed
+        props.item.conclusion === decisions.agreed
           ? 'success'
-          : props.item.conclusion === Decisions.comments
+          : props.item.conclusion === decisions.comments
             ? 'warning'
-            : props.item.conclusion === Decisions.cancel
+            : props.item.conclusion === decisions.cancel
               ? 'neutral'
               : 'error'
       "

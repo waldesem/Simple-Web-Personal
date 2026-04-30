@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType, ref, toRef, watch } from "vue";
-import { Conclusions } from "@/utils";
+import { conclusions } from "@/utils";
 import type { Verification } from "@/types";
 
 const emit = defineEmits(["update"]);
@@ -131,7 +131,7 @@ watch(noNegative, () => {
     <UFormField label="Результат" name="conclusion" required>
       <USelect
         v-model="form.conclusion"
-        :items="Object.values(Conclusions)"
+        :items="Object.values(conclusions)"
         placeholder="Выберите нужное решение из списка"
         required
       />
