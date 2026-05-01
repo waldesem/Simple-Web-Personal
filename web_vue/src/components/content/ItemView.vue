@@ -36,7 +36,7 @@ const FormComponent = defineAsyncComponent(
 onMounted(async () => await getItem());
 
 const data = shallowRef<Items[keyof Items]>([]);
-const item = shallowRef<(typeof data.value)[number] | null>(null);
+const item = shallowRef({} as (typeof data.value)[number]);
 const modal = ref(false); // Флаг для открытия модального окна
 
 // Определяем функцию для получения данных из API
@@ -51,9 +51,9 @@ async function submitItem(form: typeof item.value) {
     method: "POST",
     body: form,
   });
-  item.value = null;
-  await getItem();
   if (status !== 201) alert("Невозможно выполнить действие!");
+  await getItem();
+  item.value = {} as (typeof data.value)[number];
 }
 
 // Определяем функцию для удаления данных
@@ -62,8 +62,8 @@ async function deleteItem(itemId: string) {
   const { status } = await ofetch.raw(`/routes/${props.view}/${itemId}`, {
     method: "DELETE",
   });
-  await getItem();
   if (status !== 204) alert("Невозможно выполнить действие!");
+  await getItem();
 }
 </script>
 

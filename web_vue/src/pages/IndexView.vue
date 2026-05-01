@@ -51,7 +51,7 @@ async function submitPerson(form: Person) {
   modal.value = false;
   const resp = await ofetch.raw("/routes/persons", {
     method: "POST",
-    body: { ...form, created: new Date().toISOString() },
+    body: form,
   });
   if (resp.status === 201) {
     if (resp._data.person_id) {
@@ -60,7 +60,7 @@ async function submitPerson(form: Person) {
       alert("Анкета уже существует!");
     }
   } else {
-    alert("Невозможно выполнить действие.");
+    alert("Невозможно выполнить действие!");
   }
 }
 
