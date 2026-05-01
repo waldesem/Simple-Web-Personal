@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { watchEffect, ref, watch, defineAsyncComponent, shallowRef } from "vue";
-import { refDebounced, useTimeAgoIntl } from "@vueuse/core";
+import { ref, watch, defineAsyncComponent, shallowRef, onMounted } from "vue";
+import { refDebounced } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { ofetch } from "ofetch";
-import { localStr } from "@/utils";
+import { localStr, timeAgoStr } from "@/utils";
 import type { Candidates, Person, TableColumns } from "@/types";
 
 const FormResume = defineAsyncComponent(
@@ -20,11 +20,21 @@ const loading = ref(false);
 const updated = ref(new Date().toLocaleTimeString());
 const debounced = refDebounced(search, 1000);
 
-watch(debounced, () => {
+watch(debounced, async () => {
   page.value = 0;
+  await getItem();
 });
 
-watchEffect(async () => {
+watch(page, async () => {
+  await getItem();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+onMounted(async () => {
+  await getItem();
+});
+
+async function getItem() {
   loading.value = true;
   data.value = await ofetch<Candidates>("/routes/candidates", {
     query: {
@@ -34,7 +44,7 @@ watchEffect(async () => {
   });
   loading.value = false;
   updated.value = new Date().toLocaleTimeString();
-});
+}
 
 // Обработчик результата загрузки данных
 async function submitPerson(form: Person) {
@@ -82,7 +92,7 @@ const cols: TableColumns<Person>[] = [
     name: "created",
     header: "Обновлено",
     cell: (row) => {
-      return useTimeAgoIntl(row.created).value;
+      return timeAgoStr(row.created);
     },
   },
 ];
@@ -148,14 +158,21 @@ const cols: TableColumns<Person>[] = [
     />
 
     <!-- Время последнего обновления -->
-    <div class="text-sm text-muted mt-4">
-      Последнее обновление: {{ updated }}
-    </div>
+    <UButton
+      :loading="loading"
+      class="mt-2"
+      variant="ghost"
+      size="sm"
+      icon="i-lucide-refresh-cw"
+      :label="`Последнее обновление в: ${updated}`"
+      title="Обновить"
+      @click="getItem"
+    />
 
     <!-- Пагинация -->
     <div
       v-show="data.candidates && (page || data.has_next)"
-      class="flex justify-center border-t border-default space-x-2 py-4"
+      class="flex justify-center border-t border-default space-x-2 mt-4 py-4"
     >
       <UButton
         icon="i-lucide-arrow-left"

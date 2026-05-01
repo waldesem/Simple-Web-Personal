@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   defineAsyncComponent,
-  onBeforeMount,
+  onMounted,
   PropType,
   ref,
   shallowRef,
@@ -33,10 +33,10 @@ const FormComponent = defineAsyncComponent(
   () => import(`../forms/${capitalize(props.view)}Form.vue`),
 );
 
-onBeforeMount(async () => await getItem());
+onMounted(async () => await getItem());
 
 const data = shallowRef<Items[keyof Items]>([]);
-const item = shallowRef<object>({}); // Данные для редактирования
+const item = shallowRef<(typeof data.value)[number] | null>(null);
 const modal = ref(false); // Флаг для открытия модального окна
 
 // Определяем функцию для получения данных из API
@@ -51,7 +51,7 @@ async function submitItem(form: typeof item.value) {
     method: "POST",
     body: form,
   });
-  item.value = {};
+  item.value = null;
   await getItem();
   if (status !== 201) alert("Невозможно выполнить действие!");
 }
