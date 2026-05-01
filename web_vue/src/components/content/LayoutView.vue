@@ -11,6 +11,6 @@
     <UMain class="pt-16 pb-4">
       <slot />
     </UMain>
-    <UFooter v-once />      
+    <UFooter v-once />
   </UPage>
 </template>

@@ -1,1 +1,0 @@
-import{f as e,ft as t}from"./vue.runtime.esm-bundler-uz4_5k5N.js";import{s as n}from"./VisuallyHidden-nkVAtTyz.js";function r(r){let i=n({dir:t(`ltr`)});return e(()=>r?.value||i.dir?.value||`ltr`)}export{r as t};

@@ -1,17 +1,16 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <UApp>
-    <LayoutView>
-      <router-view v-slot="{ Component }">
-        <Transition name="fade">
+    <router-view v-slot="{ Component }">
+      <Transition name="fade">
+        <LayoutView>
           <KeepAlive include="IndexView" :max="1">
             <component :is="Component" />
           </KeepAlive>
-        </Transition>
-      </router-view>
-    </LayoutView>
+        </LayoutView>
+      </Transition>
+    </router-view>
   </UApp>
 </template>
 
