@@ -3,8 +3,8 @@ import { ref, watch, defineAsyncComponent, shallowRef, onMounted } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { ofetch } from "ofetch";
-import { localStr, timeAgoStr } from "@/utils";
-import type { Candidates, Person, TableColumns } from "@/types";
+import { localDateStr, timeAgoStr } from "@/utils";
+import type { Person, TableColumns } from "@/types";
 
 const FormResume = defineAsyncComponent(
   () => import("@/components/forms/ResumeForm.vue"),
@@ -12,13 +12,15 @@ const FormResume = defineAsyncComponent(
 
 const router = useRouter();
 
-const data = shallowRef({ has_next: false, candidates: [] } as Candidates);
-const modal = ref(false); // Состояние модального окна
+const data = shallowRef([] as Person[]);
 const page = ref(0); // Страница таблицы
+const limit = ref(10); // Количество записей на странице
 const search = ref(""); // Поисковый запрос
-const loading = ref(false);
-const updated = ref(new Date().toLocaleTimeString());
-const debounced = refDebounced(search, 1000);
+const updated = ref(""); // Время обновления
+const modal = ref(false); // Состояние модального окна
+const hasNext = ref(false); // Состояние наличия следующей страницы
+const loading = ref(false); // Состояние загрузки
+const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
 watch(debounced, async () => {
   page.value = 0;
@@ -36,12 +38,20 @@ onMounted(async () => {
 
 async function getItem() {
   loading.value = true;
-  data.value = await ofetch<Candidates>("/routes/candidates", {
+  const response = await ofetch<Person[]>("/routes/candidates", {
     query: {
+      limit: limit.value,
       search: debounced.value,
       page: page.value,
     },
   });
+  if (response.length > limit.value) {
+    data.value = response.slice(0, limit.value);
+    hasNext.value = true;
+  } else {
+    data.value = response;
+    hasNext.value = false;
+  }
   loading.value = false;
   updated.value = new Date().toLocaleTimeString();
 }
@@ -49,10 +59,12 @@ async function getItem() {
 // Обработчик результата загрузки данных
 async function submitPerson(form: Person) {
   modal.value = false;
+  loading.value = true;
   const resp = await ofetch.raw("/routes/persons", {
     method: "POST",
     body: form,
   });
+  loading.value = false;
   if (resp.status === 201) {
     if (resp._data.person_id) {
       router.push({ name: "profile", params: { id: resp._data.person_id } });
@@ -85,7 +97,7 @@ const cols: TableColumns<Person>[] = [
     name: "birthday",
     header: "Дата рождения",
     cell: (row) => {
-      return localStr(row.birthday);
+      return localDateStr(row.birthday);
     },
   },
   {
@@ -113,6 +125,7 @@ const cols: TableColumns<Person>[] = [
             title="Добавить анкету"
             variant="ghost"
             size="xl"
+            :loading="loading"
             @click="modal = true"
           />
           <template #body>
@@ -127,6 +140,7 @@ const cols: TableColumns<Person>[] = [
       <UInput
         id="search"
         v-model.trim="search"
+        :loading="loading"
         icon="i-lucide-search"
         type="search"
         placeholder="поиск по фаимилии, имени, отчеству"
@@ -136,26 +150,13 @@ const cols: TableColumns<Person>[] = [
     <!-- Таблица с данными кандидатов -->
     <TableDiv
       :cols="cols"
-      :data="data.candidates"
+      :data="data"
       @select="
         (id: any) => router.push({ name: 'profile', params: { id: id } })
       "
     />
-    <div
-      v-if="loading"
-      class="absolute inset-0 bg-white/60 flex flex-col items-center justify-center gap-4"
-    >
-      <div
-        class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"
-      ></div>
-      <div class="font-medium">Обновление данных...</div>
-    </div>
-    <UEmpty
-      v-if="!data.candidates.length"
-      title="Данные отсутствуют"
-      size="sm"
-      variant="naked"
-    />
+
+    <UEmpty v-if="!data" title="Данные отсутствуют" size="sm" variant="naked" />
 
     <!-- Время последнего обновления -->
     <UButton
@@ -171,8 +172,8 @@ const cols: TableColumns<Person>[] = [
 
     <!-- Пагинация -->
     <div
-      v-show="data.candidates && (page || data.has_next)"
-      class="flex justify-center border-t border-default space-x-2 mt-4 py-4"
+      v-show="data"
+      class="flex justify-center border-t border-default mt-4 py-4"
     >
       <UButton
         icon="i-lucide-arrow-left"
@@ -181,10 +182,16 @@ const cols: TableColumns<Person>[] = [
         class="me-2 rounded-full"
         @click="page--"
       />
+      <USelect
+        v-model="limit"
+        :items="[10, 50, 100]"
+        title="Количество записей"
+        @change="getItem"
+      />
       <UButton
         icon="i-lucide-arrow-right"
         title="Назад"
-        :disabled="!data.has_next || loading"
+        :disabled="!hasNext || loading"
         class="ms-2 rounded-full"
         @click="page++"
       />

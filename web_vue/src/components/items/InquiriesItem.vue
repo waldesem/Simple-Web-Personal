@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import { localStr } from "@/utils";
+import { localDateStr } from "@/utils";
 import type { Needs } from "@/types";
 
 const props = defineProps({
@@ -14,5 +14,5 @@ const props = defineProps({
 <template>
   <LabelValue label="Информация" :value="props.item.info" />
   <LabelValue label="Иннициатор" :value="props.item.initiator" />
-  <LabelValue label="Дата записи" :value="localStr(props.item.created)" />
+  <LabelValue label="Дата записи" :value="localDateStr(props.item.created)" />
 </template>

@@ -39,7 +39,7 @@ def _close_connection(_exception: Exception) -> None:
 
 
 @bp.get("/candidates")
-def get_candidates(per_page: int = 10) -> tuple[Response, Literal[200]]:
+def get_candidates() -> tuple[Response, Literal[200]]:
     """Retrieve a paginated list of persons from the database."""
     query = request.args
     params = []
@@ -60,17 +60,9 @@ def get_candidates(per_page: int = 10) -> tuple[Response, Literal[200]]:
     cur: sqlite3.Cursor = g.db.cursor()
     candidates = cur.execute(
         stmt,
-        (*params, per_page + 1, int(query["page"]) * per_page),
+        (*params, int(query["limit"]) + 1, int(query["page"]) * int(query["limit"])),
     ).fetchall()
-    has_next = len(candidates) > per_page
-    return jsonify(
-        {
-            "has_next": has_next,
-            "candidates": [
-                dict(cand) for cand in (candidates[:-1] if has_next else candidates)
-            ],
-        },
-    ), 200
+    return jsonify([dict(cand) for cand in candidates]), 200
 
 
 @bp.get("/persons/<int:person_id>")

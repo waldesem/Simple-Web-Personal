@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import { conclusions, localStr } from "@/utils";
+import { conclusions, localDateStr } from "@/utils";
 import type { Verification } from "@/types";
 
 const props = defineProps({
@@ -47,5 +47,5 @@ const props = defineProps({
       :label="props.item.conclusion"
     />
   </LabelSlot>
-  <LabelValue label="Дата записи" :value="localStr(props.item.created)" />
+  <LabelValue label="Дата записи" :value="localDateStr(props.item.created)" />
 </template>

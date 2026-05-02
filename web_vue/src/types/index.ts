@@ -23,11 +23,6 @@ export interface Person {
   user_id: string;
 }
 
-export interface Candidates {
-  candidates: Person[];
-  has_next: boolean;
-}
-
 export interface Previous {
   id: string;
   surname?: string;
