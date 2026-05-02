@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed, shallowRef } from "vue";
+import { computed, onMounted, shallowRef } from "vue";
 import { useRoute } from "vue-router";
 import { ofetch } from "ofetch";
 import { flag } from "@/utils";
