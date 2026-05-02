@@ -22,6 +22,10 @@ const hasNext = ref(false); // Состояние наличия следующ�
 const loading = ref(false); // Состояние загрузки
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
+onMounted(async () => {
+  await getItem();
+});
+
 watch(debounced, async () => {
   page.value = 0;
   await getItem();
@@ -30,10 +34,6 @@ watch(debounced, async () => {
 watch(page, async () => {
   await getItem();
   window.scrollTo({ top: 0, behavior: "smooth" });
-});
-
-onMounted(async () => {
-  await getItem();
 });
 
 async function getItem() {
@@ -45,15 +45,10 @@ async function getItem() {
       page: page.value,
     },
   });
-  if (response.length > limit.value) {
-    data.value = response.slice(0, limit.value);
-    hasNext.value = true;
-  } else {
-    data.value = response;
-    hasNext.value = false;
-  }
-  loading.value = false;
+  hasNext.value = response.length > limit.value;
+  data.value = response.slice(0, limit.value);
   updated.value = new Date().toLocaleTimeString();
+  loading.value = false;
 }
 
 // Обработчик результата загрузки данных

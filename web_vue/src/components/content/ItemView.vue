@@ -7,7 +7,7 @@ import {
   shallowRef,
 } from "vue";
 import { ofetch } from "ofetch";
-import { capitalize, flag } from "@/utils";
+import { capitalizeStr, flag } from "@/utils";
 import type { Items } from "@/types";
 
 // Определяем данные которые передаются из родительского компонента
@@ -27,10 +27,10 @@ const props = defineProps({
 });
 
 const ItemComponent = defineAsyncComponent(
-  () => import(`../items/${capitalize(props.view)}Item.vue`),
+  () => import(`../items/${capitalizeStr(props.view)}Item.vue`),
 );
 const FormComponent = defineAsyncComponent(
-  () => import(`../forms/${capitalize(props.view)}Form.vue`),
+  () => import(`../forms/${capitalizeStr(props.view)}Form.vue`),
 );
 
 onMounted(async () => await getItem());

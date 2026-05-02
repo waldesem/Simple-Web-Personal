@@ -96,9 +96,11 @@ def post_person() -> tuple[Response, Literal[201]]:
     ).fetchone()
 
     if not (cand_id := person[0] if person else None):
-        resume["editable"] = False
-        resume["user_id"] = get_user_id(cur)
-        resume["created"] = datetime.now().isoformat()
+        resume.update(
+            editable=False,
+            user_id=get_user_id(cur),
+            created=datetime.now().isoformat(),
+        )
         cand_id = cur.execute(
             "INSERT INTO persons ({}) VALUES ({})".format(  # noqa: S608
                 ",".join(resume.keys()),
