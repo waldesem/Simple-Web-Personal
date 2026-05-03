@@ -24,7 +24,7 @@ async function submitPerson(form: Person) {
   modal.value = false;
   const { status } = await ofetch.raw("/routes/persons/" + props.person.id, {
     method: "PATCH",
-    body: { ...form, created: new Date().toISOString() },
+    body: form,
   });
   if (status !== 200) alert("Невозможно выполнить действие!");
   emit("update");

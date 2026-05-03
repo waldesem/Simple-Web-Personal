@@ -10,6 +10,13 @@ import { ofetch } from "ofetch";
 import { capitalizeStr, flag } from "@/utils";
 import type { Items } from "@/types";
 
+const ItemComponent = defineAsyncComponent(
+  () => import(`../items/${capitalizeStr(props.view)}Item.vue`),
+);
+const FormComponent = defineAsyncComponent(
+  () => import(`../forms/${capitalizeStr(props.view)}Form.vue`),
+);
+
 // Определяем данные которые передаются из родительского компонента
 const props = defineProps({
   title: {
@@ -26,18 +33,11 @@ const props = defineProps({
   },
 });
 
-const ItemComponent = defineAsyncComponent(
-  () => import(`../items/${capitalizeStr(props.view)}Item.vue`),
-);
-const FormComponent = defineAsyncComponent(
-  () => import(`../forms/${capitalizeStr(props.view)}Form.vue`),
-);
-
-onMounted(async () => await getItem());
-
 const data = shallowRef<Items[keyof Items]>([]);
 const item = shallowRef({} as (typeof data.value)[number]);
 const modal = ref(false); // Флаг для открытия модального окна
+
+onMounted(async () => await getItem());
 
 // Определяем функцию для получения данных из API
 async function getItem() {
@@ -62,8 +62,11 @@ async function deleteItem(itemId: string) {
   const { status } = await ofetch.raw(`/routes/${props.view}/${itemId}`, {
     method: "DELETE",
   });
-  if (status !== 204) alert("Невозможно выполнить действие!");
-  await getItem();
+  if (status === 204) {
+    await getItem();
+  } else {
+    alert("Невозможно выполнить действие!");
+  }
 }
 </script>
 
@@ -104,7 +107,7 @@ async function deleteItem(itemId: string) {
   >
     <UButton
       v-if="flag && data?.length"
-      class="mb-2"
+      class="my-2"
       label="Добавить запись"
       variant="outline"
       size="sm"

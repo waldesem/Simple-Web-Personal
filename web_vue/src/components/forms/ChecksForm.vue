@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PropType, ref, toRef, watch } from "vue";
+import { PropType, ref, toRef, watchEffect } from "vue";
 import { conclusions } from "@/utils";
 import type { Verification } from "@/types";
 
@@ -17,8 +17,8 @@ const form = toRef(props.item);
 // Переключатель для автоматического заполнения полей по умолчанию
 const noNegative = ref(false);
 
-watch(noNegative, () => {
-  if (noNegative.value) {
+watchEffect(() => {
+  if (noNegative.value)
     Object.assign(form.value, {
       workplace: "Негатив по местам работы не выявлен",
       document: "Среди недействительных документов не значится",
@@ -30,8 +30,8 @@ watch(noNegative, () => {
       terrorist: "В списке террористов не обнаружен",
       internet: "В открытых источниках негатив не обнаружен",
       cronos: "В Кронос негатив не выявлен",
+      conclusions: conclusions.agreed,
     });
-  }
 });
 </script>
 
