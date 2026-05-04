@@ -28,7 +28,7 @@ const hasNext = ref(false); // Состояние наличия следующ�
 const loading = ref(false); // Состояние загрузки
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
-onBeforeMount(async () => await getItem());
+onBeforeMount(() => getItem());
 
 watch(debounced, async () => {
   page.value = 0;

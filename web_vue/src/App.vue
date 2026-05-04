@@ -3,7 +3,7 @@
 <template>
   <UApp>
     <router-view v-slot="{ Component }">
-      <Transition name="fade">
+      <Transition mode="out-in" name="fade">
         <LayoutView>
           <KeepAlive include="IndexView" :max="1">
             <component :is="Component" />
@@ -17,7 +17,7 @@
 <style>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.1s ease;
+  transition: opacity 0.2s ease;
 }
 
 .fade-enter-from,
