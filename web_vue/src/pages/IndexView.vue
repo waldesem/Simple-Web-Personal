@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, defineAsyncComponent, shallowRef, onMounted } from "vue";
+import { ref, watch, defineAsyncComponent, shallowRef, onBeforeMount } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { ofetch } from "ofetch";
@@ -22,7 +22,7 @@ const hasNext = ref(false); // Состояние наличия следующ�
 const loading = ref(false); // Состояние загрузки
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
-onMounted(async () => {
+onBeforeMount(async () => {
   await getItem();
 });
 

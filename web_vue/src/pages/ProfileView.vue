@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, shallowRef } from "vue";
+import { computed, onBeforeMount, shallowRef } from "vue";
 import { useRoute } from "vue-router";
 import { ofetch } from "ofetch";
 import { flag } from "@/utils";
@@ -10,7 +10,7 @@ const candId = computed(() => useRoute().params.id as string);
 
 const data = shallowRef({} as Person);
 
-onMounted(async () => await getPerson());
+onBeforeMount(async () => await getPerson());
 
 // Определяем функцию для получения данных из API
 async function getPerson() {
