@@ -1,1 +1,0 @@
-import{dt as e,f as t}from"./vue.runtime.esm-bundler-dJ8-TITb.js";import{l as n}from"./VisuallyHidden-Dt6u_cs6.js";function r(r){let i=n({dir:e(`ltr`)});return t(()=>r?.value||i.dir?.value||`ltr`)}export{r as t};
