@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   defineAsyncComponent,
-  onMounted,
+  onBeforeMount,
   PropType,
   ref,
   shallowRef,
@@ -37,7 +37,7 @@ const data = shallowRef<Items[keyof Items]>([]);
 const item = shallowRef({} as (typeof data.value)[number]);
 const modal = ref(false); // Флаг для открытия модального окна
 
-onMounted(async () => await getItem());
+onBeforeMount(() => getItem());
 
 // Определяем функцию для получения данных из API
 async function getItem() {
