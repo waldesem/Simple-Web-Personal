@@ -18,7 +18,7 @@ const { copy, copied } = useClipboard();
   <LabelValue label="Фамилия" :value="props.item.surname" />
   <LabelValue label="Имя" :value="props.item.firstname" />
   <LabelValue label="Отчество" :value="props.item.patronymic" />
-  <LabelValue label="Дата рождения" :value="localDateStr(props.item.birthday)"" />
+  <LabelValue label="Дата рождения" :value="localDateStr(props.item.birthday)" />
   <LabelValue label="Место рождения" :value="props.item.birthplace" />
   <LabelValue label="Гражданство" :value="props.item.citizenship" />
   <LabelSlot v-if="props.item.dual" label="Двойное гражданство">

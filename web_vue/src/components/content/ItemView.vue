@@ -37,7 +37,7 @@ const data = shallowRef<Items[keyof Items]>([]);
 const item = shallowRef({} as (typeof data.value)[number]);
 const modal = ref(false); // Флаг для открытия модального окна
 
-onBeforeMount(() => getItem());
+onBeforeMount(async () => await getItem());
 
 // Определяем функцию для получения данных из API
 async function getItem() {

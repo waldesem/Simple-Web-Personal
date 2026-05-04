@@ -10,7 +10,7 @@ const candId = computed(() => useRoute().params.id as string);
 
 const data = shallowRef({} as Person);
 
-onBeforeMount(() => getPerson());
+onBeforeMount(async () => await getPerson());
 
 // Определяем функцию для получения данных из API
 async function getPerson() {
