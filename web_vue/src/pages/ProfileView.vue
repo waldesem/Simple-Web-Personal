@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, shallowRef } from "vue";
+import { computed, onMounted, shallowRef } from "vue";
 import { useRoute } from "vue-router";
 import { ofetch } from "ofetch";
 import { flag } from "@/utils";
@@ -10,12 +10,18 @@ const candId = computed(() => useRoute().params.id as string);
 
 const data = shallowRef({} as Person);
 
-onBeforeMount(() => getPerson());
+onMounted(() => getPerson());
 
 // Определяем функцию для получения данных из API
 async function getPerson() {
   data.value = await ofetch<Person>("/routes/persons/" + candId.value);
 }
+
+const fullname = computed(() => {
+  return `${data.value.surname ?? ""} ${data.value.firstname ?? ""} ${
+    data.value.patronymic ?? ""
+  }`;
+});
 
 const anketa = [
   {
@@ -82,9 +88,7 @@ const accordion = [
 
 <template>
   <UContainer>
-    <UPageHeader
-      :title="`${data.surname} ${data.firstname} ${data.patronymic ?? ''}`"
-    >
+    <UPageHeader :title="fullname">
       <template #links>
         <UButton
           :icon="flag ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"

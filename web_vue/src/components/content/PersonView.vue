@@ -35,7 +35,7 @@ async function submitPerson(form: Person) {
   <div class="ms-2 mt-2">
     <!-- Выводим кнопки редактирования или удаления данных -->
     <DivMenu v-show="flag" @update="modal = true" @delete="null" />
-    <PersonDiv :item="person" />
+    <PersonDiv v-if="person" :item="person" />
     <!-- Выводим модальное окно для редактирования данных -->
     <UModal
       v-model:open="modal"

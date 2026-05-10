@@ -49,10 +49,10 @@ def start_browser(address: str, port: int) -> None:
             break
 
 
-def serve(host: str = "127.0.0.1", port: int = 5000) -> None:
+def main(host: str = "127.0.0.1", port: int = 5000) -> None:
     """Run the application based on the provided arguments."""
-    app = create_app()
     with ThreadPoolExecutor(max_workers=2) as executor:
+        app = create_app()
         server_future = executor.submit(app.run, host, port)
         browser_future = executor.submit(start_browser, host, port)
         try:
@@ -63,4 +63,4 @@ def serve(host: str = "127.0.0.1", port: int = 5000) -> None:
 
 
 if __name__ == "__main__":
-    serve()
+    main()

@@ -2,7 +2,7 @@
 
 import getpass
 import sqlite3
-from datetime import datetime
+from datetime import UTC, datetime
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
@@ -26,7 +26,10 @@ def get_user_id(cur: sqlite3.Cursor) -> int | None:
 
 
 @bp.before_request
-def _load_connection() -> None:
+def _load_connection() -> None | Response:
+    if DATABASE_URI is None:
+        msg = "DATABASE_URI is not set, check your settings.ini."
+        raise RuntimeError(msg)
     db = sqlite3.connect(DATABASE_URI)
     db.row_factory = sqlite3.Row
     g.db = db
@@ -99,7 +102,7 @@ def post_person() -> tuple[Response, Literal[201]]:
         resume.update(
             editable=False,
             user_id=get_user_id(cur),
-            created=datetime.now().isoformat(),
+            created=datetime.now(UTC),
         )
         cand_id = cur.execute(
             "INSERT INTO persons ({}) VALUES ({})".format(  # noqa: S608
@@ -160,29 +163,37 @@ def get_item(item: str, person_id: int) -> tuple[Response, Literal[200]]:
 
 @bp.post("/<item>/<int:person_id>")
 def post_item(item: str, person_id: int) -> tuple[Literal[""], Literal[201]]:
-    """Insert or replaces a record in the specified table."""
+    """Insert a record in the specified table."""
     json_dict: dict = request.get_json()
-    json_dict.update({"person_id": person_id, "created": datetime.now().isoformat()})
-
-    # Проверяем, есть ли ключ "id" в словаре json_dict
+    json_dict.update({"person_id": person_id, "created": datetime.now(UTC)})
     cur: sqlite3.Cursor = g.db.cursor()
-    if item_id := json_dict.pop("id", None):
-        # Если есть, создаем запрос на обновление записи с указанным id
-        stmt = "UPDATE {} SET {} WHERE id = ?".format(  # noqa: S608
-            item,
-            ",".join(f"{k}=?" for k in json_dict),
-        )
-        cur.execute(stmt, (*json_dict.values(), item_id))
-    else:
-        # Если нет, создаем запрос на вставку новой записи
-        stmt = "INSERT INTO {} ({}) VALUES ({})".format(  # noqa: S608
-            item,
-            ",".join(json_dict.keys()),
-            ",".join(["?"] * len(json_dict)),
-        )
-        cur.execute(stmt, tuple(json_dict.values()))
+    stmt = "INSERT INTO {} ({}) VALUES ({})".format(  # noqa: S608
+        item,
+        ",".join(json_dict.keys()),
+        ",".join(["?"] * len(json_dict)),
+    )
+    cur.execute(stmt, tuple(json_dict.values()))
     g.db.commit()
     return "", 201
+
+
+@bp.patch("/<item>/<int:person_id>/<int:item_id>")
+def patch_item(
+    item: str,
+    item_id: int,
+    person_id: int,
+) -> tuple[Literal[""], Literal[200]]:
+    """Update a record in the specified table."""
+    json_dict: dict = request.get_json()
+    json_dict.update({"person_id": person_id, "created": datetime.now(UTC)})
+    cur: sqlite3.Cursor = g.db.cursor()
+    stmt = "UPDATE {} SET {} WHERE id = ?".format(  # noqa: S608
+        item,
+        ",".join(f"{k}=?" for k in json_dict),
+    )
+    cur.execute(stmt, (*json_dict.values(), item_id))
+    g.db.commit()
+    return "", 200
 
 
 @bp.delete("/<item>/<int:item_id>")

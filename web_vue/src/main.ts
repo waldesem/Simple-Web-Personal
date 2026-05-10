@@ -7,7 +7,6 @@ import "./assets/main.css";
 export default {
   setup() {
     onMounted(() => {
-      // Загрузится только после рендера основного приложения
       import("./plugins/iconify-local");
     });
   },

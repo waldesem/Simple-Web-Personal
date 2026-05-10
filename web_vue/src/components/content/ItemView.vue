@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   defineAsyncComponent,
-  onBeforeMount,
+  onMounted,
   PropType,
   ref,
   shallowRef,
@@ -36,8 +36,10 @@ const props = defineProps({
 const data = shallowRef<Items[keyof Items]>([]);
 const item = shallowRef({} as (typeof data.value)[number]);
 const modal = ref(false); // Флаг для открытия модального окна
+const method = ref<"POST" | "PATCH">("POST");
+const hasRendered = ref(false); // ← триггер для анимации
 
-onBeforeMount(() => getItem());
+onMounted(() => getItem());
 
 // Определяем функцию для получения данных из API
 async function getItem() {
@@ -47,13 +49,21 @@ async function getItem() {
 // Определяем функцию для отправки данных формы на сервер
 async function submitItem(form: typeof item.value) {
   modal.value = false;
-  const { status } = await ofetch.raw(`/routes/${props.view}/${props.candId}`, {
-    method: "POST",
-    body: form,
-  });
-  if (status !== 201) alert("Невозможно выполнить действие!");
-  await getItem();
+  const url = `/routes/${props.view}/${props.candId}`;
+  const { status } = await ofetch.raw(
+    method.value === "POST" ? url : `${url}/${item.value.id}`,
+    {
+      method: method.value,
+      body: form,
+    },
+  );
+  if (status !== 201 && status !== 200) alert("Невозможно выполнить действие!");
   item.value = {} as (typeof data.value)[number];
+  hasRendered.value = true;
+  await getItem();
+  setTimeout(() => {
+    hasRendered.value = false;
+  }, 3000);
 }
 
 // Определяем функцию для удаления данных
@@ -63,7 +73,11 @@ async function deleteItem(itemId: string) {
     method: "DELETE",
   });
   if (status === 204) {
+    hasRendered.value = true;
     await getItem();
+    setTimeout(() => {
+      hasRendered.value = false;
+    }, 3000);
   } else {
     alert("Невозможно выполнить действие!");
   }
@@ -79,18 +93,29 @@ async function deleteItem(itemId: string) {
         label="Добавить запись"
         variant="outline"
         size="sm"
-        @click="modal = true"
+        @click="
+          modal = true;
+          method = 'POST';
+        "
       />
     </template>
   </UEmpty>
 
-  <div v-for="(content, index) in data" :key="index" class="mx-2 py-2">
+  <div
+    v-for="(content, index) in data"
+    :key="index"
+    :class="{
+      'border-solid border-sky-300/75 rounded-md animate-pulse': hasRendered,
+    }"
+    class="border border-2 border-hidden p-2 my-2 mx-1"
+  >
     <!-- Выводим кнопки редактирования/удаления данных, в режиме редактирования -->
     <DivMenu
       v-show="flag"
       @update="
         item = content;
         modal = true;
+        method = 'PATCH';
       "
       @delete="deleteItem(content.id)"
     />
@@ -112,6 +137,7 @@ async function deleteItem(itemId: string) {
       variant="outline"
       size="sm"
       block
+      @click="method = 'POST'"
     />
     <template #body>
       <component :is="FormComponent" :item="item" @update="submitItem" />

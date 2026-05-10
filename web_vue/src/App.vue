@@ -3,7 +3,7 @@
 <template>
   <UApp>
     <router-view v-slot="{ Component }">
-      <Transition mode="out-in" name="fade">
+      <Transition name="fade">
         <LayoutView>
           <KeepAlive include="IndexView" :max="1">
             <component :is="Component" />
@@ -15,13 +15,29 @@
 </template>
 
 <style>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
+/* Начальное состояние при появлении */
+.fade-enter-from {
+  opacity: 0;
+}
+/* Конечное состояние при появлении */
+.fade-enter-to {
+  opacity: 1;
+}
+/* Промежуточный класс для самого перехода */
+.fade-enter-active {
+  transition: opacity 0.3s ease;
 }
 
-.fade-enter-from,
+/* Начальное состояние при исчезновении */
+.fade-leave-from {
+  opacity: 1;
+}
+/* Конечное состояние при исчезновении */
 .fade-leave-to {
   opacity: 0;
+}
+/* Промежуточный класс для исчезновения */
+.fade-leave-active {
+  transition: opacity 0.3s ease;
 }
 </style>
