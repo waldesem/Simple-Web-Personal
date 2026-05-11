@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType, toRef } from "vue";
-import type { Inquisition } from "@/types";
+import { PropType } from "vue";
+import type { FormField, Inquisition } from "@/types";
 
 const emit = defineEmits(["update"]);
 
@@ -11,28 +11,26 @@ const props = defineProps({
   },
 });
 
-const form = toRef(props.item);
+const fields = [
+  {
+    element: "input",
+    key: "theme",
+    label: "Тема проверки",
+    required: true,
+  },
+  {
+    element: "textarea",
+    key: "info",
+    label: "Информация",
+    required: true,
+  },
+] as FormField[];
 </script>
 
 <template>
-  <UForm :state="form" @submit.prevent="emit('update', form)">
-    <UFormField label="Тема проверки" name="theme" required>
-      <UInput
-        v-model.trim.lazy="form.theme"
-        placeholder="Тема проверки"
-        maxlength="255"
-        required
-      />
-    </UFormField>
-    <UFormField label="Информация" name="info" required>
-      <UTextarea
-        v-model.trim.lazy="form.info"
-        autoresize
-        placeholder="Информация"
-        required
-        maxlength="4096"
-      />
-    </UFormField>
-    <UButton label="Принять" color="success" variant="outline" type="submit" />
-  </UForm>
+  <FormCard
+    :fields="fields"
+    :item="props.item"
+    @submit="emit('update', $event)"
+  />
 </template>

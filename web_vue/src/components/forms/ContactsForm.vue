@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType, toRef } from "vue";
-import type { Contact } from "@/types";
+import { PropType } from "vue";
+import type { Contact, FormField } from "@/types";
 
 const emit = defineEmits(["update"]);
 
@@ -11,28 +11,27 @@ const props = defineProps({
   },
 });
 
-const form = toRef(props.item);
+const fields = [
+  {
+    element: "select",
+    key: "view",
+    label: "Вид контакта",
+    items: ["Телефон", "Электронная почта", "Другое"],
+    required: true,
+  },
+  {
+    element: "input",
+    key: "contact",
+    label: "Контакт",
+    required: true,
+  },
+] as FormField[];
 </script>
 
 <template>
-  <UForm :state="form" @submit.prevent="emit('update', form)">
-    <UFormField label="Вид контакта" name="view" required>
-      <USelect
-        v-model="form.view"
-        :items="['Телефон', 'Электронная почта', 'Другое']"
-        placeholder="Выберите вид контакта"
-        required
-      />
-    </UFormField>
-    <UFormField label="Контакт" name="contact" required>
-      <UInput
-        v-model.trim.lazy="form.contact"
-        placeholder="Контакт"
-        maxlength="255"
-        required
-        :type="form.view === 'Электронная почта' ? 'email' : 'text'"
-      />
-    </UFormField>
-    <UButton label="Принять" color="success" variant="outline" type="submit" />
-  </UForm>
+  <FormCard
+    :fields="fields"
+    :item="props.item"
+    @submit="emit('update', $event)"
+  />
 </template>

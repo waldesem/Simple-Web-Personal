@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PropType, ref, toRef, watch } from "vue";
 import { conclusions } from "@/utils";
-import type { Verification } from "@/types";
+import type { FormField, Verification } from "@/types";
 
 const emit = defineEmits(["update"]);
 
@@ -32,109 +32,81 @@ watch(noNegative, () => {
     conclusion: conclusions.agreed,
   });
 });
+
+const fields = [
+  {
+    element: "textarea",
+    key: "workplace",
+    label: "Проверка по местам работы",
+  },
+  {
+    element: "textarea",
+    key: "document",
+    label: "Проверка документов",
+  },
+  {
+    element: "textarea",
+    key: "debt",
+    label: "Проверка задолженностей",
+  },
+  {
+    element: "textarea",
+    key: "bankruptcy",
+    label: "Проверка банкротства",
+  },
+  {
+    element: "textarea",
+    key: "bki",
+    label: "Проверка Кредитной истории",
+  },
+  {
+    element: "textarea",
+    key: "courts",
+    label: "Проверка судебных дел",
+  },
+  {
+    element: "textarea",
+    key: "affilation",
+    label: "Проверка аффилированности",
+  },
+  {
+    element: "textarea",
+    key: "terrorist",
+    label: "Проверка в списке террористов",
+  },
+  {
+    element: "textarea",
+    key: "internet",
+    label: "Проверка в открытых источниках",
+  },
+  {
+    element: "textarea",
+    key: "cronos",
+    label: "Проверка в Кронос",
+  },
+  {
+    element: "textarea",
+    key: "addition",
+    label: "Дополнительная информация",
+  },
+  {
+    element: "textarea",
+    key: "comment",
+    label: "Комментарий",
+  },
+  {
+    element: "select",
+    key: "conclusion",
+    label: "Результат",
+    items: Object.values(conclusions),
+    required: true,
+  },
+] as FormField[];
 </script>
 
 <template>
-  <UFormField label="Негатива нет">
-    <USwitch v-model="noNegative" />
+  <UFormField>
+    <USwitch v-model="noNegative" label="Негатива нет" />
   </UFormField>
-  <UForm :state="form" @submit.prevent="emit('update', form)">
-    <UFormField label="Проверка по местам работы" name="workplace">
-      <UTextarea
-        v-model.trim.lazy="form.workplace"
-        autoresize
-        placeholder="Проверка по местам работы"
-        maxlength="4096"
-      />
-    </UFormField>
-    <UFormField label="Проверка документов" name="document">
-      <UTextarea
-        v-model.trim.lazy="form.document"
-        autoresize
-        placeholder="Проверка документов"
-        maxlength="4096"
-      />
-    </UFormField>
-    <UFormField label="Проверка задолженностей" name="debt">
-      <UTextarea
-        v-model.trim.lazy="form.debt"
-        autoresize
-        placeholder="Проверка задолженностей"
-        maxlength="4096"
-      />
-    </UFormField>
-    <UFormField label="Проверка банкротства" name="bankruptcy">
-      <UTextarea
-        v-model.trim.lazy="form.bankruptcy"
-        autoresize
-        placeholder="Проверка банкротства"
-        maxlength="4096"
-      />
-    </UFormField>
-    <UFormField label="Проверка Кредитной истории" name="bki">
-      <UTextarea
-        v-model.trim.lazy="form.bki"
-        autoresize
-        placeholder="Проверка Кредитной истории"
-        maxlength="4096"
-      />
-    </UFormField>
-    <UFormField label="Проверка судебных дел" name="courts">
-      <UTextarea
-        v-model.trim.lazy="form.courts"
-        autoresize
-        placeholder="Проверка судебных дел"
-        maxlength="4096"
-      />
-    </UFormField>
-    <UFormField label="Проверка аффилированности" name="affilation">
-      <UTextarea
-        v-model.trim.lazy="form.affilation"
-        autoresize
-        placeholder="Проверка аффилированности"
-        maxlength="4096"
-      />
-    </UFormField>
-    <UFormField label="Проверка в списке террористов" name="terrorist">
-      <UTextarea
-        v-model.trim.lazy="form.terrorist"
-        autoresize
-        placeholder="Проверка в списке террористов"
-        maxlength="4096"
-      />
-    </UFormField>
-    <UFormField label="Проверка в открытых источниках" name="internet">
-      <UTextarea
-        v-model.trim.lazy="form.internet"
-        autoresize
-        placeholder="Проверка в открытых источниках"
-        maxlength="4096"
-      />
-    </UFormField>
-    <UFormField label="Проверка в Кронос" name="cronos">
-      <UTextarea
-        v-model.trim.lazy="form.cronos"
-        autoresize
-        placeholder="Проверка в Кронос"
-        maxlength="4096"
-      />
-    </UFormField>
-    <UFormField label="Дополнительная информация" name="addition">
-      <UTextarea
-        v-model.trim.lazy="form.addition"
-        autoresize
-        placeholder="Дополнительная информация"
-        maxlength="4096"
-      />
-    </UFormField>
-    <UFormField label="Результат" name="conclusion" required>
-      <USelect
-        v-model="form.conclusion"
-        :items="Object.values(conclusions)"
-        placeholder="Выберите нужное решение из списка"
-        required
-      />
-    </UFormField>
-    <UButton label="Принять" color="success" variant="outline" type="submit" />
-  </UForm>
+  <FormCard :fields="fields" :item="form" @submit="emit('update', $event)" />
 </template>

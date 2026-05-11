@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, PropType } from "vue";
-import { schemaResume } from "@/schema";
-import type { Person } from "@/types";
+import { parserResume, schemaResume } from "@/schema";
+import type { FormField, Person } from "@/types";
 
 const emit = defineEmits(["update"]);
 
@@ -26,64 +26,74 @@ const form = ref({
   addition: props.resume.addition ?? "",
 });
 
-function upperCase(ev: { target: HTMLInputElement }) {
-  let field = ev.target.name;
-  form.value[field as keyof typeof form.value] = ev.target.value.toUpperCase();
-}
+const fields = [
+  {
+    element: "input",
+    key: "surname",
+    label: "Фамилия",
+    required: true,
+  },
+  {
+    element: "input",
+    key: "firstname",
+    label: "Имя",
+    required: true,
+  },
+  {
+    element: "input",
+    key: "patronymic",
+    label: "Отчество",
+  },
+  {
+    element: "input",
+    key: "birthday",
+    label: "Дата рождения",
+    type: "date",
+    required: true,
+  },
+  {
+    element: "input",
+    key: "birthplace",
+    label: "Место рождения",
+  },
+  {
+    element: "input",
+    key: "citizenship",
+    label: "Гражданство",
+  },
+  {
+    element: "input",
+    key: "dual",
+    label: "Двойное гражданство",
+  },
+  {
+    element: "input",
+    key: "snils",
+    label: "СНИЛС",
+  },
+  {
+    element: "input",
+    key: "inn",
+    label: "ИНН",
+  },
+  {
+    element: "input",
+    key: "marital",
+    label: "Семейное положение",
+  },
+  {
+    element: "textarea",
+    key: "addition",
+    label: "Дополнительно",
+  },
+] as FormField[];
 </script>
 
 <template>
-  <UForm
-    :state="form"
+  <FormCard
     :schema="schemaResume"
-    @submit.prevent="emit('update', form)"
-  >
-    <UFormField label="Фамилия" name="surname" required>
-      <UInput :value="form.surname" @input="upperCase" placeholder="Фамилия" />
-    </UFormField>
-    <UFormField label="Имя" name="firstname" required>
-      <UInput :value="form.firstname" @input="upperCase" placeholder="Имя" />
-    </UFormField>
-    <UFormField label="Отчество" name="patronymic">
-      <UInput
-        :value="form.patronymic"
-        @input="upperCase"
-        placeholder="Отчество"
-      />
-    </UFormField>
-    <UFormField label="Дата рождения" name="birthday" required>
-      <UInput v-model="form.birthday" type="date" />
-    </UFormField>
-    <UFormField label="Место рождения" name="birthplace">
-      <UInput
-        v-model.lazy.trim="form.birthplace"
-        placeholder="Место рождения"
-      />
-    </UFormField>
-    <UFormField label="Гражданство" name="citizenship">
-      <UInput v-model.lazy.trim="form.citizenship" placeholder="Гражданство" />
-    </UFormField>
-    <UFormField label="Двойное гражданство" name="dual">
-      <UInput v-model.lazy.trim="form.dual" placeholder="Двойное гражданство" />
-    </UFormField>
-    <UFormField label="СНИЛС" name="snils">
-      <UInput v-model.lazy.trim="form.snils" placeholder="СНИЛС" />
-    </UFormField>
-    <UFormField label="ИНН" name="inn">
-      <UInput v-model.lazy.trim="form.inn" placeholder="ИНН" />
-    </UFormField>
-    <UFormField label="Семейное положение" name="marital">
-      <UInput
-        v-model.lazy.trim="form.marital"
-        placeholder="Семейное положение"
-      />
-    </UFormField>
-    <UFormField label="Дополнительно" name="addition">
-      <UTextarea
-        v-model.lazy.trim="form.addition"
-        placeholder="Дополнительно"
-      />
-    </UFormField>
-    <UButton label="Принять" color="success" variant="outline" type="submit" />
-  </UForm>
+    :fields="fields"
+    :item="form"
+    @submit="emit('update', parserResume(form))"
+  />
 </template>

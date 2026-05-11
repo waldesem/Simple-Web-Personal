@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType, ref } from "vue";
-import type { Previous } from "@/types";
+import { PropType } from "vue";
+import type { FormField, Previous } from "@/types";
 
 const emit = defineEmits(["update"]);
 
@@ -11,41 +11,41 @@ const props = defineProps({
   },
 });
 
-const form = ref({
-  id: props.item.id ?? null,
-  surname: props.item.surname ?? "",
-  firstname: props.item.firstname ?? "",
-  patronymic: props.item.patronymic ?? "",
-  changed: props.item.changed ?? "",
-  reason: props.item.reason ?? "",
-});
+const fields = [
+  {
+    element: "input",
+    key: "surname",
+    label: "Фамилия",
+    required: true,
+  },
+  {
+    element: "input",
+    key: "firstname",
+    label: "Имя",
+  },
+  {
+    element: "input",
+    key: "patronymic",
+    label: "Отчество",
+  },
+  {
+    element: "input",
+    key: "changed",
+    label: "Год изменения",
+    pattern: "^\d{4}$",
+  },
+  {
+    element: "textarea",
+    key: "reason",
+    label: "Причина",
+  },
+] as FormField[];
 </script>
 
 <template>
-  <UForm :state="form" @submit.prevent="emit('update', form)">
-    <UFormField label="Фамилия" name="surname" required>
-      <UInput v-model.trim.lazy="form.surname" placeholder="Фамилия" />
-    </UFormField>
-    <UFormField label="Имя" name="firstname" required>
-      <UInput v-model.trim.lazy="form.firstname" placeholder="Имя" />
-    </UFormField>
-    <UFormField label="Отчество" name="patronymic">
-      <UInput v-model.trim.lazy="form.patronymic" placeholder="Отчество" />
-    </UFormField>
-    <UFormField label="Год изменения" name="changed">
-      <UInput
-        v-model.trim.lazy="form.changed"
-        placeholder="Год изменения"
-        pattern="^\d{4}$"
-      />
-    </UFormField>
-    <UFormField label="Причина изменения" name="reason">
-      <UTextarea
-        v-model.trim.lazy="form.reason"
-        placeholder="Причина изменения"
-        maxlength="4096"
-      />
-    </UFormField>
-    <UButton label="Принять" color="success" variant="outline" type="submit" />
-  </UForm>
+  <FormCard
+    :fields="fields"
+    :item="props.item"
+    @submit="emit('update', $event)"
+  />
 </template>

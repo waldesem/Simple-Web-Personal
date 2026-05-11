@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType, toRef } from "vue";
-import type { Needs } from "@/types";
+import { PropType } from "vue";
+import type { FormField, Needs } from "@/types";
 
 const emit = defineEmits(["update"]);
 
@@ -11,28 +11,26 @@ const props = defineProps({
   },
 });
 
-const form = toRef(props.item);
+const fields = [
+  {
+    element: "textarea",
+    key: "info",
+    label: "Информация",
+    required: true,
+  },
+  {
+    element: "input",
+    key: "initiator",
+    label: "Инициатор",
+    required: true,
+  },
+] as FormField[];
 </script>
 
 <template>
-  <UForm :state="form" @submit.prevent="emit('update', form)">
-    <UFormField label="Информация" name="info" required>
-      <UTextarea
-        v-model.trim.lazy="form.info"
-        autoresize
-        placeholder="Информация"
-        required
-        maxlength="4096"
-      />
-    </UFormField>
-    <UFormField label="Инициатор" name="initiator" required>
-      <UInput
-        v-model.trim.lazy="form.initiator"
-        placeholder="Инициатор"
-        maxlength="255"
-        required
-      />
-    </UFormField>
-    <UButton label="Принять" color="success" variant="outline" type="submit" />
-  </UForm>
+  <FormCard
+    :fields="fields"
+    :item="props.item"
+    @submit="emit('update', $event)"
+  />
 </template>

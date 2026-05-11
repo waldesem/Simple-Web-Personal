@@ -2,18 +2,22 @@ import * as v from "valibot";
 
 const pattern = /^[А-ЯЁа-яё][А-ЯЁа-яёIV\-.,'()\s]*[А-ЯЁа-яё]$|^[А-ЯЁа-яё]$/;
 
+export const empty = v.object({});
+
 export const schemaResume = v.object({
   surname: v.pipe(
     v.string(),
     v.nonEmpty("Обязательное поле!"),
     v.regex(pattern, "Недопустимые символы!"),
     v.maxLength(255, "Не более 255 символов!"),
+    v.toUpperCase(),
   ),
   firstname: v.pipe(
     v.string(),
     v.nonEmpty("Обязательное поле!"),
     v.regex(pattern, "Недопустимые символы!"),
     v.maxLength(255, "Не более 255 символов!"),
+    v.toUpperCase(),
   ),
   patronymic: v.pipe(
     v.string(),
@@ -22,6 +26,7 @@ export const schemaResume = v.object({
       "Недопустимые символы!",
     ),
     v.maxLength(255, "Не более 255 символов!"),
+    v.toUpperCase(),
   ),
   birthday: v.pipe(
     v.string(),
@@ -50,6 +55,8 @@ export const schemaResume = v.object({
   marital: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
   addition: v.pipe(v.string(), v.maxLength(4096, "Не более 4096 символов!")),
 });
+
+export const parserResume = v.parser(schemaResume);
 
 export const schemaDoc = v.object({
   view: v.pipe(

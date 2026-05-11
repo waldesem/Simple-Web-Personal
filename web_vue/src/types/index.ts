@@ -10,6 +10,29 @@ export interface ItemField {
   slot?: boolean;
 }
 
+export interface FormField {
+  element: "input" | "select" | "textarea";
+  key:
+    | keyof Previous
+    | keyof Education
+    | keyof Work
+    | keyof Passport
+    | keyof Address
+    | keyof Contact
+    | keyof Affilation
+    | keyof Staff
+    | keyof Verification
+    | keyof Pfo
+    | keyof Inquisition
+    | keyof Needs;
+  label: string;
+  items?: string[];
+  type?: string;
+  maxlength?: number;
+  pattern?: string;
+  required?: boolean;
+}
+
 export interface Person {
   id: string;
   surname: string;
@@ -80,7 +103,6 @@ export interface Work {
   address?: string;
   reason?: string;
   position: string;
-  created: string;
 }
 
 export interface Affilation {
@@ -95,14 +117,12 @@ export interface Verification {
   id: string;
   workplace?: string;
   document?: string;
-  inn?: string;
   debt?: string;
   bankruptcy?: string;
   bki?: string;
   courts?: string;
   affilation?: string;
   terrorist?: string;
-  mvd?: string;
   internet?: string;
   cronos?: string;
   addition?: string;

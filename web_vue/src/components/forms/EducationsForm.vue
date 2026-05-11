@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType, toRef } from "vue";
-import type { Education } from "@/types";
+import { PropType } from "vue";
+import type { Education, FormField } from "@/types";
 
 const emit = defineEmits(["update"]);
 
@@ -11,48 +11,46 @@ const props = defineProps({
   },
 });
 
-const form = toRef(props.item);
+const fields = [
+  {
+    element: "select",
+    key: "view",
+    label: "Вид образования",
+    items: [
+      "Основное общее",
+      "Среднее общее",
+      "Среднее профессиональное",
+      "Высшее",
+      "Неоконченное высшее образование",
+      "Другое образование",
+    ],
+    required: true,
+  },
+  {
+    element: "input",
+    key: "institution",
+    label: "Учебное заведение",
+    required: true,
+  },
+  {
+    element: "input",
+    key: "finished",
+    label: "Год окончания",
+    pattern: "^\d{4}$",
+    required: true,
+  },
+  {
+    element: "input",
+    key: "specialty",
+    label: "Специальность",
+  },
+] as FormField[];
 </script>
 
 <template>
-  <UForm :state="form" @submit.prevent="emit('update', form)">
-    <UFormField label="Тип образования" name="view" required>
-      <USelect
-        v-model="form.view"
-        :items="[
-          'Основное общее',
-          'Среднее общее',
-          'Среднее профессиональное',
-          'Высшее',
-          'Неоконченное высшее образование',
-          'Другое образование',
-        ]"
-        placeholder="Выберите тип образования"
-        required
-      />
-    </UFormField>
-    <UFormField label="Название учебного заведения" name="institution" required>
-      <UInput
-        v-model.trim.lazy="form.institution"
-        placeholder="Название учебного заведения"
-        maxlength="255"
-        required
-      />
-    </UFormField>
-    <UFormField label="Год окончания" name="finished">
-      <UInput
-        v-model.trim.lazy="form.finished"
-        placeholder="Год окончания"
-        pattern="^\d{4}$"
-      />
-    </UFormField>
-    <UFormField label="Специальность" name="specialty">
-      <UInput
-        v-model.trim.lazy="form.specialty"
-        placeholder="Специальность"
-        maxlength="255"
-      />
-    </UFormField>
-    <UButton label="Принять" color="success" variant="outline" type="submit" />
-  </UForm>
+  <FormCard
+    :fields="fields"
+    :item="props.item"
+    @submit="emit('update', $event)"
+  />
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType, toRef } from "vue";
-import type { Affilation } from "@/types";
+import { PropType } from "vue";
+import type { Affilation, FormField } from "@/types";
 
 const emit = defineEmits(["update"]);
 
@@ -11,42 +11,41 @@ const props = defineProps({
   },
 });
 
-const form = toRef(props.item);
+const fields = [
+  {
+    element: "select",
+    key: "view",
+    label: "Вид участия",
+    items: [
+      "Являлся государственным/муниципальным служащим",
+      "Участвует в деятельности коммерческих организаций",
+    ],
+    required: true,
+  },
+  {
+    element: "input",
+    key: "organization",
+    label: "Организация",
+    required: true,
+  },
+  {
+    element: "input",
+    key: "inn",
+    label: "ИНН",
+    pattern: "^\d{10,12}$",
+  },
+  {
+    element: "textarea",
+    key: "activity",
+    label: "Деятельность",
+  },
+] as FormField[];
 </script>
 
 <template>
-  <UForm :state="form" @submit.prevent="emit('update', form)">
-    <UFormField label="Вид участия" name="view" required>
-      <USelect
-        v-model="form.view"
-        :items="[
-          'Являлся государственным/муниципальным служащим',
-          'Являлся государственным должностным лицом',
-          'Связанные лица работают в государственных организациях',
-          'Участвует в деятельности коммерческих организаций',
-        ]"
-        placeholder="Выберите вид участия"
-        required
-      />
-    </UFormField>
-    <UFormField label="Организация" name="organization" required>
-      <UInput
-        v-model.trim.lazy="form.organization"
-        placeholder="Организация"
-        maxlength="255"
-        required
-      />
-    </UFormField>
-    <UFormField label="ИНН" name="inn">
-      <UInput
-        v-model.trim.lazy="form.inn"
-        placeholder="ИНН"
-        pattern="^\d{10,12}$"
-      />
-    </UFormField>
-    <UFormField label="Деятельность" name="activity">
-      <UTextarea v-model.trim.lazy="form.activity" placeholder="Деятельность" />
-    </UFormField>
-    <UButton label="Принять" color="success" variant="outline" type="submit" />
-  </UForm>
+  <FormCard
+    :fields="fields"
+    :item="props.item"
+    @submit="emit('update', $event)"
+  />
 </template>
