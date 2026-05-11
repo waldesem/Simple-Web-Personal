@@ -15,28 +15,22 @@
 </template>
 
 <style>
-/* Начальное состояние при появлении */
 .fade-enter-from {
   opacity: 0;
 }
-/* Конечное состояние при появлении */
 .fade-enter-to {
   opacity: 1;
 }
-/* Промежуточный класс для самого перехода */
 .fade-enter-active {
   transition: opacity 0.3s ease;
 }
 
-/* Начальное состояние при исчезновении */
 .fade-leave-from {
   opacity: 1;
 }
-/* Конечное состояние при исчезновении */
 .fade-leave-to {
   opacity: 0;
 }
-/* Промежуточный класс для исчезновения */
 .fade-leave-active {
   transition: opacity 0.3s ease;
 }

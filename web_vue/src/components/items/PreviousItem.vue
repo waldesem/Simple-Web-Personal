@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import type { Previous } from "@/types";
+import type { ItemField, Previous } from "@/types";
 
 const props = defineProps({
   item: {
@@ -8,12 +8,16 @@ const props = defineProps({
     required: true,
   },
 });
+
+const fields = [
+  { key: "surname", label: "Фамилия" },
+  { key: "firstname", label: "Имя" },
+  { key: "patronymic", label: "Отчество" },
+  { key: "changed", label: "Год изменения" },
+  { key: "reason", label: "Причина" },
+] as ItemField[];
 </script>
 
 <template>
-  <LabelValue label="Фамилия" :value="props.item.surname" />
-  <LabelValue label="Имя" :value="props.item.firstname" />
-  <LabelValue label="Отчество" :value="props.item.patronymic" />
-  <LabelValue label="Год изменения" :value="props.item.changed" />
-  <LabelValue label="Причина" :value="props.item.reason" />
+  <ItemCard :fields="fields" :item="props.item" />
 </template>

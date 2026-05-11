@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { PropType } from "vue";
+import { computed, PropType } from "vue";
 import { localDateStr } from "@/utils";
-import type { Work } from "@/types";
+import type { ItemField, Work } from "@/types";
+import ItemCard from "../element/ItemCard.vue";
 
 const props = defineProps({
   item: {
@@ -9,20 +10,27 @@ const props = defineProps({
     required: true,
   },
 });
+
+const work = computed(() => {
+  return {
+    ...props.item,
+    nowWork: props.item.finished ? "Нет" : "Да",
+    starts: localDateStr(props.item.starts),
+    finished: localDateStr(props.item.finished),
+  };
+});
+
+const fields = [
+  { key: "nowWork", label: "Текущая работа" },
+  { key: "starts", label: "Начало работы" },
+  { key: "finished", label: "Дата увольнения" },
+  { key: "workplace", label: "Организация" },
+  { key: "address", label: "Организация" },
+  { key: "position", label: "Должность" },
+  { key: "reason", label: "Причина увольнения" },
+] as ItemField[];
 </script>
 
 <template>
-  <LabelValue
-    label="Текущая работа"
-    :value="props.item.finished ? 'Нет' : 'Да'"
-  />
-  <LabelValue label="Начало работы" :value="localDateStr(props.item.starts)" />
-  <LabelValue
-    label="Окончание работы"
-    :value="localDateStr(props.item.finished)"
-  />
-  <LabelValue label="Организация" :value="props.item.workplace" />
-  <LabelValue label="Адрес" :value="props.item.address" />
-  <LabelValue label="Должность" :value="props.item.position" />
-  <LabelValue label="Причина увольнения" :value="props.item.reason" />
+  <ItemCard :fields="fields" :item="work" />
 </template>

@@ -37,7 +37,7 @@ const data = shallowRef<Items[keyof Items]>([]);
 const item = shallowRef({} as (typeof data.value)[number]);
 const modal = ref(false); // Флаг для открытия модального окна
 const method = ref<"POST" | "PATCH">("POST");
-const hasRendered = ref(false); // ← триггер для анимации
+const loading = ref(false); // ← триггер для анимации
 
 onMounted(() => getItem());
 
@@ -49,6 +49,7 @@ async function getItem() {
 // Определяем функцию для отправки данных формы на сервер
 async function submitItem(form: typeof item.value) {
   modal.value = false;
+  loading.value = true;
   const url = `/routes/${props.view}/${props.candId}`;
   const { status } = await ofetch.raw(
     method.value === "POST" ? url : `${url}/${item.value.id}`,
@@ -59,25 +60,20 @@ async function submitItem(form: typeof item.value) {
   );
   if (status !== 201 && status !== 200) alert("Невозможно выполнить действие!");
   item.value = {} as (typeof data.value)[number];
-  hasRendered.value = true;
   await getItem();
-  setTimeout(() => {
-    hasRendered.value = false;
-  }, 3000);
+  loading.value = false;
 }
 
 // Определяем функцию для удаления данных
 async function deleteItem(itemId: string) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
+  loading.value = true;
   const { status } = await ofetch.raw(`/routes/${props.view}/${itemId}`, {
     method: "DELETE",
   });
   if (status === 204) {
-    hasRendered.value = true;
     await getItem();
-    setTimeout(() => {
-      hasRendered.value = false;
-    }, 3000);
+    loading.value = false;
   } else {
     alert("Невозможно выполнить действие!");
   }
@@ -104,10 +100,8 @@ async function deleteItem(itemId: string) {
   <div
     v-for="(content, index) in data"
     :key="index"
-    :class="{
-      'border-solid border-sky-300/75 rounded-md animate-pulse': hasRendered,
-    }"
-    class="border border-2 border-hidden p-2 my-2 mx-1"
+    :class="{ 'animate-pulse': loading }"
+    class="p-2 my-2"
   >
     <!-- Выводим кнопки редактирования/удаления данных, в режиме редактирования -->
     <DivMenu

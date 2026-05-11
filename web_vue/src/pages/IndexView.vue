@@ -142,6 +142,7 @@ const cols: TableColumns<Person>[] = [
 
     <!-- Таблица с данными кандидатов -->
     <TableDiv
+      :class="{ 'animate-pulse': loading }"
       :cols="cols"
       :data="data"
       @select="
@@ -166,6 +167,7 @@ const cols: TableColumns<Person>[] = [
     <!-- Пагинация -->
     <div
       v-show="data"
+      :class="{ 'animate-pulse': loading }"
       class="flex justify-center border-t border-default mt-4 py-4"
     >
       <UButton

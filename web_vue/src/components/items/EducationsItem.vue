@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import type { Education } from "@/types";
+import type { Education, ItemField } from "@/types";
 
 const props = defineProps({
   item: {
@@ -8,11 +8,15 @@ const props = defineProps({
     required: true,
   },
 });
+
+const fields = [
+  { key: "view", label: "Уровень образования" },
+  { key: "institution", label: "Учебное заведение" },
+  { key: "finished", label: "Год окончания" },
+  { key: "specialty", label: "Специальность" },
+] as ItemField[];
 </script>
 
 <template>
-  <LabelValue label="Уровень образования" :value="props.item.view" />
-  <LabelValue label="Учебное заведение" :value="props.item.institution" />
-  <LabelValue label="Год окончания" :value="props.item.finished" />
-  <LabelValue label="Специальность" :value="props.item.specialty" />
+  <ItemCard :fields="fields" :item="props.item" />
 </template>

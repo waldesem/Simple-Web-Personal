@@ -2,7 +2,7 @@ import * as v from "valibot";
 
 const pattern = /^[А-ЯЁа-яё][А-ЯЁа-яёIV\-.,'()\s]*[А-ЯЁа-яё]$|^[А-ЯЁа-яё]$/;
 
-export const schemaName = v.object({
+export const schemaResume = v.object({
   surname: v.pipe(
     v.string(),
     v.nonEmpty("Обязательное поле!"),
@@ -23,53 +23,33 @@ export const schemaName = v.object({
     ),
     v.maxLength(255, "Не более 255 символов!"),
   ),
+  birthday: v.pipe(
+    v.string(),
+    v.nonEmpty("Обязательное поле!"),
+    v.toDate(),
+    v.maxValue(new Date(), "Дата находится в будущем!"),
+    v.minValue(new Date(1900, 0, 1), "Дата слишком старая!"),
+  ),
+  birthplace: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
+  citizenship: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
+  dual: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
+  snils: v.pipe(
+    v.string(),
+    v.check(
+      (value) => value === "" || /^\d{11}$/.test(value),
+      "Должно быть 11 цифр!",
+    ),
+  ),
+  inn: v.pipe(
+    v.string(),
+    v.check(
+      (value) => value === "" || /^\d{12}$/.test(value),
+      "Должно быть 12 цифр!",
+    ),
+  ),
+  marital: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
+  addition: v.pipe(v.string(), v.maxLength(4096, "Не более 4096 символов!")),
 });
-
-export const schemaResume = v.intersect([
-  schemaName,
-  v.object({
-    birthday: v.pipe(
-      v.string(),
-      v.nonEmpty("Обязательное поле!"),
-      v.toDate(),
-      v.maxValue(new Date(), "Дата находится в будущем!"),
-      v.minValue(new Date(1900, 0, 1), "Дата слишком старая!"),
-    ),
-    birthplace: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
-    citizenship: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
-    dual: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
-    snils: v.pipe(
-      v.string(),
-      v.check(
-        (value) => value === "" || /^\d{11}$/.test(value),
-        "Должно быть 11 цифр!",
-      ),
-    ),
-    inn: v.pipe(
-      v.string(),
-      v.check(
-        (value) => value === "" || /^\d{12}$/.test(value),
-        "Должно быть 12 цифр!",
-      ),
-    ),
-    marital: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
-    addition: v.pipe(v.string(), v.maxLength(4096, "Не более 4096 символов!")),
-  }),
-]);
-
-export const schemaPrevious = v.intersect([
-  schemaName,
-  v.object({
-    changed: v.pipe(
-      v.string(),
-      v.check(
-        (value) => value === "" || /^\d{4}$/.test(value),
-        "Должно быть 4 цифры!",
-      ),
-    ),
-    reason: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
-  }),
-]);
 
 export const schemaDoc = v.object({
   view: v.pipe(

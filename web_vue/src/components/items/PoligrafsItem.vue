@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { PropType } from "vue";
+import { computed, PropType } from "vue";
 import { decisions, localDateStr } from "@/utils";
-import type { Pfo } from "@/types";
+import type { ItemField, Pfo } from "@/types";
 
 const props = defineProps({
   item: {
@@ -9,24 +9,37 @@ const props = defineProps({
     required: true,
   },
 });
+
+const fields = [
+  { key: "theme", label: "Тема проверки" },
+  { key: "results", label: "Результаты" },
+  { key: "conclusion", label: "Заключение", slot: true },
+  { key: "created", label: "Дата записи" },
+] as ItemField[];
+
+const pfo = computed(() => {
+  return {
+    ...props.item,
+    created: localDateStr(props.item.created),
+  };
+});
 </script>
 
 <template>
-  <LabelValue label="Тема проверки" :value="props.item.theme" />
-  <LabelValue label="Результаты" :value="props.item.results" />
-  <LabelSlot v-if="props.item.conclusion" label="Заключение">
-    <UBadge
-      :color="
-        props.item.conclusion === decisions.agreed
-          ? 'success'
-          : props.item.conclusion === decisions.comments
-            ? 'warning'
-            : props.item.conclusion === decisions.cancel
-              ? 'neutral'
-              : 'error'
-      "
-      :label="props.item.conclusion"
-    />
-  </LabelSlot>
-  <LabelValue label="Дата записи" :value="localDateStr(props.item.created)" />
+  <ItemCard :fields="fields" :item="pfo">
+    <template #conclusion v-if="props.item.conclusion">
+      <UBadge
+        :color="
+          props.item.conclusion === decisions.agreed
+            ? 'success'
+            : props.item.conclusion === decisions.comments
+              ? 'warning'
+              : props.item.conclusion === decisions.cancel
+                ? 'neutral'
+                : 'error'
+        "
+        :label="props.item.conclusion"
+      />
+    </template>
+  </ItemCard>
 </template>

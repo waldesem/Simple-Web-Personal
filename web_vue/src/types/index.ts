@@ -4,6 +4,12 @@ export interface TableColumns<T> {
   cell?: (row: T) => string;
 }
 
+export interface ItemField {
+  key: string;
+  label: string;
+  slot?: boolean;
+}
+
 export interface Person {
   id: string;
   surname: string;
@@ -68,7 +74,6 @@ export interface Contact {
 
 export interface Work {
   id: string;
-  now_work: boolean;
   starts: string;
   finished: string;
   workplace: string;

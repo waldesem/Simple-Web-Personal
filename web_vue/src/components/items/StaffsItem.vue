@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import type { Staff } from "@/types";
+import type { ItemField, Staff } from "@/types";
 
 const props = defineProps({
   item: {
@@ -8,9 +8,13 @@ const props = defineProps({
     required: true,
   },
 });
+
+const fields = [
+  { key: "position", label: "Должность" },
+  { key: "department", label: "Департамент" },
+] as ItemField[];
 </script>
 
 <template>
-  <LabelValue label="Должность" :value="props.item.position" />
-  <LabelValue label="Департамент" :value="props.item.department" />
+  <ItemCard :fields="fields" :item="props.item" />
 </template>

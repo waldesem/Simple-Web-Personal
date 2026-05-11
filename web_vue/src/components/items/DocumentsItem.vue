@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { PropType } from "vue";
+import { computed, PropType } from "vue";
 import { localDateStr } from "@/utils";
-import type { Passport } from "@/types";
+import type { ItemField, Passport } from "@/types";
 
 const props = defineProps({
   item: {
@@ -9,12 +9,23 @@ const props = defineProps({
     required: true,
   },
 });
+
+const fields = [
+  { key: "view", label: "Вид документа" },
+  { key: "series", label: "Серия документа" },
+  { key: "digits", label: "Номер документа" },
+  { key: "agency", label: "Кем выдан" },
+  { key: "issue", label: "Дата выдачи" },
+] as ItemField[];
+
+const doc = computed(() => {
+  return {
+    ...props.item,
+    issue: localDateStr(props.item.issue),
+  };
+});
 </script>
 
 <template>
-  <LabelValue label="Вид документа" :value="props.item.view" />
-  <LabelValue label="Серия документа" :value="props.item.series" />
-  <LabelValue label="Номер документа" :value="props.item.digits" />
-  <LabelValue label="Кем выдан" :value="props.item.agency" />
-  <LabelValue label="Дата выдачи" :value="localDateStr(props.item.issue)" />
+  <ItemCard :fields="fields" :item="doc" />
 </template>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { PropType, ref } from "vue";
-import { schemaPrevious } from "@/schema";
 import type { Previous } from "@/types";
 
 const emit = defineEmits(["update"]);
@@ -20,37 +19,32 @@ const form = ref({
   changed: props.item.changed ?? "",
   reason: props.item.reason ?? "",
 });
-
-const upperCase = (ev: { target: HTMLInputElement }) => {
-  let field = ev.target.name;
-  form.value[field as keyof typeof form.value] = ev.target.value.toUpperCase();
-};
 </script>
 
 <template>
-  <UForm
-    :state="form"
-    :schema="schemaPrevious"
-    @submit.prevent="emit('update', form)"
-  >
+  <UForm :state="form" @submit.prevent="emit('update', form)">
     <UFormField label="Фамилия" name="surname" required>
-      <UInput :value="form.surname" @input="upperCase" placeholder="Фамилия" />
+      <UInput v-model.trim.lazy="form.surname" placeholder="Фамилия" />
     </UFormField>
     <UFormField label="Имя" name="firstname" required>
-      <UInput :value="form.firstname" @input="upperCase" placeholder="Имя" />
+      <UInput v-model.trim.lazy="form.firstname" placeholder="Имя" />
     </UFormField>
     <UFormField label="Отчество" name="patronymic">
-      <UInput
-        :value="form.patronymic"
-        @input="upperCase"
-        placeholder="Отчество"
-      />
+      <UInput v-model.trim.lazy="form.patronymic" placeholder="Отчество" />
     </UFormField>
     <UFormField label="Год изменения" name="changed">
-      <UInput v-model.trim.lazy="form.changed" placeholder="Год изменения" />
+      <UInput
+        v-model.trim.lazy="form.changed"
+        placeholder="Год изменения"
+        pattern="^\d{4}$"
+      />
     </UFormField>
     <UFormField label="Причина изменения" name="reason">
-      <UInput v-model.trim.lazy="form.reason" placeholder="Причина изменения" />
+      <UTextarea
+        v-model.trim.lazy="form.reason"
+        placeholder="Причина изменения"
+        maxlength="4096"
+      />
     </UFormField>
     <UButton label="Принять" color="success" variant="outline" type="submit" />
   </UForm>

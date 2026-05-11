@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { PropType } from "vue";
+import { computed, PropType } from "vue";
 import { localDateStr } from "@/utils";
-import type { Inquisition } from "@/types";
+import type { Inquisition, ItemField } from "@/types";
 
 const props = defineProps({
   item: {
@@ -9,10 +9,21 @@ const props = defineProps({
     required: true,
   },
 });
+
+const fields = [
+  { key: "theme", label: "Тема проверки" },
+  { key: "info", label: "Информация" },
+  { key: "created", label: "Дата записи" },
+] as ItemField[];
+
+const investigation = computed(() => {
+  return {
+    ...props.item,
+    created: localDateStr(props.item.created),
+  };
+});
 </script>
 
 <template>
-  <LabelValue label="Тема проверки" :value="props.item.theme" />
-  <LabelValue label="Информация" :value="props.item.info" />
-  <LabelValue label="Дата записи" :value="localDateStr(props.item.created)" />
+  <ItemCard :fields="fields" :item="investigation" />
 </template>
