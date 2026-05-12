@@ -21,16 +21,16 @@ const work = computed(() => {
 });
 
 const fields = [
-  { key: "nowWork", label: "Текущая работа", value: work.value.nowWork },
-  { key: "starts", label: "Начало работы", value: work.value.starts },
-  { key: "finished", label: "Дата увольнения", value: work.value.finished },
-  { key: "workplace", label: "Организация", value: work.value.workplace },
-  { key: "address", label: "Организация", value: work.value.address },
-  { key: "position", label: "Должность", value: work.value.position },
-  { key: "reason", label: "Причина увольнения", value: work.value.reason },
+  { key: "nowWork", label: "Текущая работа" },
+  { key: "starts", label: "Начало работы" },
+  { key: "finished", label: "Дата увольнения" },
+  { key: "workplace", label: "Организация" },
+  { key: "address", label: "Организация" },
+  { key: "position", label: "Должность" },
+  { key: "reason", label: "Причина увольнения" },
 ] as ItemField[];
 </script>
 
 <template>
-  <ItemCard :fields="fields" />
+  <ItemCard :fields="fields" :item="work" />
 </template>

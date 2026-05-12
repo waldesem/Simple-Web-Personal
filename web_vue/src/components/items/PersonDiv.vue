@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PropType } from "vue";
+import { computed, PropType } from "vue";
 import { useClipboard } from "@vueuse/core";
 import { localDateStr } from "@/utils";
 import type { ItemField, Person } from "@/types";
@@ -14,36 +14,32 @@ const props = defineProps({
 const { copy, copied } = useClipboard();
 
 const fields = [
-  { key: "surname", label: "Фамилия", value: props.item.surname },
-  { key: "firstname", label: "Имя", value: props.item.firstname },
-  { key: "patronymic", label: "Отчество", value: props.item.patronymic },
-  {
-    key: "birthday",
-    label: "Дата рождения",
-    value: localDateStr(props.item.birthday),
-  },
-  { key: "birthplace", label: "Место рождения", value: props.item.birthplace },
-  { key: "citizenship", label: "Гражданство", value: props.item.citizenship },
+  { key: "surname", label: "Фамилия" },
+  { key: "firstname", label: "Имя" },
+  { key: "patronymic", label: "Отчество" },
+  { key: "birthday", label: "Дата рождения" },
+  { key: "birthplace", label: "Место рождения" },
+  { key: "citizenship", label: "Гражданство" },
   { key: "dual", label: "Двойное гражданство", slot: true },
-  { key: "snils", label: "СНИЛС", value: props.item.snils },
-  { key: "inn", label: "ИНН", value: props.item.inn },
-  { key: "marital", label: "Семейное положение", value: props.item.marital },
-  {
-    key: "created",
-    label: "Дата записи",
-    value: localDateStr(props.item.created),
-  },
-  {
-    key: "addition",
-    label: "Дополнительная информация",
-    value: props.item.addition,
-  },
+  { key: "snils", label: "СНИЛС" },
+  { key: "inn", label: "ИНН" },
+  { key: "marital", label: "Семейное положение" },
+  { key: "created", label: "Дата записи" },
+  { key: "addition", label: "Дополнительная информация" },
   { key: "destination", label: "Материалы проверок", slot: true },
 ] as ItemField[];
+
+const person = computed(() => {
+  return {
+    ...props.item,
+    birthday: localDateStr(props.item.birthday),
+    created: localDateStr(props.item.created),
+  };
+});
 </script>
 
 <template>
-  <ItemCard :fields="fields">
+  <ItemCard :fields="fields" :item="person">
     <template #dual v-if="props.item.dual">
       <UBadge variant="outline" color="info" :label="props.item.dual" />
     </template>
