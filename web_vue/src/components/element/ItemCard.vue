@@ -7,12 +7,16 @@ const props = defineProps({
     type: Object as PropType<ItemField[]>,
     required: true,
   },
+  item: {
+    type: Object,
+    default: () => ({}),
+  }
 });
 </script>
 
 <template>
   <div v-for="field in fields" :key="field.key">
-    <div v-if="field.value" class="flex grid grid-cols-12 gap-3 mb-4">
+    <div v-if="item[field.key]" class="flex grid grid-cols-12 gap-3 mb-4">
       <div class="col-span-3">
         {{ field.label }}
       </div>
@@ -20,7 +24,7 @@ const props = defineProps({
         <slot :name="field.key" />
       </div>
       <div v-else class="col-span-9 wrap-break-word">
-        {{ field.value }}
+        {{ item[field.key] }}
       </div>
     </div>
   </div>

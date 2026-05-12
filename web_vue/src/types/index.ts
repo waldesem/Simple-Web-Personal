@@ -7,7 +7,6 @@ export interface TableColumns<T> {
 export interface ItemField {
   key: string;
   label: string;
-  value?: string;
   slot?: boolean;
 }
 
