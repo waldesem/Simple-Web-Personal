@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, PropType } from "vue";
+import { PropType } from "vue";
 import { decisions, localDateStr } from "@/utils";
 import type { ItemField, Pfo } from "@/types";
 
@@ -11,22 +11,19 @@ const props = defineProps({
 });
 
 const fields = [
-  { key: "theme", label: "Тема проверки" },
-  { key: "results", label: "Результаты" },
+  { key: "theme", label: "Тема проверки", value: props.item.theme },
+  { key: "results", label: "Результаты", value: props.item.results },
   { key: "conclusion", label: "Заключение", slot: true },
-  { key: "created", label: "Дата записи" },
+  {
+    key: "created",
+    label: "Дата записи",
+    value: localDateStr(props.item.created),
+  },
 ] as ItemField[];
-
-const pfo = computed(() => {
-  return {
-    ...props.item,
-    created: localDateStr(props.item.created),
-  };
-});
 </script>
 
 <template>
-  <ItemCard :fields="fields" :item="pfo">
+  <ItemCard :fields="fields">
     <template #conclusion v-if="props.item.conclusion">
       <UBadge
         :color="

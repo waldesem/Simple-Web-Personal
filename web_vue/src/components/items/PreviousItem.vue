@@ -10,14 +10,14 @@ const props = defineProps({
 });
 
 const fields = [
-  { key: "surname", label: "Фамилия" },
-  { key: "firstname", label: "Имя" },
-  { key: "patronymic", label: "Отчество" },
-  { key: "changed", label: "Год изменения" },
-  { key: "reason", label: "Причина" },
+  { key: "surname", label: "Фамилия", value: props.item.surname },
+  { key: "firstname", label: "Имя", value: props.item.firstname },
+  { key: "patronymic", label: "Отчество", value: props.item.patronymic },
+  { key: "changed", label: "Год изменения", value: props.item.changed },
+  { key: "reason", label: "Причина", value: props.item.reason },
 ] as ItemField[];
 </script>
 
 <template>
-  <ItemCard :fields="fields" :item="props.item" />
+  <ItemCard :fields="fields" />
 </template>

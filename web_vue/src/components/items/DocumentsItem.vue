@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, PropType } from "vue";
+import { PropType } from "vue";
 import { localDateStr } from "@/utils";
 import type { ItemField, Passport } from "@/types";
 
@@ -11,21 +11,14 @@ const props = defineProps({
 });
 
 const fields = [
-  { key: "view", label: "Вид документа" },
-  { key: "series", label: "Серия документа" },
-  { key: "digits", label: "Номер документа" },
-  { key: "agency", label: "Кем выдан" },
-  { key: "issue", label: "Дата выдачи" },
+  { key: "view", label: "Вид документа", value: "Паспорт" },
+  { key: "series", label: "Серия документа", value: props.item.series },
+  { key: "digits", label: "Номер документа", value: props.item.digits },
+  { key: "agency", label: "Кем выдан", value: props.item.agency },
+  { key: "issue", label: "Дата выдачи", value: localDateStr(props.item.issue) },
 ] as ItemField[];
-
-const doc = computed(() => {
-  return {
-    ...props.item,
-    issue: localDateStr(props.item.issue),
-  };
-});
 </script>
 
 <template>
-  <ItemCard :fields="fields" :item="doc" />
+  <ItemCard :fields="fields" />
 </template>

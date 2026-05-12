@@ -1,0 +1,1 @@
+import{R as e,m as t,x as n}from"./vue.runtime.esm-bundler-CJsNUrIw.js";import{t as r}from"./ItemCard-DXDoSOT1.js";var i=n({__name:`AddressesItem`,props:{item:{type:Object,required:!0}},setup(n){let i=n,a=[{key:`view`,label:`Тип`,value:i.item.view},{key:`address`,label:`Адрес`,value:i.item.address}];return(n,i)=>{let o=r;return e(),t(o,{fields:a})}}});export{i as default};

@@ -10,11 +10,11 @@ const props = defineProps({
 });
 
 const fields = [
-  { key: "position", label: "Должность" },
-  { key: "department", label: "Департамент" },
+  { key: "position", label: "Должность", value: props.item.position },
+  { key: "department", label: "Департамент", value: props.item.department },
 ] as ItemField[];
 </script>
 
 <template>
-  <ItemCard :fields="fields" :item="props.item" />
+  <ItemCard :fields="fields" />
 </template>
