@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, PropType } from "vue";
 import { useClipboard } from "@vueuse/core";
-import { localDateStr } from "@/utils";
+import { localStr } from "@/utils";
 import type { ItemField, Person } from "@/types";
 
 const props = defineProps({
@@ -20,7 +20,7 @@ const fields = [
   { key: "birthday", label: "Дата рождения" },
   { key: "birthplace", label: "Место рождения" },
   { key: "citizenship", label: "Гражданство" },
-  { key: "dual", label: "Двойное гражданство", slot: true },
+  { key: "dual", label: "Двойное гражданство" },
   { key: "snils", label: "СНИЛС" },
   { key: "inn", label: "ИНН" },
   { key: "marital", label: "Семейное положение" },
@@ -32,23 +32,20 @@ const fields = [
 const person = computed(() => {
   return {
     ...props.item,
-    birthday: localDateStr(props.item.birthday),
-    created: localDateStr(props.item.created),
+    birthday: localStr(props.item.birthday),
+    created: localStr(props.item.created),
   };
 });
 </script>
 
 <template>
   <ItemCard :fields="fields" :item="person">
-    <template #dual v-if="props.item.dual">
-      <UBadge variant="outline" color="info" :label="props.item.dual" />
-    </template>
-    <template #destination v-if="props.item.destination">
+    <template v-if="props.item.destination" #destination>
       <UButton
         variant="outline"
-        :color="!copied ? 'info' : 'success'"
         size="sm"
-        :label="!copied ? 'Копировать ссылку' : 'Скопировано'"
+        :color="copied ? 'success' : 'info'"
+        :label="copied ? 'Скопировано' : 'Копировать'"
         @click="copy(props.item.destination)"
       />
     </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, PropType } from "vue";
-import { localDateStr } from "@/utils";
+import { localStr } from "@/utils";
 import type { ItemField, Passport } from "@/types";
 
 const props = defineProps({
@@ -21,7 +21,7 @@ const fields = [
 const doc = computed(() => {
   return {
     ...props.item,
-    issue: localDateStr(props.item.issue),
+    issue: localStr(props.item.issue),
   };
 });
 </script>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, PropType } from "vue";
-import { localDateStr } from "@/utils";
+import { localStr } from "@/utils";
 import type { ItemField, Work } from "@/types";
 import ItemCard from "../element/ItemCard.vue";
 
@@ -15,8 +15,8 @@ const work = computed(() => {
   return {
     ...props.item,
     nowWork: props.item.finished ? "Нет" : "Да",
-    starts: localDateStr(props.item.starts),
-    finished: localDateStr(props.item.finished),
+    starts: localStr(props.item.starts),
+    finished: localStr(props.item.finished),
   };
 });
 

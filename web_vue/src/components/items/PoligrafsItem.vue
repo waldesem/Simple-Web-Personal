@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, PropType } from "vue";
-import { decisions, localDateStr } from "@/utils";
+import { decisions, localStr } from "@/utils";
 import type { ItemField, Pfo } from "@/types";
 
 const props = defineProps({
@@ -20,26 +20,28 @@ const fields = [
 const pfo = computed(() => {
   return {
     ...props.item,
-    created: localDateStr(props.item.created),
+    created: localStr(props.item.created),
   };
+});
+
+const color = computed(() => {
+  switch (props.item.conclusion) {
+    case decisions.agreed:
+      return "success";
+    case decisions.comments:
+      return "warning";
+    case decisions.cancel:
+      return "neutral";
+    default:
+      return "error";
+  }
 });
 </script>
 
 <template>
   <ItemCard :fields="fields" :item="pfo">
-    <template #conclusion v-if="props.item.conclusion">
-      <UBadge
-        :color="
-          props.item.conclusion === decisions.agreed
-            ? 'success'
-            : props.item.conclusion === decisions.comments
-              ? 'warning'
-              : props.item.conclusion === decisions.cancel
-                ? 'neutral'
-                : 'error'
-        "
-        :label="props.item.conclusion"
-      />
+    <template #conclusion>
+      <UBadge :color="color" :label="props.item.conclusion" />
     </template>
   </ItemCard>
 </template>

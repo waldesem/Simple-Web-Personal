@@ -3,7 +3,7 @@ import { ref, watch, defineAsyncComponent, shallowRef, onMounted } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { ofetch } from "ofetch";
-import { localDateStr, timeAgoStr } from "@/utils";
+import { localStr, timeAgoStr } from "@/utils";
 import type { Person, TableColumns } from "@/types";
 
 const FormResume = defineAsyncComponent(
@@ -90,7 +90,7 @@ const cols: TableColumns<Person>[] = [
     name: "birthday",
     header: "Дата рождения",
     cell: (row) => {
-      return localDateStr(row.birthday);
+      return localStr(row.birthday);
     },
   },
   {

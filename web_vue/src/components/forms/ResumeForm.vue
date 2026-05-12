@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, PropType } from "vue";
-import { parserResume, schemaResume } from "@/schema";
+import { PropType, computed } from "vue";
+import { fallbackResume, parserResume, schemaResume } from "@/schema";
 import type { FormField, Person } from "@/types";
 
 const emit = defineEmits(["update"]);
@@ -12,19 +12,7 @@ const props = defineProps({
   },
 });
 
-const form = ref({
-  surname: props.resume.surname ?? "",
-  firstname: props.resume.firstname ?? "",
-  patronymic: props.resume.patronymic ?? "",
-  birthday: props.resume.birthday ?? "",
-  birthplace: props.resume.birthplace ?? "",
-  citizenship: props.resume.citizenship ?? "",
-  dual: props.resume.dual ?? "",
-  snils: props.resume.snils ?? "",
-  inn: props.resume.inn ?? "",
-  marital: props.resume.marital ?? "",
-  addition: props.resume.addition ?? "",
-});
+const resume = computed(() => fallbackResume(props.resume));
 
 const fields = [
   {
@@ -93,7 +81,7 @@ const fields = [
   <FormCard
     :schema="schemaResume"
     :fields="fields"
-    :item="form"
-    @submit="emit('update', parserResume(form))"
+    :item="resume"
+    @submit="emit('update', parserResume($event))"
   />
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, PropType } from "vue";
-import { localDateStr } from "@/utils";
+import { localStr } from "@/utils";
 import type { Inquisition, ItemField } from "@/types";
 
 const props = defineProps({
@@ -19,7 +19,7 @@ const fields = [
 const investigation = computed(() => {
   return {
     ...props.item,
-    created: localDateStr(props.item.created),
+    created: localStr(props.item.created),
   };
 });
 </script>

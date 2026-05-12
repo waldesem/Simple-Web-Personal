@@ -6,7 +6,7 @@ export function capitalizeStr(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export function localDateStr(str: string): string {
+export function localStr(str: string): string {
   return str ? new Date(str).toLocaleDateString() : "";
 }
 

@@ -4,6 +4,22 @@ const pattern = /^[А-ЯЁа-яё][А-ЯЁа-яёIV\-.,'()\s]*[А-ЯЁа-яё]$|
 
 export const empty = v.object({});
 
+export const schemaFallbackResume = v.object({
+  surname: v.fallback(v.string(), ""),
+  firstname: v.fallback(v.string(), ""),
+  patronymic: v.fallback(v.string(), ""),
+  birthday: v.fallback(v.string(), ""),
+  birthplace: v.fallback(v.string(), ""),
+  citizenship: v.fallback(v.string(), ""),
+  dual: v.fallback(v.string(), ""),
+  snils: v.fallback(v.string(), ""),
+  inn: v.fallback(v.string(), ""),
+  marital: v.fallback(v.string(), ""),
+  addition: v.fallback(v.string(), ""),
+});
+
+export const fallbackResume = v.parser(schemaFallbackResume);
+
 export const schemaResume = v.object({
   surname: v.pipe(
     v.string(),
