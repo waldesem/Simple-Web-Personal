@@ -4,35 +4,15 @@ const pattern = /^[А-ЯЁа-яё][А-ЯЁа-яёIV\-.,'()\s]*[А-ЯЁа-яё]$|
 
 export const empty = v.object({});
 
-export const schemaFallbackResume = v.object({
-  surname: v.fallback(v.string(), ""),
-  firstname: v.fallback(v.string(), ""),
-  patronymic: v.fallback(v.string(), ""),
-  birthday: v.fallback(v.string(), ""),
-  birthplace: v.fallback(v.string(), ""),
-  citizenship: v.fallback(v.string(), ""),
-  dual: v.fallback(v.string(), ""),
-  snils: v.fallback(v.string(), ""),
-  inn: v.fallback(v.string(), ""),
-  marital: v.fallback(v.string(), ""),
-  addition: v.fallback(v.string(), ""),
-});
-
-export const fallbackResume = v.parser(schemaFallbackResume);
-
 export const schemaResume = v.object({
   surname: v.pipe(
     v.string(),
-    v.nonEmpty("Обязательное поле!"),
     v.regex(pattern, "Недопустимые символы!"),
-    v.maxLength(255, "Не более 255 символов!"),
     v.toUpperCase(),
   ),
   firstname: v.pipe(
     v.string(),
-    v.nonEmpty("Обязательное поле!"),
     v.regex(pattern, "Недопустимые символы!"),
-    v.maxLength(255, "Не более 255 символов!"),
     v.toUpperCase(),
   ),
   patronymic: v.pipe(
@@ -41,19 +21,17 @@ export const schemaResume = v.object({
       (value) => value === "" || pattern.test(value),
       "Недопустимые символы!",
     ),
-    v.maxLength(255, "Не более 255 символов!"),
     v.toUpperCase(),
   ),
   birthday: v.pipe(
     v.string(),
-    v.nonEmpty("Обязательное поле!"),
     v.toDate(),
     v.maxValue(new Date(), "Дата находится в будущем!"),
     v.minValue(new Date(1900, 0, 1), "Дата слишком старая!"),
   ),
-  birthplace: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
-  citizenship: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
-  dual: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
+  birthplace: v.string(),
+  citizenship: v.string(),
+  dual: v.string(),
   snils: v.pipe(
     v.string(),
     v.check(
@@ -68,8 +46,8 @@ export const schemaResume = v.object({
       "Должно быть 12 цифр!",
     ),
   ),
-  marital: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
-  addition: v.pipe(v.string(), v.maxLength(4096, "Не более 4096 символов!")),
+  marital: v.string(),
+  addition: v.string(),
 });
 
 export const parserResume = v.parser(schemaResume);
@@ -83,13 +61,9 @@ export const schemaDoc = v.object({
       v.literal("Другое"),
     ]),
   ),
-  series: v.pipe(v.string(), v.maxLength(255)),
-  digits: v.pipe(
-    v.string(),
-    v.nonEmpty("Обязательное поле!"),
-    v.regex(/^\d{1,12}$/, "Недопустимые символы!"),
-  ),
-  agency: v.pipe(v.string(), v.maxLength(255)),
+  series: v.string(),
+  digits: v.pipe(v.string(), v.regex(/^\d{1,12}$/, "Недопустимые символы!")),
+  agency: v.string(),
   issue: v.pipe(
     v.string(),
     v.toDate(),
@@ -106,20 +80,24 @@ export const schemaWork = v.object({
   ),
   finished: v.pipe(
     v.string(),
-    v.nonEmpty("Обязательное поле!"),
     v.toDate(),
     v.minValue(new Date(1900, 0, 1), "Дата слишком старая!"),
   ),
-  workplace: v.pipe(
-    v.string(),
-    v.nonEmpty("Обязательное поле!"),
-    v.maxLength(255, "Не более 255 символов!"),
-  ),
-  position: v.pipe(
-    v.string(),
-    v.nonEmpty("Обязательное поле!"),
-    v.maxLength(255, "Не более 255 символов!"),
-  ),
-  address: v.pipe(v.string(), v.maxLength(255, "Не более 255 символов!")),
-  reason: v.pipe(v.string(), v.maxLength(4096, "Не более 4096 символов!")),
+  workplace: v.string(),
+  position: v.string(),
+  address: v.string(),
+  reason: v.string(),
 });
+
+export const fallbackParser = (schema: any) => {
+  return v.parser(
+    v.object(
+      Object.fromEntries(
+        Object.keys(schema.entries).map((name) => [
+          name,
+          v.fallback(v.string(), ""),
+        ]),
+      ),
+    ),
+  );
+};

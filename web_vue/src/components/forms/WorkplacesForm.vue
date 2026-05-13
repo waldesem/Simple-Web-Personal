@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType } from "vue";
-import { schemaWork } from "@/schema";
+import { computed, PropType } from "vue";
+import { fallbackParser, schemaWork } from "@/schema";
 import type { FormField, Work } from "@/types";
 
 const emit = defineEmits(["update"]);
@@ -12,15 +12,8 @@ const props = defineProps({
   },
 });
 
-const form = {
-  id: props.item.id ?? null,
-  starts: props.item.starts || "",
-  finished: props.item.finished || "",
-  workplace: props.item.workplace || "",
-  position: props.item.position || "",
-  address: props.item.address || "",
-  reason: props.item.reason || "",
-};
+const parser = fallbackParser(schemaWork)
+const form = computed(() => parser(props.item));
 
 const fields = [
   {

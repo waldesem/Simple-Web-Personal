@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType } from "vue";
-import { schemaDoc } from "@/schema";
+import { computed, PropType } from "vue";
+import { fallbackParser, schemaDoc } from "@/schema";
 import type { FormField, Passport } from "@/types";
 
 const emit = defineEmits(["update"]);
@@ -12,14 +12,9 @@ const props = defineProps({
   },
 });
 
-const form = {
-  id: props.item.id ?? null,
-  view: props.item.view || "",
-  series: props.item.series || "",
-  digits: props.item.digits || "",
-  agency: props.item.agency || "",
-  issue: props.item.issue || "",
-};
+const parser = fallbackParser(schemaDoc)
+const form = computed(() => parser(props.item));
+
 const fields = [
   {
     element: "select",

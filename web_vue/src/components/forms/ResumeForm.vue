@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType, computed } from "vue";
-import { fallbackResume, parserResume, schemaResume } from "@/schema";
+import { fallbackParser, parserResume, schemaResume } from "@/schema";
 import type { FormField, Person } from "@/types";
 
 const emit = defineEmits(["update"]);
@@ -12,7 +12,8 @@ const props = defineProps({
   },
 });
 
-const resume = computed(() => fallbackResume(props.resume));
+const parser = fallbackParser(schemaResume)
+const resume = computed(() => parser(props.resume));
 
 const fields = [
   {
