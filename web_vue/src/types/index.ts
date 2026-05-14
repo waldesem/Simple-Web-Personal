@@ -26,11 +26,21 @@ export interface FormField {
     | keyof Inquisition
     | keyof Needs;
   label: string;
+  attrs?: {
+    [K in
+      | "pattern"
+      | "type"
+      | "required"
+      | "name"
+      | "disabled"
+      | "placeholder"
+      | "autofocus"
+      | "max"
+      | "maxlength"
+      | "min"
+      | "minlength"]?: any;
+  };
   items?: string[];
-  type?: string;
-  maxlength?: number;
-  pattern?: string;
-  required?: boolean;
 }
 
 export interface Person {

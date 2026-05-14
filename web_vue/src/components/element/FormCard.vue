@@ -28,32 +28,25 @@ const form = toRef(props.item);
     <UFormField
       v-for="field in fields"
       :key="field.key"
-      :label="field.label"
       :name="field.key"
-      :required="field.required ?? false"
+      :label="field.label"
+      :required="field.attrs ? (field.attrs.required as boolean) : false"
     >
       <UInput
         v-if="field.element === 'input'"
         v-model.trim.lazy="form[field.key]"
-        :placeholder="field.label"
-        :maxlength="field.maxlength ?? 255"
-        :type="field.type ?? 'text'"
-        :pattern="field.pattern ?? '.*'"
-        :required="field.required ?? false"
+        v-bind="{ ...field.attrs }"
       />
       <USelect
         v-else-if="field.element === 'select'"
         v-model="form[field.key]"
+        v-bind="{ ...field.attrs }"
         :items="field.items"
-        :placeholder="field.label"
-        :required="field.required ?? false"
       />
       <UTextarea
         v-else-if="field.element === 'textarea'"
         v-model.trim.lazy="form[field.key]"
-        :placeholder="field.label"
-        :maxlength="field.maxlength ?? 4096"
-        :required="field.required ?? false"
+        v-bind="{ ...field.attrs }"
         autoresize
       />
     </UFormField>

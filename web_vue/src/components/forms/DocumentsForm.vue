@@ -12,8 +12,7 @@ const props = defineProps({
   },
 });
 
-const parser = fallbackParser(schemaDoc)
-const form = computed(() => parser(props.item));
+const fallback = computed(() => fallbackParser(schemaDoc, props.item));
 
 const fields = [
   {
@@ -21,32 +20,31 @@ const fields = [
     key: "view",
     label: "Вид документа",
     items: ["Паспорт", "Иностранный паспорт", "Другое"],
-    required: true,
+    attrs: { placeholder: "Выберите документ", required: true },
   },
   {
     element: "input",
     key: "series",
     label: "Серия",
-    maxlength: 12,
+    attrs: { placeholder: "Серия", maxlength: 16 },
   },
   {
     element: "input",
     key: "digits",
     label: "Номер",
-    maxlength: 12,
-    required: true,
+    attrs: { placeholder: "Номер", maxlength: 16, required: true },
   },
   {
     element: "input",
     key: "agency",
     label: "Кем выдан",
+    attrs: { placeholder: "Орган выдавший", maxlength: 255 },
   },
   {
     element: "input",
     key: "issue",
     label: "Дата выдачи",
-    type: "date",
-    required: true,
+    attrs: { type: "date", required: true },
   },
 ] as FormField[];
 </script>
@@ -54,7 +52,7 @@ const fields = [
 <template>
   <FormCard
     :fields="fields"
-    :item="form"
+    :item="fallback"
     :schema="schemaDoc"
     @submit="emit('update', $event)"
   />

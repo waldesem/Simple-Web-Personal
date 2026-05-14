@@ -16,12 +16,13 @@ const fields = [
     element: "input",
     key: "position",
     label: "Должность",
-    required: true,
+    attrs: { placeholder: "Должность", maxlength: 255, required: true },
   },
   {
     element: "input",
     key: "department",
     label: "Подразделение",
+    attrs: { placeholder: "Подразделение", maxlength: 255 },
   },
 ] as FormField[];
 </script>

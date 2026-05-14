@@ -89,8 +89,8 @@ export const schemaWork = v.object({
   reason: v.string(),
 });
 
-export const fallbackParser = (schema: any) => {
-  return v.parser(
+export const fallbackParser = (schema: any, data: object) => {
+  const parser = v.parser(
     v.object(
       Object.fromEntries(
         Object.keys(schema.entries).map((name) => [
@@ -100,4 +100,5 @@ export const fallbackParser = (schema: any) => {
       ),
     ),
   );
+  return parser(data);
 };

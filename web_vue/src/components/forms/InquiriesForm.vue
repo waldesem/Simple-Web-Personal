@@ -16,13 +16,13 @@ const fields = [
     element: "textarea",
     key: "info",
     label: "Информация",
-    required: true,
+    attrs: { placeholder: "Информация", maxlength: 4096, required: true },
   },
   {
     element: "input",
     key: "initiator",
     label: "Инициатор",
-    required: true,
+    attrs: { placeholder: "Инициатор", maxlength: 255, required: true },
   },
 ] as FormField[];
 </script>

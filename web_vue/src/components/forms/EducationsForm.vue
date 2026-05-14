@@ -24,25 +24,24 @@ const fields = [
       "Неоконченное высшее образование",
       "Другое образование",
     ],
-    required: true,
+    attrs: { placeholder: "Выберите образование", required: true },
   },
   {
     element: "input",
     key: "institution",
     label: "Учебное заведение",
-    required: true,
+    attrs: { placeholder: "Учебное заведение", maxlength: 255, required: true },
   },
   {
     element: "input",
     key: "finished",
     label: "Год окончания",
-    pattern: "^\d{4}$",
-    required: true,
+    attrs: { placeholder: "Год окончания", pattern: "^\d{4}$" },
   },
   {
     element: "input",
     key: "specialty",
-    label: "Специальность",
+    attrs: { placeholder: "Специальность", maxlength: 255, required: true },
   },
 ] as FormField[];
 </script>

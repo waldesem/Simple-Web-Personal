@@ -23,20 +23,20 @@ const fields = [
       "Служебное расследование",
       "Плановое мероприятие",
     ],
-    required: true,
+    attrs: { placeholder: "Выберите тему", required: true },
   },
   {
     element: "textarea",
     key: "results",
     label: "Результат",
-    required: true,
+    attrs: { placeholder: "Результат", maxlength: 4096, required: true },
   },
   {
     element: "select",
     key: "conclusion",
     label: "Результат",
     items: Object.values(decisions),
-    required: true,
+    attrs: { placeholder: "Выберите результат", required: true },
   },
 ] as FormField[];
 </script>

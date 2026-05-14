@@ -17,13 +17,13 @@ const fields = [
     key: "view",
     label: "Вид контакта",
     items: ["Телефон", "Электронная почта", "Другое"],
-    required: true,
+    attrs: { placeholder: "Выберите контакт", maxlength: 255, required: true },
   },
   {
     element: "input",
     key: "contact",
     label: "Контакт",
-    required: true,
+    attrs: { placeholder: "Контакт", maxlength: 255, required: true },
   },
 ] as FormField[];
 </script>

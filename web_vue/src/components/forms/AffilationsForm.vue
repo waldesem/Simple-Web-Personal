@@ -13,31 +13,28 @@ const props = defineProps({
 
 const fields = [
   {
-    element: "select",
+    element: "input",
     key: "view",
     label: "Вид участия",
-    items: [
-      "Являлся государственным/муниципальным служащим",
-      "Участвует в деятельности коммерческих организаций",
-    ],
-    required: true,
+    attrs: { placeholder: "Вид участия", maxlength: 255, required: true },
   },
   {
     element: "input",
     key: "organization",
     label: "Организация",
-    required: true,
+    attrs: { placeholder: "Организация", maxlength: 255, required: true },
   },
   {
     element: "input",
     key: "inn",
     label: "ИНН",
-    pattern: "^\d{10,12}$",
+    attrs: { placeholder: "Организация", pattern: "^\d{10,12}$" },
   },
   {
     element: "textarea",
     key: "activity",
     label: "Деятельность",
+    attrs: { placeholder: "Деятельность", maxlength: 4096 },
   },
 ] as FormField[];
 </script>
