@@ -3,8 +3,8 @@ import { ref, watch, defineAsyncComponent, shallowRef, onMounted } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { ofetch } from "ofetch";
-import { localStr, timeAgoStr } from "@/utils";
-import type { Person, TableColumns } from "@/types";
+import { tableColumns } from "@/schema/table";
+import type { Person } from "@/types";
 
 const FormResume = defineAsyncComponent(
   () => import("@/components/forms/ResumeForm.vue"),
@@ -68,39 +68,6 @@ async function submitPerson(form: Person) {
     alert("Невозможно выполнить действие!");
   }
 }
-
-const cols: TableColumns<Person>[] = [
-  {
-    name: "id",
-    header: "#",
-  },
-  {
-    name: "surname",
-    header: "Фамилия",
-  },
-  {
-    name: "firstname",
-    header: "Имя",
-  },
-  {
-    name: "patronymic",
-    header: "Отчество",
-  },
-  {
-    name: "birthday",
-    header: "Дата рождения",
-    cell: (row) => {
-      return localStr(row.birthday);
-    },
-  },
-  {
-    name: "created",
-    header: "Обновлено",
-    cell: (row) => {
-      return timeAgoStr(row.created);
-    },
-  },
-];
 </script>
 
 <template>
@@ -143,7 +110,7 @@ const cols: TableColumns<Person>[] = [
     <!-- Таблица с данными кандидатов -->
     <TableDiv
       :class="{ 'animate-pulse': loading }"
-      :cols="cols"
+      :cols="tableColumns"
       :data="data"
       @select="
         (id: any) => router.push({ name: 'profile', params: { id: id } })

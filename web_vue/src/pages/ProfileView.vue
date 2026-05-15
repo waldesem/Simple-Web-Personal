@@ -23,67 +23,26 @@ const fullname = computed(() => {
   }`;
 });
 
-const anketa = [
-  {
-    label: "Анкета",
-    slot: "anketa" as const,
-  },
-];
+const anketa = { label: "Анкета", slot: "anketa" as const };
 
 const subjects = [
-  {
-    label: "Проверки",
-    slot: "checks" as keyof Items,
-  },
-  {
-    label: "Полиграф",
-    slot: "poligrafs" as keyof Items,
-  },
-  {
-    label: "Расследования",
-    slot: "investigations" as keyof Items,
-  },
-  {
-    label: "Запросы",
-    slot: "inquiries" as keyof Items,
-  },
-];
+  { label: "Проверки", slot: "checks" as const },
+  { label: "Полиграф", slot: "poligrafs" as const },
+  { label: "Расследования", slot: "investigations" as const },
+  { label: "Запросы", slot: "inquiries" as const },
+] as { label: string; slot: keyof Items }[];
 
 // Определяем массив элементов аккордеона
 const accordion = [
-  {
-    label: "Должности",
-    slot: "staffs" as keyof Items,
-  },
-  {
-    label: "Образование",
-    slot: "educations" as keyof Items,
-  },
-  {
-    label: "Места работы",
-    slot: "workplaces" as keyof Items,
-  },
-  {
-    label: "Документы",
-    slot: "documents" as keyof Items,
-  },
-  {
-    label: "Адреса",
-    slot: "addresses" as keyof Items,
-  },
-  {
-    label: "Контакты",
-    slot: "contacts" as keyof Items,
-  },
-  {
-    label: "Изменения имени",
-    slot: "previous" as keyof Items,
-  },
-  {
-    label: "Аффилированность",
-    slot: "affilations" as keyof Items,
-  },
-];
+  { label: "Должности", slot: "staffs" as const },
+  { label: "Образование", slot: "educations" as const },
+  { label: "Места работы", slot: "workplaces" as const },
+  { label: "Документы", slot: "documents" as const },
+  { label: "Адреса", slot: "addresses" as const },
+  { label: "Контакты", slot: "contacts" as const },
+  { label: "Изменения имени", slot: "previous" as const },
+  { label: "Аффилированность", slot: "affilations" as const },
+] as { label: string; slot: keyof Items }[];
 </script>
 
 <template>
@@ -100,7 +59,7 @@ const accordion = [
     </UPageHeader>
 
     <UTabs
-      :items="[...anketa, ...subjects]"
+      :items="[anketa, ...subjects]"
       :unmount-on-hide="false"
       variant="pill"
       class="mt-4"
@@ -119,7 +78,7 @@ const accordion = [
             :key="accord.slot"
           >
             <ItemView
-              :view="accord.slot"
+              :view="accord.slot as keyof Items"
               :title="accord.label"
               :cand-id="candId"
             />
