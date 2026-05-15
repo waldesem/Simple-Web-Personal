@@ -8,13 +8,11 @@ const props = defineProps({
     type: Object as PropType<Needs>,
     required: true,
   },
+  fields: {
+    type: Array as PropType<ItemField[]>,
+    required: true,
+  },
 });
-
-const fields = [
-  { key: "info", label: "Информация" },
-  { key: "initiator", label: "Инициатор" },
-  { key: "created", label: "Дата записи" },
-] as ItemField[];
 
 const inquiry = computed(() => {
   return {
@@ -25,5 +23,5 @@ const inquiry = computed(() => {
 </script>
 
 <template>
-  <ItemCard :fields="fields" :item="inquiry" />
+  <ItemCard :fields="props.fields" :item="inquiry" />
 </template>

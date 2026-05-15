@@ -87,7 +87,7 @@ const fields = [
 <template>
   <FormCard
     :schema="schemaResume"
-    :fields="fields"
+    :fields="props.fields"
     :item="fallback"
     @submit="emit('update', parserResume($event))"
   />

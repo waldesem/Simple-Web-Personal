@@ -10,48 +10,18 @@ const props = defineProps({
     type: Object as PropType<Passport>,
     default: () => ({}),
   },
+  fields: {
+    type: Array as PropType<FormField[]>,
+    required: true,
+  },
 });
 
 const fallback = computed(() => fallbackParser(schemaDoc, props.item));
-
-const fields = [
-  {
-    element: "select",
-    key: "view",
-    label: "Вид документа",
-    items: ["Паспорт", "Иностранный паспорт", "Другое"],
-    attrs: { placeholder: "Выберите документ", required: true },
-  },
-  {
-    element: "input",
-    key: "series",
-    label: "Серия",
-    attrs: { placeholder: "Серия", maxlength: 16 },
-  },
-  {
-    element: "input",
-    key: "digits",
-    label: "Номер",
-    attrs: { placeholder: "Номер", maxlength: 16, required: true },
-  },
-  {
-    element: "input",
-    key: "agency",
-    label: "Кем выдан",
-    attrs: { placeholder: "Орган выдавший", maxlength: 255 },
-  },
-  {
-    element: "input",
-    key: "issue",
-    label: "Дата выдачи",
-    attrs: { type: "date", required: true },
-  },
-] as FormField[];
 </script>
 
 <template>
   <FormCard
-    :fields="fields"
+    :fields="props.fields"
     :item="fallback"
     :schema="schemaDoc"
     @submit="emit('update', $event)"

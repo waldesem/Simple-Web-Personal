@@ -10,6 +10,10 @@ const props = defineProps({
     type: Object as PropType<Verification>,
     default: () => ({}),
   },
+  fields: {
+    type: Array as PropType<FormField[]>,
+    required: true,
+  },
 });
 
 const form = toRef(props.item);
@@ -32,93 +36,11 @@ watch(noNegative, () => {
     conclusion: conclusions.agreed,
   });
 });
-
-const fields = [
-  {
-    element: "textarea",
-    key: "workplace",
-    label: "Проверка по местам работы",
-    attrs: { placeholder: "Проверка по местам работы", maxlength: 4096 },
-  },
-  {
-    element: "textarea",
-    key: "document",
-    label: "Проверка документов",
-    attrs: { placeholder: "Проверка документов", maxlength: 4096 },
-  },
-  {
-    element: "textarea",
-    key: "debt",
-    label: "Проверка задолженностей",
-    attrs: { placeholder: "Проверка задолженностей", maxlength: 4096 },
-  },
-  {
-    element: "textarea",
-    key: "bankruptcy",
-    label: "Проверка банкротства",
-    attrs: { placeholder: "Проверка банкротства", maxlength: 4096 },
-  },
-  {
-    element: "textarea",
-    key: "bki",
-    label: "Проверка Кредитной истории",
-    attrs: { placeholder: "Проверка Кредитной истории", maxlength: 4096 },
-  },
-  {
-    element: "textarea",
-    key: "courts",
-    label: "Проверка судебных дел",
-    attrs: { placeholder: "Проверка судебных дел", maxlength: 4096 },
-  },
-  {
-    element: "textarea",
-    key: "affilation",
-    label: "Проверка аффилированности",
-    attrs: { placeholder: "Проверка аффилированности", maxlength: 4096 },
-  },
-  {
-    element: "textarea",
-    key: "terrorist",
-    label: "Проверка в списке террористов",
-    attrs: { placeholder: "Проверка в списке террористов", maxlength: 4096 },
-  },
-  {
-    element: "textarea",
-    key: "internet",
-    label: "Проверка в открытых источниках",
-    attrs: { placeholder: "Проверка в открытых источниках", maxlength: 4096 },
-  },
-  {
-    element: "textarea",
-    key: "cronos",
-    label: "Проверка в Кронос",
-    attrs: { placeholder: "Проверка в Кронос", maxlength: 4096 },
-  },
-  {
-    element: "textarea",
-    key: "addition",
-    label: "Дополнительная информация",
-    attrs: { placeholder: "Дополнительная информация", maxlength: 4096 },
-  },
-  {
-    element: "textarea",
-    key: "comment",
-    label: "Комментарий",
-    attrs: { placeholder: "Комментарий", maxlength: 4096 },
-  },
-  {
-    element: "select",
-    key: "conclusion",
-    label: "Результат",
-    items: Object.values(conclusions),
-    attrs: { placeholder: "Выберите результат", required: true },
-  },
-] as FormField[];
 </script>
 
 <template>
   <UFormField>
     <USwitch v-model="noNegative" label="Негатива нет" />
   </UFormField>
-  <FormCard :fields="fields" :item="form" @submit="emit('update', $event)" />
+  <FormCard :fields="props.fields" :item="form" @submit="emit('update', $event)" />
 </template>

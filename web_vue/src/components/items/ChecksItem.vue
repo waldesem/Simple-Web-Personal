@@ -8,24 +8,11 @@ const props = defineProps({
     type: Object as PropType<Verification>,
     required: true,
   },
+  fields: {
+    type: Array as PropType<ItemField[]>,
+    required: true,
+  },
 });
-
-const fields = [
-  { key: "workplace", label: "Место работы" },
-  { key: "document", label: "Документы" },
-  { key: "debt", label: "Задолженности" },
-  { key: "bankruptcy", label: "Банкротство" },
-  { key: "bki", label: "Проверка по БКИ" },
-  { key: "courts", label: "Судебные решения" },
-  { key: "affilation", label: "Аффилированность" },
-  { key: "terrorist", label: "Проверка списка террористов" },
-  { key: "internet", label: "Проверка в открытых источниках" },
-  { key: "cronos", label: "Проверка Кронос" },
-  { key: "addition", label: "Дополнительная информация" },
-  { key: "comment", label: "Комментарии" },
-  { key: "conclusion", label: "Заключение", slot: true },
-  { key: "created", label: "Дата записи" },
-] as ItemField[];
 
 const check = computed(() => {
   return {
@@ -49,7 +36,7 @@ const color = computed(() => {
 </script>
 
 <template>
-  <ItemCard :fields="fields" :item="check">
+  <ItemCard :fields="props.fields" :item="check">
     <template #conclusion>
       <UBadge :color="color" :label="props.item.conclusion" />
     </template>

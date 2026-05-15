@@ -8,14 +8,11 @@ const props = defineProps({
     type: Object as PropType<Pfo>,
     required: true,
   },
+  fields: {
+    type: Array as PropType<ItemField[]>,
+    required: true,
+  },
 });
-
-const fields = [
-  { key: "theme", label: "Тема проверки" },
-  { key: "results", label: "Результаты" },
-  { key: "conclusion", label: "Заключение", slot: true },
-  { key: "created", label: "Дата записи" },
-] as ItemField[];
 
 const pfo = computed(() => {
   return {
@@ -39,7 +36,7 @@ const color = computed(() => {
 </script>
 
 <template>
-  <ItemCard :fields="fields" :item="pfo">
+  <ItemCard :fields="props.fields" :item="pfo">
     <template #conclusion>
       <UBadge :color="color" :label="props.item.conclusion" />
     </template>

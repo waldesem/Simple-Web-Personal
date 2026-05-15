@@ -9,27 +9,16 @@ const props = defineProps({
     type: Object as PropType<Inquisition>,
     default: () => ({}),
   },
+  fields: {
+    type: Array as PropType<FormField[]>,
+    required: true,
+  },
 });
-
-const fields = [
-  {
-    element: "input",
-    key: "theme",
-    label: "Тема проверки",
-    attrs: { placeholder: "Тема проверки", maxlength: 255, required: true },
-  },
-  {
-    element: "textarea",
-    key: "info",
-    label: "Информация",
-    attrs: { placeholder: "Информация", maxlength: 4096, required: true },
-  },
-] as FormField[];
 </script>
 
 <template>
   <FormCard
-    :fields="fields"
+    :fields="props.fields"
     :item="props.item"
     @submit="emit('update', $event)"
   />

@@ -39,7 +39,7 @@ const person = computed(() => {
 </script>
 
 <template>
-  <ItemCard :fields="fields" :item="person">
+  <ItemCard :fields="props.fields" :item="person">
     <template v-if="props.item.destination" #destination>
       <UButton
         variant="outline"

@@ -165,16 +165,16 @@ export interface Needs {
 }
 
 export interface Items {
-  staffs: Staff[];
-  educations: Education[];
-  workplaces: Work[];
-  documents: Passport[];
   addresses: Address[];
-  contacts: Contact[];
   affilations: Affilation[];
-  previous: Previous[];
   checks: Verification[];
-  poligrafs: Pfo[];
-  investigations: Inquisition[];
+  contacts: Contact[];
+  documents: Passport[];
+  educations: Education[];
   inquiries: Needs[];
+  investigations: Inquisition[];
+  poligrafs: Pfo[];
+  previous: Previous[];
+  staffs: Staff[];
+  workplaces: Work[];
 }

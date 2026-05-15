@@ -9,28 +9,16 @@ const props = defineProps({
     type: Object as PropType<Address>,
     default: () => ({}),
   },
+  fields: {
+    type: Array as PropType<FormField[]>,
+    required: true,
+  },
 });
-
-const fields = [
-  {
-    element: "select",
-    key: "view",
-    label: "Вид адреса",
-    items: ["Адрес регистрации", "Адрес проживания", "Другое"],
-    attrs: { placeholder: "Выберите адрес", required: true },
-  },
-  {
-    element: "textarea",
-    key: "address",
-    label: "Адрес",
-    attrs: { placeholder: "Введите адрес", maxlength: 4096, required: true },
-  },
-] as FormField[];
 </script>
 
 <template>
   <FormCard
-    :fields="fields"
+    :fields="props.fields"
     :item="props.item"
     @submit="emit('update', $event)"
   />

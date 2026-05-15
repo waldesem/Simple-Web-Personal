@@ -8,13 +8,11 @@ const props = defineProps({
     type: Object as PropType<Inquisition>,
     required: true,
   },
+  fields: {
+    type: Array as PropType<ItemField[]>,
+    required: true,
+  },
 });
-
-const fields = [
-  { key: "theme", label: "Тема проверки" },
-  { key: "info", label: "Информация" },
-  { key: "created", label: "Дата записи" },
-] as ItemField[];
 
 const investigation = computed(() => {
   return {
@@ -25,5 +23,5 @@ const investigation = computed(() => {
 </script>
 
 <template>
-  <ItemCard :fields="fields" :item="investigation" />
+  <ItemCard :fields="props.fields" :item="investigation" />
 </template>

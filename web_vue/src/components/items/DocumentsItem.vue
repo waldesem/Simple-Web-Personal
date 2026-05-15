@@ -8,15 +8,11 @@ const props = defineProps({
     type: Object as PropType<Passport>,
     required: true,
   },
+  fields: {
+    type: Array as PropType<ItemField[]>,
+    required: true,
+  },
 });
-
-const fields = [
-  { key: "view", label: "Вид документа" },
-  { key: "series", label: "Серия документа" },
-  { key: "digits", label: "Номер документа" },
-  { key: "agency", label: "Кем выдан" },
-  { key: "issue", label: "Дата выдачи" },
-] as ItemField[];
 
 const doc = computed(() => {
   return {
@@ -27,5 +23,5 @@ const doc = computed(() => {
 </script>
 
 <template>
-  <ItemCard :fields="fields" :item="doc" />
+  <ItemCard :fields="props.fields" :item="doc" />
 </template>

@@ -9,6 +9,10 @@ const props = defineProps({
     type: Object as PropType<Work>,
     required: true,
   },
+  fields: {
+    type: Array as PropType<ItemField[]>,
+    required: true,
+  },
 });
 
 const work = computed(() => {
@@ -19,18 +23,8 @@ const work = computed(() => {
     finished: localStr(props.item.finished),
   };
 });
-
-const fields = [
-  { key: "nowWork", label: "Текущая работа" },
-  { key: "starts", label: "Начало работы" },
-  { key: "finished", label: "Дата увольнения" },
-  { key: "workplace", label: "Организация" },
-  { key: "address", label: "Организация" },
-  { key: "position", label: "Должность" },
-  { key: "reason", label: "Причина увольнения" },
-] as ItemField[];
 </script>
 
 <template>
-  <ItemCard :fields="fields" :item="work" />
+  <ItemCard :fields="props.fields" :item="work" />
 </template>

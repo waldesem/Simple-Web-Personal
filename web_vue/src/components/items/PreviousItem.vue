@@ -7,17 +7,13 @@ const props = defineProps({
     type: Object as PropType<Previous>,
     required: true,
   },
+  fields: {
+    type: Array as PropType<ItemField[]>,
+    required: true,
+  },
 });
-
-const fields = [
-  { key: "surname", label: "Фамилия" },
-  { key: "firstname", label: "Имя" },
-  { key: "patronymic", label: "Отчество" },
-  { key: "changed", label: "Год изменения" },
-  { key: "reason", label: "Причина" },
-] as ItemField[];
 </script>
 
 <template>
-  <ItemCard :fields="fields" :item="props.item" />
+  <ItemCard :fields="props.fields" :item="props.item" />
 </template>

@@ -8,6 +8,8 @@ import {
 } from "vue";
 import { ofetch } from "ofetch";
 import { capitalizeStr, flag } from "@/utils";
+import { itemFields } from "@/schema/items";
+import { formFields } from "@/schema/forms";
 import type { Items } from "@/types";
 
 const ItemComponent = defineAsyncComponent(
@@ -114,7 +116,7 @@ async function deleteItem(itemId: string) {
       @delete="deleteItem(content.id)"
     />
     <!-- Выводим элемент данных -->
-    <component :is="ItemComponent" :item="content" />
+    <component :is="ItemComponent" :item="content" :fields="itemFields[view]" />
     <USeparator v-if="index + 1 < data.length" />
   </div>
 
@@ -134,7 +136,12 @@ async function deleteItem(itemId: string) {
       @click="method = 'POST'"
     />
     <template #body>
-      <component :is="FormComponent" :item="item" @update="submitItem" />
+      <component
+        :is="FormComponent"
+        :item="item"
+        :fields="formFields[view]"
+        @update="submitItem"
+      />
     </template>
   </UModal>
 </template>
