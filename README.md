@@ -6,7 +6,8 @@ StaffSec is a desktop webapp for managing local database.
 
 - Flask;
 - Sqlite;
-- Vue;
+- Vue3;
+- NuxtUi;
 
 ## Installation
 
