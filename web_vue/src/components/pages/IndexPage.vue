@@ -86,7 +86,7 @@ async function submitPerson(form: Person) {
             @click="modal = true"
           />
           <template #body>
-            <FormCard :fields="formPerson" @submit="submitPerson" />
+            <FormDiv :fields="formPerson" @submit="submitPerson" />
           </template>
         </UModal>
       </template>

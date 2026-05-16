@@ -17,12 +17,12 @@ const router = createRouter({
     {
       name: "index",
       path: "/",
-      component: () => import("./pages/IndexView.vue"),
+      component: () => import("./components/pages/IndexPage.vue"),
     },
     {
       name: "profile",
       path: "/profile/:id",
-      component: () => import("./pages/ProfileView.vue"),
+      component: () => import("./components/pages/ProfilePage.vue"),
     },
     {
       path: "/:catchAll(.*)",

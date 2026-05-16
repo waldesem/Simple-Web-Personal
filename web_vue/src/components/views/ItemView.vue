@@ -93,7 +93,7 @@ async function deleteItem(itemId: string) {
     class="p-2 my-2"
   >
     <!-- Выводим кнопки редактирования/удаления данных, в режиме редактирования -->
-    <DivMenu
+    <DropMenu
       v-show="flag"
       @update="
         item = content;
@@ -103,7 +103,7 @@ async function deleteItem(itemId: string) {
       @delete="deleteItem(content.id)"
     />
     <!-- Выводим элемент данных -->
-    <ItemCard :item="content" :fields="itemFields[view]" />
+    <ItemDiv :item="content" :fields="itemFields[view]" />
     <USeparator v-if="index + 1 < data.length" />
   </div>
 
@@ -123,7 +123,7 @@ async function deleteItem(itemId: string) {
       @click="method = 'POST'"
     />
     <template #body>
-      <FormCard :item="item" :fields="formFields[view]" @submit="submitItem" />
+      <FormDiv :item="item" :fields="formFields[view]" @submit="submitItem" />
     </template>
   </UModal>
 </template>

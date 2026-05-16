@@ -34,9 +34,9 @@ async function submitPerson(form: Person) {
 <template>
   <div class="ms-2 mt-2">
     <!-- Выводим кнопки редактирования или удаления данных -->
-    <DivMenu v-show="flag" @update="modal = true" @delete="null" />
+    <DropMenu v-show="flag" @update="modal = true" @delete="null" />
 
-    <ItemCard :fields="divsPerson" :item="props.person">
+    <ItemDiv :fields="divsPerson" :item="props.person">
       <template v-if="props.person.destination" #destination>
         <UButton
           variant="outline"
@@ -46,7 +46,7 @@ async function submitPerson(form: Person) {
           @click="copy(props.person.destination)"
         />
       </template>
-    </ItemCard>
+    </ItemDiv>
 
     <!-- Выводим модальное окно для редактирования данных -->
     <UModal
@@ -55,7 +55,7 @@ async function submitPerson(form: Person) {
       description="Редактирование анкетные данные"
     >
       <template #body>
-        <FormCard
+        <FormDiv
           :fields="formPerson"
           :item="props.person"
           @submit="submitPerson"
