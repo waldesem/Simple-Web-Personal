@@ -34,7 +34,7 @@ export const formFields = {
       element: "input",
       key: "inn",
       label: "ИНН",
-      attrs: { placeholder: "Организация", pattern: "^\d{10,12}$" },
+      attrs: { placeholder: "Организация", pattern: "^\\d{10,12}$" },
     },
     {
       element: "textarea",
@@ -205,7 +205,7 @@ export const formFields = {
       element: "input",
       key: "finished",
       label: "Год окончания",
-      attrs: { placeholder: "Год окончания", pattern: "^\d{4}$" },
+      attrs: { placeholder: "Год окончания", pattern: "^\\d{4}$" },
     },
     {
       element: "input",
@@ -292,7 +292,7 @@ export const formFields = {
       element: "input",
       key: "changed",
       label: "Год изменения",
-      attrs: { placeholder: "Год изменения", pattern: "^\d{4}$" },
+      attrs: { placeholder: "Год изменения", pattern: "^\\d{4}$" },
     },
     {
       element: "textarea",

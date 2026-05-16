@@ -80,13 +80,13 @@ export const formPerson = [
     element: "input",
     key: "snils",
     label: "СНИЛС",
-    attrs: { pattern: "^\d{11}$", placeholder: "СНИЛС" },
+    attrs: { pattern: "^\\d{11}$", placeholder: "СНИЛС" },
   },
   {
     element: "input",
     key: "inn",
     label: "ИНН",
-    attrs: { pattern: "^\d{12}$", placeholder: "ИНН" },
+    attrs: { pattern: "^\\d{12}$", placeholder: "ИНН" },
   },
   {
     element: "input",
