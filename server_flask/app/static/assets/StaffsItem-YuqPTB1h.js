@@ -1,1 +1,0 @@
-import{R as e,m as t,x as n}from"./vue.runtime.esm-bundler-CJsNUrIw.js";import{t as r}from"./ItemCard-DXDoSOT1.js";var i=n({__name:`StaffsItem`,props:{item:{type:Object,required:!0}},setup(n){let i=n,a=[{key:`position`,label:`Должность`},{key:`department`,label:`Департамент`}];return(n,o)=>{let s=r;return e(),t(s,{fields:a,item:i.item},null,8,[`item`])}}});export{i as default};

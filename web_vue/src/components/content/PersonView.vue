@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import { defineAsyncComponent, PropType, ref } from "vue";
+import { PropType, ref } from "vue";
+import { useClipboard } from "@vueuse/core";
 import { ofetch } from "ofetch";
 import { flag } from "@/utils";
 import type { Person } from "@/types";
-
-const FormResume = defineAsyncComponent(
-  () => import("@/components/forms/ResumeForm.vue"),
-);
-
-const emit = defineEmits(["update"]);
+import { divsPerson, formPerson } from "@/schema/persona";
 
 const props = defineProps({
   person: {
@@ -16,6 +12,10 @@ const props = defineProps({
     required: true,
   },
 });
+
+const { copy, copied } = useClipboard();
+
+const emit = defineEmits(["update"]);
 
 const modal = ref(false); // Объявляем переменную модального окна
 
@@ -35,7 +35,19 @@ async function submitPerson(form: Person) {
   <div class="ms-2 mt-2">
     <!-- Выводим кнопки редактирования или удаления данных -->
     <DivMenu v-show="flag" @update="modal = true" @delete="null" />
-    <PersonDiv v-if="person" :item="person" />
+
+    <ItemCard :fields="divsPerson" :item="props.person">
+      <template v-if="props.person.destination" #destination>
+        <UButton
+          variant="outline"
+          size="sm"
+          :color="copied ? 'success' : 'info'"
+          :label="copied ? 'Скопировано' : 'Копировать'"
+          @click="copy(props.person.destination)"
+        />
+      </template>
+    </ItemCard>
+
     <!-- Выводим модальное окно для редактирования данных -->
     <UModal
       v-model:open="modal"
@@ -43,7 +55,11 @@ async function submitPerson(form: Person) {
       description="Редактирование анкетные данные"
     >
       <template #body>
-        <FormResume :resume="person" @update="submitPerson" />
+        <FormCard
+          :fields="formPerson"
+          :item="props.person"
+          @submit="submitPerson"
+        />
       </template>
     </UModal>
   </div>

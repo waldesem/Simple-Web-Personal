@@ -21,15 +21,11 @@ export const tableColumns: TableColumns<Person>[] = [
   {
     name: "birthday",
     header: "Дата рождения",
-    cell: (row) => {
-      return localStr(row.birthday);
-    },
+    cell: (row) => localStr(row.birthday),
   },
   {
     name: "created",
     header: "Обновлено",
-    cell: (row) => {
-      return timeAgoStr(row.created);
-    },
+    cell: (row) => timeAgoStr(row.created),
   },
 ];

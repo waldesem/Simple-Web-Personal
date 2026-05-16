@@ -10,7 +10,7 @@ const props = defineProps({
   item: {
     type: Object,
     default: () => ({}),
-  }
+  },
 });
 </script>
 
@@ -24,7 +24,7 @@ const props = defineProps({
         <slot :name="field.key" />
       </div>
       <div v-else class="col-span-9 wrap-break-word">
-        {{ item[field.key] }}
+        {{ field.div ? field.div(item[field.key]) : item[field.key] }}
       </div>
     </div>
   </div>

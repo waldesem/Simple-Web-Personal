@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { empty } from "@/schema";
 import { PropType, toRef } from "vue";
 import type { FormField } from "@/types";
 
@@ -14,17 +13,13 @@ const props = defineProps({
     type: Array as PropType<FormField[]>,
     required: true,
   },
-  schema: {
-    type: Object,
-    default: () => empty,
-  },
 });
 
 const form = toRef(props.item);
 </script>
 
 <template>
-  <UForm :state="form" :schema="schema" @submit.prevent="emit('submit', form)">
+  <UForm :state="form" @submit.prevent="emit('submit', form)">
     <UFormField
       v-for="field in fields"
       :key="field.key"

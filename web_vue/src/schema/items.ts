@@ -1,8 +1,9 @@
+import { localStr } from "@/utils";
 import { ItemField, Items } from "@/types";
 
 export const itemFields = {
   addresses: [
-    { key: "view", label: "Вид адреса"},
+    { key: "view", label: "Вид адреса" },
     { key: "address", label: "Адрес" },
   ],
   affilations: [
@@ -25,7 +26,7 @@ export const itemFields = {
     { key: "addition", label: "Дополнительная информация" },
     { key: "comment", label: "Комментарий" },
     { key: "conclusion", label: "Результат" },
-    { key: "created", label: "Дата записи" },
+    { key: "created", label: "Дата записи", div: (div) => localStr(div) },
   ],
   contacts: [
     { key: "view", label: "Вид контакта" },
@@ -36,7 +37,7 @@ export const itemFields = {
     { key: "series", label: "Серия документа" },
     { key: "digits", label: "Номер документа" },
     { key: "agency", label: "Кем выдан" },
-    { key: "issue", label: "Дата выдачи" },
+    { key: "issue", label: "Дата выдачи", div: (div) => localStr(div) },
   ],
   educations: [
     { key: "view", label: "Вид образования" },
@@ -47,18 +48,18 @@ export const itemFields = {
   inquiries: [
     { key: "info", label: "Информация" },
     { key: "initiator", label: "Инициатор" },
-    { key: "created", label: "Дата записи" }
+    { key: "created", label: "Дата записи", div: (div) => localStr(div) },
   ],
   investigations: [
     { key: "theme", label: "Тема проверки" },
     { key: "info", label: "Информация" },
-    { key: "created", label: "Дата записи" }
+    { key: "created", label: "Дата записи", div: (div) => localStr(div) },
   ],
   poligrafs: [
     { key: "theme", label: "Тема проверки" },
     { key: "results", label: "Результат" },
     { key: "conclusion", label: "Результат" },
-    { key: "created", label: "Дата записи" }
+    { key: "created", label: "Дата записи", div: (div) => localStr(div) },
   ],
   previous: [
     { key: "surname", label: "Фамилия" },
@@ -73,8 +74,8 @@ export const itemFields = {
   ],
   workplaces: [
     { key: "nowWork", label: "Текущая работа" },
-    { key: "starts", label: "Начало работы" },
-    { key: "finished", label: "Окончание работы" },
+    { key: "starts", label: "Начало работы", div: (div) => localStr(div) },
+    { key: "finished", label: "Окончание работы", div: (div) => localStr(div) },
     { key: "workplace", label: "Место работы" },
     { key: "position", label: "Должность" },
     { key: "address", label: "Адрес организации" },

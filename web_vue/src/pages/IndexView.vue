@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { ref, watch, defineAsyncComponent, shallowRef, onMounted } from "vue";
+import { ref, watch, shallowRef, onMounted } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { ofetch } from "ofetch";
 import { tableColumns } from "@/schema/table";
 import type { Person } from "@/types";
-
-const FormResume = defineAsyncComponent(
-  () => import("@/components/forms/ResumeForm.vue"),
-);
+import { formPerson } from "@/schema/persona";
 
 const router = useRouter();
 
@@ -89,7 +86,7 @@ async function submitPerson(form: Person) {
             @click="modal = true"
           />
           <template #body>
-            <FormResume @update="submitPerson" />
+            <FormCard :fields="formPerson" @submit="submitPerson" />
           </template>
         </UModal>
       </template>

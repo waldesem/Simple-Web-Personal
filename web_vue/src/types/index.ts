@@ -8,6 +8,7 @@ export interface ItemField {
   key: string;
   label: string;
   slot?: boolean;
+  div?: (div: string) => string;
 }
 
 export interface FormField {

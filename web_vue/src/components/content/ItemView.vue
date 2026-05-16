@@ -1,23 +1,10 @@
 <script setup lang="ts">
-import {
-  defineAsyncComponent,
-  onMounted,
-  PropType,
-  ref,
-  shallowRef,
-} from "vue";
+import { onMounted, PropType, ref, shallowRef } from "vue";
 import { ofetch } from "ofetch";
-import { capitalizeStr, flag } from "@/utils";
+import { flag } from "@/utils";
 import { itemFields } from "@/schema/items";
 import { formFields } from "@/schema/forms";
 import type { Items } from "@/types";
-
-const ItemComponent = defineAsyncComponent(
-  () => import(`../items/${capitalizeStr(props.view)}Item.vue`),
-);
-const FormComponent = defineAsyncComponent(
-  () => import(`../forms/${capitalizeStr(props.view)}Form.vue`),
-);
 
 // Определяем данные которые передаются из родительского компонента
 const props = defineProps({
@@ -116,7 +103,7 @@ async function deleteItem(itemId: string) {
       @delete="deleteItem(content.id)"
     />
     <!-- Выводим элемент данных -->
-    <component :is="ItemComponent" :item="content" :fields="itemFields[view]" />
+    <ItemCard :item="content" :fields="itemFields[view]" />
     <USeparator v-if="index + 1 < data.length" />
   </div>
 
@@ -136,12 +123,7 @@ async function deleteItem(itemId: string) {
       @click="method = 'POST'"
     />
     <template #body>
-      <component
-        :is="FormComponent"
-        :item="item"
-        :fields="formFields[view]"
-        @update="submitItem"
-      />
+      <FormCard :item="item" :fields="formFields[view]" @submit="submitItem" />
     </template>
   </UModal>
 </template>
