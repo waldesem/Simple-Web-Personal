@@ -8,22 +8,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.105",
+    "@iconify-json/lucide": "^1.2.108",
     "@nuxt/ui": "^4.7.1",
     "@vueuse/core": "^14.3.0",
     "ofetch": "^1.5.1",
     "tailwindcss": "^4.3.0",
     "vue": "^3.5.34",
-    "vue-router": "^5.0.6"
+    "vue-router": "^5.0.7"
   },
   "devDependencies": {
-    "@types/node": "^25.6.2",
-    "@vitejs/plugin-vue": "^6.0.6",
+    "@types/node": "^25.8.0",
+    "@vitejs/plugin-vue": "^6.0.7",
     "eslint": "^10.4.0",
     "eslint-plugin-vue": "^10.9.1",
-    "tsx": "^4.21.0",
-    "typescript-eslint": "^8.59.2",
-    "vite": "^8.0.11",
-    "vue-tsc": "^3.2.8"
+    "tsx": "^4.22.0",
+    "typescript-eslint": "^8.59.3",
+    "vite": "^8.0.13",
+    "vue-tsc": "^3.2.9"
   }
 }
