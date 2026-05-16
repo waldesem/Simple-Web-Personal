@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PropType, toRef } from "vue";
+import { type PropType, toRef } from "vue";
 import type { FormField } from "@/types";
 
 const emit = defineEmits(["submit"]);

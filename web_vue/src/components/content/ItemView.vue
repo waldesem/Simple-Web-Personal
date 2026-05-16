@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-  defineAsyncComponent,
-  onMounted,
-  PropType,
-  ref,
-  shallowRef,
-} from "vue";
+import { onMounted, type PropType, ref, shallowRef } from "vue";
 import { ofetch } from "ofetch";
 import { flag } from "@/utils";
 import { itemFields } from "@/schema/items";
@@ -27,10 +21,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-const ItemForm = defineAsyncComponent(
-  () => import("@/components/element/FormCard.vue"),
-);
 
 const data = shallowRef<Items[keyof Items]>([]);
 const item = shallowRef({} as (typeof data.value)[number]);
@@ -133,7 +123,7 @@ async function deleteItem(itemId: string) {
       @click="method = 'POST'"
     />
     <template #body>
-      <ItemForm :item="item" :fields="formFields[view]" @submit="submitItem" />
+      <FormCard :item="item" :fields="formFields[view]" @submit="submitItem" />
     </template>
   </UModal>
 </template>

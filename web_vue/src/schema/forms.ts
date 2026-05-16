@@ -1,5 +1,5 @@
-import { FormField, Items } from "@/types";
 import { conclusions, decisions } from "@/utils";
+import type { FormField, Items } from "@/types";
 
 export const formFields = {
   addresses: [

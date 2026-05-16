@@ -17,7 +17,6 @@ const props = defineProps({
 </script>
 
 <template>
-  <!-- Таблица с данными кандидатов -->
   <div class="relative overflow-auto">
     <table class="table-fixed min-w-full overflow-clip">
       <thead class="relative">

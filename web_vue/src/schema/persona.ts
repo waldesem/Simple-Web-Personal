@@ -1,5 +1,5 @@
-import { FormField, ItemField } from "@/types";
 import { localStr } from "@/utils";
+import type { FormField, ItemField } from "@/types";
 
 export const divsPerson = [
   { key: "surname", label: "Фамилия" },
@@ -17,7 +17,7 @@ export const divsPerson = [
   { key: "destination", label: "Материалы проверок", slot: true },
 ] as ItemField[];
 
-const pattern = /^[А-ЯЁ]([А-ЯЁ\-.,'()]|\s[А-ЯЁ])*[А-ЯЁ]$|^[А-ЯЁ]$/;
+const pattern = "^[А-ЯЁ][А-ЯЁ\\-.,' ]+[А-ЯЁ]$";
 
 export const formPerson = [
   {

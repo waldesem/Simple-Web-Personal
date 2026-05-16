@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType } from "vue";
-import { ItemField } from "@/types";
+import type { PropType } from "vue";
+import type { ItemField } from "@/types";
 
 const props = defineProps({
   fields: {

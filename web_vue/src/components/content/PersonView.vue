@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import { defineAsyncComponent, PropType, ref } from "vue";
+import { type PropType, ref } from "vue";
 import { useClipboard } from "@vueuse/core";
 import { ofetch } from "ofetch";
 import { flag } from "@/utils";
-import type { Person } from "@/types";
 import { divsPerson, formPerson } from "@/schema/persona";
-
-const ItemForm = defineAsyncComponent(
-  () => import("@/components/element/FormCard.vue"),
-);
+import type { Person } from "@/types";
 
 const props = defineProps({
   person: {
@@ -59,7 +55,7 @@ async function submitPerson(form: Person) {
       description="Редактирование анкетные данные"
     >
       <template #body>
-        <ItemForm
+        <FormCard
           :fields="formPerson"
           :item="props.person"
           @submit="submitPerson"

@@ -1,5 +1,5 @@
 import { localStr } from "@/utils";
-import { ItemField, Items } from "@/types";
+import type { ItemField, Items } from "@/types";
 
 export const itemFields = {
   addresses: [

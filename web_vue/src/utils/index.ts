@@ -2,10 +2,6 @@ import { useStorage } from "@vueuse/core";
 
 export const flag = useStorage("flag", false, sessionStorage);
 
-export function capitalizeStr(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
 export function localStr(str: string): string {
   return str ? new Date(str).toLocaleDateString() : "";
 }

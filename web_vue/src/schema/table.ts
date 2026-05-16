@@ -1,5 +1,5 @@
-import { localStr, timeAgoStr } from "@/utils";
 import type { Person, TableColumns } from "@/types";
+import { localStr, timeAgoStr } from "@/utils";
 
 export const tableColumns: TableColumns<Person>[] = [
   {
