@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, shallowRef, onMounted } from "vue";
+import { ref, watch, shallowRef, onMounted, defineAsyncComponent } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { ofetch } from "ofetch";
@@ -8,6 +8,10 @@ import type { Person } from "@/types";
 import { formPerson } from "@/schema/persona";
 
 const router = useRouter();
+
+const ItemForm = defineAsyncComponent(
+  () => import("@/components/element/FormCard.vue"),
+);
 
 const data = shallowRef([] as Person[]);
 const page = ref(0); // Страница таблицы
@@ -86,7 +90,7 @@ async function submitPerson(form: Person) {
             @click="modal = true"
           />
           <template #body>
-            <FormCard :fields="formPerson" @submit="submitPerson" />
+            <ItemForm :fields="formPerson" @submit="submitPerson" />
           </template>
         </UModal>
       </template>
