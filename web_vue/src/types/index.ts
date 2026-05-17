@@ -9,6 +9,7 @@ export interface ItemField {
   label: string;
   slot?: boolean;
   div?: (div: string) => string;
+  component?: (div: string) => string;
 }
 
 export interface FormField {

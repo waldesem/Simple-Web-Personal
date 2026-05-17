@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PropType } from "vue";
+import { type PropType } from "vue";
 import type { ItemField } from "@/types";
 
 const props = defineProps({
@@ -22,6 +22,9 @@ const props = defineProps({
       </div>
       <div v-if="field.slot" class="col-span-9">
         <slot :name="field.key" />
+      </div>
+      <div v-else-if="field.component" class="col-span-9">
+        <component :is="field.component(item[field.key])" />
       </div>
       <div v-else class="col-span-9 wrap-break-word">
         {{ field.div ? field.div(item[field.key]) : item[field.key] }}
