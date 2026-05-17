@@ -93,67 +93,73 @@ async function submitPerson(form: Person) {
     </UPageHeader>
 
     <!-- Строка поиска -->
-    <div class="my-6">
-      <UInput
-        id="search"
-        v-model.trim="search"
+    <UPageBody>
+      <div class="my-6">
+        <UInput
+          id="search"
+          v-model.trim="search"
+          :loading="loading"
+          icon="i-lucide-search"
+          type="search"
+          placeholder="поиск по фаимилии, имени, отчеству"
+        />
+      </div>
+
+      <!-- Таблица с данными кандидатов -->
+      <TableDiv
+        :class="{ 'animate-pulse': loading }"
+        :cols="tableColumns"
+        :data="data"
+        @select="
+          (id: any) => router.push({ name: 'profile', params: { id: id } })
+        "
+      />
+
+      <UEmpty
+        v-if="!data"
+        title="Данные отсутствуют"
+        size="sm"
+        variant="naked"
+      />
+
+      <!-- Время последнего обновления -->
+      <UButton
         :loading="loading"
-        icon="i-lucide-search"
-        type="search"
-        placeholder="поиск по фаимилии, имени, отчеству"
+        class="mt-2"
+        variant="ghost"
+        size="sm"
+        icon="i-lucide-refresh-cw"
+        :label="`Последнее обновление в: ${updated}`"
+        title="Обновить"
+        @click="getItem"
       />
-    </div>
 
-    <!-- Таблица с данными кандидатов -->
-    <TableDiv
-      :class="{ 'animate-pulse': loading }"
-      :cols="tableColumns"
-      :data="data"
-      @select="
-        (id: any) => router.push({ name: 'profile', params: { id: id } })
-      "
-    />
-
-    <UEmpty v-if="!data" title="Данные отсутствуют" size="sm" variant="naked" />
-
-    <!-- Время последнего обновления -->
-    <UButton
-      :loading="loading"
-      class="mt-2"
-      variant="ghost"
-      size="sm"
-      icon="i-lucide-refresh-cw"
-      :label="`Последнее обновление в: ${updated}`"
-      title="Обновить"
-      @click="getItem"
-    />
-
-    <!-- Пагинация -->
-    <div
-      v-show="data"
-      :class="{ 'animate-pulse': loading }"
-      class="flex justify-center border-t border-default mt-4 py-4"
-    >
-      <UButton
-        icon="i-lucide-arrow-left"
-        title="Вперед"
-        :disabled="!page || loading"
-        class="me-2 rounded-full"
-        @click="page--"
-      />
-      <USelect
-        v-model="limit"
-        :items="[10, 50, 100]"
-        title="Количество записей"
-        @change="getItem"
-      />
-      <UButton
-        icon="i-lucide-arrow-right"
-        title="Назад"
-        :disabled="!hasNext || loading"
-        class="ms-2 rounded-full"
-        @click="page++"
-      />
-    </div>
+      <!-- Пагинация -->
+      <div
+        v-show="data"
+        class="flex justify-center border-t border-default mt-4 py-4"
+      >
+        <UButton
+          icon="i-lucide-arrow-left"
+          title="Вперед"
+          :disabled="!page || loading"
+          class="me-2 rounded-full"
+          @click="page--"
+        />
+        <USelect
+          v-model="limit"
+          :items="[10, 50, 100]"
+          title="Количество записей"
+          @change="getItem"
+        />
+        <UButton
+          icon="i-lucide-arrow-right"
+          title="Назад"
+          :disabled="!hasNext || loading"
+          class="ms-2 rounded-full"
+          @click="page++"
+        />
+      </div>
+    </UPageBody>
   </UContainer>
 </template>

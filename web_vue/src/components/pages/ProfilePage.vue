@@ -2,7 +2,7 @@
 import { computed, onMounted, shallowRef } from "vue";
 import { useRoute } from "vue-router";
 import { ofetch } from "ofetch";
-import { flag } from "@/utils";
+import { store } from "@/utils";
 import type { Items, Person } from "@/types";
 
 // Получаем данные id кандидата из URL
@@ -17,15 +17,16 @@ async function getPerson() {
   data.value = await ofetch<Person>("/routes/persons/" + candId.value);
 }
 
-const fullname = computed(() => {
-  return `${data.value.surname ?? ""} ${data.value.firstname ?? ""} ${
-    data.value.patronymic ?? ""
-  }`;
-});
+const fullname = computed(
+  () =>
+    `${data.value.surname ?? ""} ${data.value.firstname ?? ""} ${
+      data.value.patronymic ?? ""
+    }`,
+);
 
 const anketa = { label: "Анкета", slot: "anketa" as const };
 
-const subjects = [
+const tabs = [
   { label: "Проверки", slot: "checks" as const },
   { label: "Полиграф", slot: "poligrafs" as const },
   { label: "Расследования", slot: "investigations" as const },
@@ -50,48 +51,51 @@ const accordion = [
     <UPageHeader :title="fullname">
       <template #links>
         <UButton
-          :icon="flag ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
-          :color="flag ? 'success' : 'error'"
-          :title="flag ? 'Откл.Редакт.' : 'Вкл.Редакт.'"
-          @click="flag = !flag"
+          :icon="store.flag ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
+          :color="store.flag ? 'success' : 'error'"
+          :title="store.flag ? 'Откл.Редакт.' : 'Вкл.Редакт.'"
+          @click="store.flag = !store.flag"
         />
       </template>
     </UPageHeader>
 
-    <UTabs
-      :items="[anketa, ...subjects]"
-      :unmount-on-hide="false"
-      variant="pill"
-      class="mt-4"
-    >
-      <!-- Слот вкладки для отображения анкеты -->
-      <template #anketa>
-        <div class="mt-4">
-          <PersonView :person="data" @update="getPerson" />
-        </div>
-        <USeparator />
-        <!-- Aккордеон с данными staffs, educations и т.д. -->
-        <UAccordion :items="accordion" :unmount-on-hide="false">
-          <template
-            v-for="accord in accordion"
-            #[accord.slot]
-            :key="accord.slot"
-          >
-            <ItemView
-              :view="accord.slot as keyof Items"
-              :title="accord.label"
-              :cand-id="candId"
-            />
-          </template>
-        </UAccordion>
-      </template>
+    <UPageBody>
+      <UTabs
+        :items="[anketa, ...tabs]"
+        :unmount-on-hide="false"
+        variant="pill"
+        class="mt-4"
+      >
+        <!-- Слот вкладки для отображения анкеты -->
+        <template #anketa>
+          <div class="mt-4">
+            <PersonView :person="data" @update="getPerson" />
+          </div>
+          <USeparator />
 
-      <!-- Вкладки проверки, полиграф и др. -->
-      <template v-for="tab in subjects" #[tab.slot] :key="tab.slot">
-        <div class="mt-2">
-          <ItemView :view="tab.slot" :title="tab.label" :cand-id="candId" />
-        </div>
-      </template>
-    </UTabs>
+          <!-- Aккордеон с данными staffs, educations и т.д. -->
+          <UAccordion :items="accordion" :unmount-on-hide="false">
+            <template
+              v-for="accord in accordion"
+              #[accord.slot]
+              :key="accord.slot"
+            >
+              <ItemView
+                :view="accord.slot"
+                :title="accord.label"
+                :cand-id="candId"
+              />
+            </template>
+          </UAccordion>
+        </template>
+
+        <!-- Вкладки проверки, полиграф и др. -->
+        <template v-for="tab in tabs" #[tab.slot] :key="tab.slot">
+          <div class="mt-2">
+            <ItemView :view="tab.slot" :title="tab.label" :cand-id="candId" />
+          </div>
+        </template>
+      </UTabs>
+    </UPageBody>
   </UContainer>
 </template>

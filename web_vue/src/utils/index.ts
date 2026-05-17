@@ -1,9 +1,14 @@
-import { useStorage } from "@vueuse/core";
+import { ref } from "vue";
 
-export const flag = useStorage("flag", false, sessionStorage);
+export const store = ref({ flag: false });
 
 export function localStr(str: string): string {
-  return str ? new Date(str).toLocaleDateString() : "";
+  try {
+    return str ? new Date(str).toLocaleDateString() : "";
+  } catch (e) {
+    console.error(e);
+    return "";
+  }
 }
 
 export function timeAgoStr(str: string) {

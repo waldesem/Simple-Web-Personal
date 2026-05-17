@@ -2,7 +2,7 @@
 import { type PropType, ref } from "vue";
 import { useClipboard } from "@vueuse/core";
 import { ofetch } from "ofetch";
-import { flag } from "@/utils";
+import { store } from "@/utils";
 import { divsPerson, formPerson } from "@/schema/persona";
 import type { Person } from "@/types";
 
@@ -34,7 +34,7 @@ async function submitPerson(form: Person) {
 <template>
   <div class="ms-2 mt-2">
     <!-- Выводим кнопки редактирования или удаления данных -->
-    <DropMenu v-show="flag" @update="modal = true" @delete="null" />
+    <DropMenu v-show="store.flag" @update="modal = true" @delete="null" />
 
     <ItemDiv :fields="divsPerson" :item="props.person">
       <template v-if="props.person.destination" #destination>

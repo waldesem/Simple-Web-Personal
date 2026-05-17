@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, type PropType, ref, shallowRef } from "vue";
 import { ofetch } from "ofetch";
-import { flag } from "@/utils";
+import { store } from "@/utils";
 import { itemFields } from "@/schema/items";
 import { formFields } from "@/schema/forms";
 import type { Items } from "@/types";
@@ -32,7 +32,9 @@ onMounted(() => getItem());
 
 // Определяем функцию для получения данных из API
 async function getItem() {
+  loading.value = true;
   data.value = await ofetch(`/routes/${props.view}/${props.candId}`);
+  loading.value = false;
 }
 
 // Определяем функцию для отправки данных формы на сервер
@@ -47,10 +49,9 @@ async function submitItem(form: typeof item.value) {
       body: form,
     },
   );
-  if (status !== 201 && status !== 200) alert("Невозможно выполнить действие!");
   item.value = {} as (typeof data.value)[number];
+  if (status !== 201 && status !== 200) alert("Невозможно выполнить действие!");
   await getItem();
-  loading.value = false;
 }
 
 // Определяем функцию для удаления данных
@@ -62,9 +63,9 @@ async function deleteItem(itemId: string) {
   });
   if (status === 204) {
     await getItem();
-    loading.value = false;
   } else {
     alert("Невозможно выполнить действие!");
+    loading.value = false;
   }
 }
 </script>
@@ -74,7 +75,7 @@ async function deleteItem(itemId: string) {
   <UEmpty v-if="!data?.length" class="m-4" title="Данные отсутствуют" size="sm">
     <template #body>
       <UButton
-        v-show="flag"
+        v-show="store.flag"
         label="Добавить запись"
         variant="outline"
         size="sm"
@@ -94,7 +95,7 @@ async function deleteItem(itemId: string) {
   >
     <!-- Выводим кнопки редактирования/удаления данных, в режиме редактирования -->
     <DropMenu
-      v-show="flag"
+      v-show="store.flag"
       @update="
         item = content;
         modal = true;
@@ -114,7 +115,7 @@ async function deleteItem(itemId: string) {
     description="Добавить/редактировать данные"
   >
     <UButton
-      v-if="flag && data?.length"
+      v-if="store.flag && data?.length"
       class="my-2"
       label="Добавить запись"
       variant="outline"
