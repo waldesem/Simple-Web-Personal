@@ -1,5 +1,5 @@
 import { h } from "vue";
-import { localStr } from "@/utils";
+import { conclusions, decisions, localStr } from "@/utils";
 import type { ItemField, Items } from "@/types";
 
 const addresses = [
@@ -31,30 +31,31 @@ const checks = [
     key: "conclusion",
     label: "Результат",
     component: (val: string) => {
-      // const color =
-      //   val === conclusions.agreed
-      //     ? "green"
-      //     : val === conclusions.cancel
-      //       ? "gray"
-      //       : val === conclusions.comments
-      //         ? "blue"
-      //         : "red";
-      return h(
-        "div",
-        {
-          class: [
-            "flex",
-            "items-center",
-            "inline-flex",
-            "py-1 px-2",
-            "rounded-md",
-            "text-sm",
-            "text-white",
-            `bg-gray-500`,
-          ],
-        },
-        val,
-      );
+      const color =
+        val === conclusions.agreed
+          ? "bg-green-500"
+          : val === conclusions.cancel
+            ? "bg-gray-500"
+            : val === conclusions.comments
+              ? "bg-blue-500"
+              : "bg-red-500";
+      return () =>
+        h(
+          "div",
+          {
+            class: [
+              "flex",
+              "items-center",
+              "inline-flex",
+              "py-1 px-2",
+              "rounded-md",
+              "text-sm",
+              "text-white",
+              color,
+            ],
+          },
+          val,
+        );
     },
   },
   { key: "created", label: "Дата записи", div: (div) => localStr(div) },
@@ -95,7 +96,37 @@ const investigations = [
 const poligrafs = [
   { key: "theme", label: "Тема проверки" },
   { key: "results", label: "Результат" },
-  { key: "conclusion", label: "Результат" },
+  {
+    key: "conclusion",
+    label: "Результат",
+    component: (val: string) => {
+      const color =
+        val === decisions.agreed
+          ? "bg-green-500"
+          : val === decisions.cancel
+            ? "bg-gray-500"
+            : val === decisions.comments
+              ? "bg-blue-500"
+              : "bg-red-500";
+      return () =>
+        h(
+          "div",
+          {
+            class: [
+              "flex",
+              "items-center",
+              "inline-flex",
+              "py-1 px-2",
+              "rounded-md",
+              "text-sm",
+              "text-white",
+              color,
+            ],
+          },
+          val,
+        );
+    },
+  },
   { key: "created", label: "Дата записи", div: (div) => localStr(div) },
 ] as ItemField[];
 
