@@ -6,7 +6,7 @@ const emit = defineEmits(["submit"]);
 
 const props = defineProps({
   item: {
-    type: Object,
+    type: Object as PropType<Items[keyof Items]>,
     default: () => ({}),
   },
   fields: {
