@@ -125,7 +125,6 @@ async function submitPerson(form: Person) {
       <!-- Время последнего обновления -->
       <UButton
         :loading="loading"
-        class="mt-2"
         variant="ghost"
         size="sm"
         icon="i-lucide-refresh-cw"
@@ -137,7 +136,7 @@ async function submitPerson(form: Person) {
       <!-- Пагинация -->
       <div
         v-show="data"
-        class="flex justify-center border-t border-default mt-4 py-4"
+        class="flex justify-center border-t border-default py-4"
       >
         <UButton
           icon="i-lucide-arrow-left"
