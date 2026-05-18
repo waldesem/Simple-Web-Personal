@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type PropType, toRef } from "vue";
-import type { FormField } from "@/types";
+import type { FormField, Items } from "@/types";
 
 const emit = defineEmits(["submit"]);
 
@@ -10,7 +10,7 @@ const props = defineProps({
     default: () => ({}),
   },
   fields: {
-    type: Array as PropType<FormField[]>,
+    type: Array as PropType<FormField<Items[keyof Items][number]>[]>,
     required: true,
   },
 });

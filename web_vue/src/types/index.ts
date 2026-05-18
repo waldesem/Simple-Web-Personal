@@ -1,32 +1,34 @@
+export const conclusions = {
+  agreed: "СОГЛАСОВАНО",
+  comments: "СОГЛАСОВАНО С КОММЕНТАРИЕМ",
+  cancel: "СНЯТ С ПРОВЕРКИ",
+  denied: "ОТКАЗАНО В СОГЛАСОВАНИИ",
+};
+
+export const decisions = {
+  agreed: "БЕЗ ЗАМЕЧАНИЙ",
+  comments: "С КОММЕНТАРИЯМИ",
+  cancel: "ОТКАЗ ОТ ПРОВЕРКИ",
+  denied: "НЕГАТИВ",
+};
+
 export interface TableColumns<T> {
   name: keyof T;
   header: string;
   cell?: (row: T) => string;
 }
 
-export interface ItemField {
-  key: string;
+export interface ItemField<T> {
+  key: keyof T;
   label: string;
   slot?: boolean;
-  div?: (div: string) => string;
-  component?: (div: string) => string;
+  div?: (row: T) => string;
+  component?: (row: T) => string;
 }
 
-export interface FormField {
+export interface FormField<T> {
   element: "input" | "select" | "textarea";
-  key:
-    | keyof Previous
-    | keyof Education
-    | keyof Work
-    | keyof Passport
-    | keyof Address
-    | keyof Contact
-    | keyof Affilation
-    | keyof Staff
-    | keyof Verification
-    | keyof Pfo
-    | keyof Inquisition
-    | keyof Needs;
+  key: keyof T;
   label: string;
   attrs?: {
     [K in

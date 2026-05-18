@@ -3,8 +3,7 @@ import { ref, watch, shallowRef, onMounted } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { ofetch } from "ofetch";
-import { formPerson } from "@/schema/persona";
-import { tableColumns } from "@/schema/table";
+import { formPerson, tableColumns } from "@/schema/persona";
 import type { Person } from "@/types";
 
 const router = useRouter();
@@ -68,7 +67,7 @@ async function submitPerson(form: Person) {
 </script>
 
 <template>
-  <UContainer>
+  <UContainer class="pt-16">
     <UPageHeader title="КАНДИДАТЫ">
       <template #links>
         <!-- Модальное окно для добавления анкеты -->
@@ -94,16 +93,14 @@ async function submitPerson(form: Person) {
 
     <!-- Строка поиска -->
     <UPageBody>
-      <div class="my-6">
-        <UInput
-          id="search"
-          v-model.trim="search"
-          :loading="loading"
-          icon="i-lucide-search"
-          type="search"
-          placeholder="поиск по фаимилии, имени, отчеству"
-        />
-      </div>
+      <UInput
+        id="search"
+        v-model.trim="search"
+        :loading="loading"
+        icon="i-lucide-search"
+        type="search"
+        placeholder="поиск по фаимилии, имени, отчеству"
+      />
 
       <!-- Таблица с данными кандидатов -->
       <TableDiv

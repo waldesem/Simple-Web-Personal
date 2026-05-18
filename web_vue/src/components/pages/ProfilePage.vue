@@ -1,20 +1,24 @@
 <script setup lang="ts">
-import { computed, onMounted, shallowRef } from "vue";
+import { computed, onMounted, ref, shallowRef } from "vue";
 import { useRoute } from "vue-router";
 import { ofetch } from "ofetch";
-import { store } from "@/utils";
+import { divsPerson } from "@/schema/persona";
 import type { Items, Person } from "@/types";
 
 // Получаем данные id кандидата из URL
 const candId = computed(() => useRoute().params.id as string);
 
 const data = shallowRef({} as Person);
+const flag = ref(false);
+const loading = ref(false); // ← триггер для анимации
 
 onMounted(() => getPerson());
 
 // Определяем функцию для получения данных из API
 async function getPerson() {
+  loading.value = true;
   data.value = await ofetch<Person>("/routes/persons/" + candId.value);
+  loading.value = false;
 }
 
 const fullname = computed(
@@ -47,14 +51,14 @@ const accordion = [
 </script>
 
 <template>
-  <UContainer>
+  <UContainer class="pt-16">
     <UPageHeader :title="fullname">
       <template #links>
         <UButton
-          :icon="store.flag ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
-          :color="store.flag ? 'success' : 'error'"
-          :title="store.flag ? 'Откл.Редакт.' : 'Вкл.Редакт.'"
-          @click="store.flag = !store.flag"
+          :icon="flag ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
+          :color="flag ? 'success' : 'error'"
+          :title="flag ? 'Откл.Редакт.' : 'Вкл.Редакт.'"
+          @click="flag = !flag"
         />
       </template>
     </UPageHeader>
@@ -68,9 +72,14 @@ const accordion = [
       >
         <!-- Слот вкладки для отображения анкеты -->
         <template #anketa>
-          <div class="mt-4">
-            <PersonView :person="data" @update="getPerson" />
-          </div>
+          <SkeletDivs v-if="loading && !data" :rows="divsPerson.length" />
+          <PersonView
+            v-else
+            :class="{ 'animate-pulse': loading }"
+            :person="data"
+            :flag="flag"
+            @update="getPerson"
+          />
           <USeparator />
 
           <!-- Aккордеон с данными staffs, educations и т.д. -->
@@ -81,6 +90,7 @@ const accordion = [
               :key="accord.slot"
             >
               <ItemView
+                :flag="flag"
                 :view="accord.slot"
                 :title="accord.label"
                 :cand-id="candId"
@@ -92,7 +102,12 @@ const accordion = [
         <!-- Вкладки проверки, полиграф и др. -->
         <template v-for="tab in tabs" #[tab.slot] :key="tab.slot">
           <div class="mt-2">
-            <ItemView :view="tab.slot" :title="tab.label" :cand-id="candId" />
+            <ItemView
+              :flag="flag"
+              :view="tab.slot"
+              :title="tab.label"
+              :cand-id="candId"
+            />
           </div>
         </template>
       </UTabs>

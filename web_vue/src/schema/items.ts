@@ -1,18 +1,33 @@
 import { h } from "vue";
-import { conclusions, decisions, localStr } from "@/utils";
-import type { ItemField, Items } from "@/types";
+import { localStr } from "@/utils";
+import { conclusions, decisions } from "@/types";
+import type {
+  Address,
+  Affilation,
+  Contact,
+  Education,
+  Inquisition,
+  ItemField,
+  Needs,
+  Passport,
+  Pfo,
+  Previous,
+  Staff,
+  Verification,
+  Work,
+} from "@/types";
 
 const addresses = [
   { key: "view", label: "Вид адреса" },
   { key: "address", label: "Адрес" },
-] as ItemField[];
+] as ItemField<Address>[];
 
 const affilations = [
   { key: "view", label: "Вид участия" },
   { key: "organization", label: "Организация" },
   { key: "inn", label: "ИНН" },
   { key: "activity", label: "Деятельность" },
-] as ItemField[];
+] as ItemField<Affilation>[];
 
 const checks = [
   { key: "workplace", label: "Проверка по местам работы" },
@@ -30,68 +45,67 @@ const checks = [
   {
     key: "conclusion",
     label: "Результат",
-    component: (val: string) => {
+    component: (row) => {
       const color =
-        val === conclusions.agreed
+        row.conclusion === conclusions.agreed
           ? "bg-green-500"
-          : val === conclusions.cancel
+          : row.conclusion === conclusions.cancel
             ? "bg-gray-500"
-            : val === conclusions.comments
+            : row.conclusion === conclusions.comments
               ? "bg-blue-500"
               : "bg-red-500";
-      return () =>
-        h(
-          "div",
-          {
-            class: [
-              "flex",
-              "items-center",
-              "inline-flex",
-              "py-1 px-2",
-              "rounded-md",
-              "text-sm",
-              "text-white",
-              color,
-            ],
-          },
-          val,
-        );
+      return h(
+        "div",
+        {
+          class: [
+            "flex",
+            "items-center",
+            "inline-flex",
+            "py-1 px-2",
+            "rounded-md",
+            "text-sm",
+            "text-white",
+            color,
+          ],
+        },
+        row.conclusion,
+      );
     },
   },
-  { key: "created", label: "Дата записи", div: (div) => localStr(div) },
-] as ItemField[];
+  { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
+] as ItemField<Verification>[];
 
 const contacts = [
   { key: "view", label: "Вид контакта" },
   { key: "contact", label: "Контакт" },
-] as ItemField[];
+] as ItemField<Contact>[];
 
 const documents = [
   { key: "view", label: "Вид документа" },
   { key: "series", label: "Серия документа" },
   { key: "digits", label: "Номер документа" },
   { key: "agency", label: "Кем выдан" },
-  { key: "issue", label: "Дата выдачи", div: (div) => localStr(div) },
-] as ItemField[];
+  { key: "issue", label: "Дата выдачи", div: (row) => localStr(row.issue) },
+] as ItemField<Passport>[];
 
 const educations = [
   { key: "view", label: "Вид образования" },
   { key: "institution", label: "Учебное заведение" },
   { key: "finished", label: "Год окончания" },
   { key: "specialty", label: "Специальность" },
-] as ItemField[];
+] as ItemField<Education>[];
 
 const inquiries = [
   { key: "info", label: "Информация" },
   { key: "initiator", label: "Инициатор" },
-  { key: "created", label: "Дата записи", div: (div) => localStr(div) },
-] as ItemField[];
+  { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
+] as ItemField<Needs>[];
 
 const investigations = [
   { key: "theme", label: "Тема проверки" },
   { key: "info", label: "Информация" },
-  { key: "created", label: "Дата записи", div: (div) => localStr(div) },
-] as ItemField[];
+  { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
+] as ItemField<Inquisition>[];
 
 const poligrafs = [
   { key: "theme", label: "Тема проверки" },
@@ -99,13 +113,13 @@ const poligrafs = [
   {
     key: "conclusion",
     label: "Результат",
-    component: (val: string) => {
+    component: (row) => {
       const color =
-        val === decisions.agreed
+        row.conclusion === decisions.agreed
           ? "bg-green-500"
-          : val === decisions.cancel
+          : row.conclusion === decisions.cancel
             ? "bg-gray-500"
-            : val === decisions.comments
+            : row.conclusion === decisions.comments
               ? "bg-blue-500"
               : "bg-red-500";
       return () =>
@@ -123,12 +137,12 @@ const poligrafs = [
               color,
             ],
           },
-          val,
+          row.conclusion,
         );
     },
   },
-  { key: "created", label: "Дата записи", div: (div) => localStr(div) },
-] as ItemField[];
+  { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
+] as ItemField<Pfo>[];
 
 const previous = [
   { key: "surname", label: "Фамилия" },
@@ -136,22 +150,25 @@ const previous = [
   { key: "patronymic", label: "Отчество" },
   { key: "changed", label: "Год изменения" },
   { key: "reason", label: "Причина" },
-] as ItemField[];
+] as ItemField<Previous>[];
 
 const staffs = [
   { key: "position", label: "Должность" },
   { key: "department", label: "Подразделение" },
-] as ItemField[];
+] as ItemField<Staff>[];
 
 const workplaces = [
-  { key: "nowWork", label: "Текущая работа" },
-  { key: "starts", label: "Начало работы", div: (div) => localStr(div) },
-  { key: "finished", label: "Окончание работы", div: (div) => localStr(div) },
+  { key: "starts", label: "Начало работы", div: (row) => localStr(row.starts) },
+  {
+    key: "finished",
+    label: "Окончание работы",
+    div: (row) => localStr(row.finished),
+  },
   { key: "workplace", label: "Место работы" },
   { key: "position", label: "Должность" },
   { key: "address", label: "Адрес организации" },
   { key: "reason", label: "Причина увольнения" },
-] as ItemField[];
+] as ItemField<Work>[];
 
 export const itemFields = {
   addresses,
@@ -166,4 +183,4 @@ export const itemFields = {
   previous,
   staffs,
   workplaces,
-} as { [key in keyof Items]: ItemField[] };
+};

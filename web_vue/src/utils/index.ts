@@ -1,7 +1,3 @@
-import { ref } from "vue";
-
-export const store = ref({ flag: false });
-
 export function localStr(str: string): string {
   try {
     return str ? new Date(str).toLocaleDateString() : "";
@@ -48,17 +44,3 @@ export function timeAgoStr(str: string) {
   // Больше года
   return Math.floor(diffDays / 365) + " года назад";
 }
-
-export const conclusions = {
-  agreed: "СОГЛАСОВАНО",
-  comments: "СОГЛАСОВАНО С КОММЕНТАРИЕМ",
-  cancel: "СНЯТ С ПРОВЕРКИ",
-  denied: "ОТКАЗАНО В СОГЛАСОВАНИИ",
-};
-
-export const decisions = {
-  agreed: "БЕЗ ЗАМЕЧАНИЙ",
-  comments: "С КОММЕНТАРИЯМИ",
-  cancel: "ОТКАЗ ОТ ПРОВЕРКИ",
-  denied: "НЕГАТИВ",
-};

@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import { onMounted, type PropType, ref, shallowRef } from "vue";
 import { ofetch } from "ofetch";
-import { store } from "@/utils";
 import { itemFields } from "@/schema/items";
 import { formFields } from "@/schema/forms";
 import type { Items } from "@/types";
 
 // Определяем данные которые передаются из родительского компонента
 const props = defineProps({
+  candId: {
+    type: String,
+    required: true,
+  },
+  flag: {
+    type: Boolean,
+    required: true,
+  },
   title: {
     type: String,
     required: true,
@@ -16,17 +23,13 @@ const props = defineProps({
     type: String as PropType<keyof Items>,
     required: true,
   },
-  candId: {
-    type: String,
-    required: true,
-  },
 });
 
 const data = shallowRef<Items[keyof Items]>([]);
 const item = shallowRef({} as (typeof data.value)[number]);
+const loading = ref(false); // ← триггер для анимации
 const modal = ref(false); // Флаг для открытия модального окна
 const method = ref<"POST" | "PATCH">("POST");
-const loading = ref(false); // ← триггер для анимации
 
 onMounted(() => getItem());
 
@@ -75,7 +78,7 @@ async function deleteItem(itemId: string) {
   <UEmpty v-if="!data?.length" class="m-4" title="Данные отсутствуют" size="sm">
     <template #body>
       <UButton
-        v-show="store.flag"
+        v-show="props.flag"
         label="Добавить запись"
         variant="outline"
         size="sm"
@@ -87,6 +90,8 @@ async function deleteItem(itemId: string) {
     </template>
   </UEmpty>
 
+  <SkeletDivs v-if="loading && !data" :rows="itemFields[view].length" />
+
   <div
     v-for="(content, index) in data"
     :key="index"
@@ -95,7 +100,7 @@ async function deleteItem(itemId: string) {
   >
     <!-- Выводим кнопки редактирования/удаления данных, в режиме редактирования -->
     <DropMenu
-      v-show="store.flag"
+      v-show="props.flag"
       @update="
         item = content;
         modal = true;
@@ -115,7 +120,7 @@ async function deleteItem(itemId: string) {
     description="Добавить/редактировать данные"
   >
     <UButton
-      v-if="store.flag && data?.length"
+      v-if="props.flag && data?.length"
       class="my-2"
       label="Добавить запись"
       variant="outline"

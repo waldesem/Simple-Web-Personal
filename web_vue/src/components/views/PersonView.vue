@@ -2,13 +2,16 @@
 import { type PropType, ref } from "vue";
 import { useClipboard } from "@vueuse/core";
 import { ofetch } from "ofetch";
-import { store } from "@/utils";
 import { divsPerson, formPerson } from "@/schema/persona";
 import type { Person } from "@/types";
 
 const props = defineProps({
   person: {
     type: Object as PropType<Person>,
+    required: true,
+  },
+  flag: {
+    type: Boolean,
     required: true,
   },
 });
@@ -32,9 +35,9 @@ async function submitPerson(form: Person) {
 </script>
 
 <template>
-  <div class="ms-2 mt-2">
+  <div class="ms-2 mt-4">
     <!-- Выводим кнопки редактирования или удаления данных -->
-    <DropMenu v-show="store.flag" @update="modal = true" @delete="null" />
+    <DropMenu v-show="props.flag" @update="modal = true" @delete="null" />
 
     <ItemDiv :fields="divsPerson" :item="props.person">
       <template v-if="props.person.destination" #destination>

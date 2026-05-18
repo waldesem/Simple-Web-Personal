@@ -8,9 +8,9 @@
         </div>
       </template>
     </UHeader>
-    <UMain class="pt-16 pb-4">
+    <UMain>
       <slot />
     </UMain>
-    <!-- <UFooter v-once /> -->
+    <UFooter v-once />
   </UPage>
 </template>

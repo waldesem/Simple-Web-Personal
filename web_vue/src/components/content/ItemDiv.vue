@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { type PropType } from "vue";
-import type { ItemField } from "@/types";
+import { ItemField, Items } from "@/types";
 
 const props = defineProps({
   fields: {
-    type: Object as PropType<ItemField[]>,
+    type: Array as PropType<ItemField<Items[keyof Items][number]>[]>,
     required: true,
   },
   item: {
-    type: Object,
+    type: Object as PropType<Items[keyof Items][number]>,
     default: () => ({}),
   },
 });
@@ -20,14 +20,21 @@ const props = defineProps({
       <div class="col-span-3">
         {{ field.label }}
       </div>
+
       <div v-if="field.slot" class="col-span-9">
         <slot :name="field.key" />
       </div>
+
       <div v-else-if="field.component" class="col-span-9">
-        <component :is="field.component(item[field.key])" />
+        <component :is="field.component(item)" />
       </div>
+
+      <div v-else-if="field.div" class="col-span-9 wrap-break-word">
+        {{ field.div(item) }}
+      </div>
+
       <div v-else class="col-span-9 wrap-break-word">
-        {{ field.div ? field.div(item[field.key]) : item[field.key] }}
+        {{ item[field.key] }}
       </div>
     </div>
   </div>

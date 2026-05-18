@@ -1,21 +1,50 @@
-import { localStr } from "@/utils";
-import type { FormField, ItemField } from "@/types";
+import { localStr, timeAgoStr } from "@/utils";
+import type { FormField, ItemField, Person, TableColumns } from "@/types";
+
+export const tableColumns: TableColumns<Person>[] = [
+  {
+    name: "id",
+    header: "#",
+  },
+  {
+    name: "surname",
+    header: "Фамилия",
+  },
+  {
+    name: "firstname",
+    header: "Имя",
+  },
+  {
+    name: "patronymic",
+    header: "Отчество",
+  },
+  {
+    name: "birthday",
+    header: "Дата рождения",
+    cell: (row) => localStr(row.birthday),
+  },
+  {
+    name: "created",
+    header: "Обновлено",
+    cell: (row) => timeAgoStr(row.created),
+  },
+];
 
 export const divsPerson = [
   { key: "surname", label: "Фамилия" },
   { key: "firstname", label: "Имя" },
   { key: "patronymic", label: "Отчество" },
-  { key: "birthday", label: "Дата рождения", div: (div) => localStr(div) },
+  { key: "birthday", label: "Дата рождения", div: (row) => localStr(row.birthday) },
   { key: "birthplace", label: "Место рождения" },
   { key: "citizenship", label: "Гражданство" },
   { key: "dual", label: "Двойное гражданство" },
   { key: "snils", label: "СНИЛС" },
   { key: "inn", label: "ИНН" },
   { key: "marital", label: "Семейное положение" },
-  { key: "created", label: "Дата записи", div: (div) => localStr(div) },
+  { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
   { key: "addition", label: "Дополнительная информация" },
   { key: "destination", label: "Материалы проверок", slot: true },
-] as ItemField[];
+] as ItemField<Person>[];
 
 const pattern = "^[А-ЯЁ][А-ЯЁ\\-.,' ]+[А-ЯЁ]$";
 
@@ -100,4 +129,4 @@ export const formPerson = [
     label: "Дополнительно",
     attrs: { placeholder: "Дополнительная информация", maxlength: 4096 },
   },
-] as FormField[];
+] as FormField<Person>[];

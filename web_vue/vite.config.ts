@@ -32,6 +32,9 @@ export default defineConfig({
             content: "sm:max-w-xl",
           },
         },
+        pageBody: {
+          base: "mt-8 pb-8 space-y-8",
+        },
         pageHeader: {
           slots: {
             root: "relative border-none py-4",
