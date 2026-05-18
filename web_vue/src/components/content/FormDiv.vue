@@ -10,7 +10,7 @@ const props = defineProps({
     default: () => ({}),
   },
   fields: {
-    type: Array as PropType<FormField<Items[keyof Items][number]>[]>,
+    type: Array as PropType<FormField<Items[keyof Items]>[]>,
     required: true,
   },
 });
