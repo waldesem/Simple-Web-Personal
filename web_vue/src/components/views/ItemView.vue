@@ -25,8 +25,8 @@ const props = defineProps({
   },
 });
 
-const data = shallowRef<Items[keyof Items]>([]);
-const item = shallowRef({} as (typeof data.value)[number]);
+const data = shallowRef<Items[keyof Items][]>([]);
+const item = shallowRef<Items[keyof Items]>({});
 const loading = ref(false); // ← триггер для анимации
 const modal = ref(false); // Флаг для открытия модального окна
 const method = ref<"POST" | "PATCH">("POST");
@@ -52,7 +52,7 @@ async function submitItem(form: typeof item.value) {
       body: form,
     },
   );
-  item.value = {} as (typeof data.value)[number];
+  item.value = ({} as typeof item.value);
   if (status !== 201 && status !== 200) alert("Невозможно выполнить действие!");
   await getItem();
 }
