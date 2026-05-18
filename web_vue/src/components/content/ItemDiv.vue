@@ -4,11 +4,11 @@ import { ItemField, Items } from "@/types";
 
 const props = defineProps({
   fields: {
-    type: Array as PropType<ItemField<Items[keyof Items][]>[]>,
+    type: Array as PropType<ItemField<Items[keyof Items]>[]>,
     required: true,
   },
   item: {
-    type: Object as PropType<Items[keyof Items][number]>,
+    type: Object as PropType<Items[keyof Items]>,
     default: () => ({}),
   },
 });
