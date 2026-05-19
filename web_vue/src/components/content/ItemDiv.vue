@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { type PropType } from "vue";
-import { ItemField, Items } from "@/types";
+import type { PropType } from "vue";
+import type { ItemFields, Items } from "@/types";
 
 const props = defineProps({
   fields: {
-    type: Array as PropType<ItemField<Items[keyof Items]>[]>,
+    type: Array as PropType<ItemFields<Items[keyof Items]>[]>,
     required: true,
   },
   item: {

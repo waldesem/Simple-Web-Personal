@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { type PropType, toRef } from "vue";
-import type { FormField, Items } from "@/types";
+import type { FormFields, Items } from "@/types";
 
 const emit = defineEmits(["submit"]);
 
 const props = defineProps({
+  fields: {
+    type: Array as PropType<FormFields<Items[keyof Items]>[]>,
+    required: true,
+  },
   item: {
     type: Object as PropType<Items[keyof Items]>,
     default: () => ({}),
-  },
-  fields: {
-    type: Array as PropType<FormField<Items[keyof Items]>[]>,
-    required: true,
   },
 });
 
@@ -25,23 +25,23 @@ const form = toRef(props.item);
       :key="field.key"
       :name="field.key"
       :label="field.label"
-      :required="field.attrs ? (field.attrs.required as boolean) : false"
+      :required="field.props ? (field.props.required as boolean) : false"
     >
       <UInput
         v-if="field.element === 'input'"
         v-model.trim.lazy="form[field.key]"
-        v-bind="{ ...field.attrs }"
+        v-bind="{ ...field.props }"
       />
       <USelect
         v-else-if="field.element === 'select'"
         v-model="form[field.key]"
-        v-bind="{ ...field.attrs }"
+        v-bind="{ ...field.props }"
         :items="field.items"
       />
       <UTextarea
         v-else-if="field.element === 'textarea'"
         v-model.trim.lazy="form[field.key]"
-        v-bind="{ ...field.attrs }"
+        v-bind="{ ...field.props }"
         autoresize
       />
     </UFormField>

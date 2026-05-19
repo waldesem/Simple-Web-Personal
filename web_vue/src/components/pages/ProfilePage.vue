@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, shallowRef } from "vue";
 import { useRoute } from "vue-router";
 import { ofetch } from "ofetch";
-import { divsPerson } from "@/schema/persona";
+import { itemsFields } from "@/schema/items";
 import type { Items, Person } from "@/types";
 
 // Получаем данные id кандидата из URL
@@ -28,25 +28,25 @@ const fullname = computed(
     }`,
 );
 
-const anketa = { label: "Анкета", slot: "anketa" as const };
+const anketa = { label: "Анкета", slot: "person" as keyof Items };
 
 const tabs = [
-  { label: "Проверки", slot: "checks" as const },
-  { label: "Полиграф", slot: "poligrafs" as const },
-  { label: "Расследования", slot: "investigations" as const },
-  { label: "Запросы", slot: "inquiries" as const },
+  { label: "Проверки", slot: "checks" },
+  { label: "Полиграф", slot: "poligrafs" },
+  { label: "Расследования", slot: "investigations" },
+  { label: "Запросы", slot: "inquiries" },
 ] as { label: string; slot: keyof Items }[];
 
 // Определяем массив элементов аккордеона
 const accordion = [
-  { label: "Должности", slot: "staffs" as const },
-  { label: "Образование", slot: "educations" as const },
-  { label: "Места работы", slot: "workplaces" as const },
-  { label: "Документы", slot: "documents" as const },
-  { label: "Адреса", slot: "addresses" as const },
-  { label: "Контакты", slot: "contacts" as const },
-  { label: "Изменения имени", slot: "previous" as const },
-  { label: "Аффилированность", slot: "affilations" as const },
+  { label: "Должности", slot: "staffs" },
+  { label: "Образование", slot: "educations" },
+  { label: "Места работы", slot: "workplaces" },
+  { label: "Документы", slot: "documents" },
+  { label: "Адреса", slot: "addresses" },
+  { label: "Контакты", slot: "contacts" },
+  { label: "Изменения имени", slot: "previous" },
+  { label: "Аффилированность", slot: "affilations" },
 ] as { label: string; slot: keyof Items }[];
 </script>
 
@@ -71,8 +71,8 @@ const accordion = [
         class="mt-4"
       >
         <!-- Слот вкладки для отображения анкеты -->
-        <template #anketa>
-          <SkeletDivs v-if="loading && !data" :rows="divsPerson.length" />
+        <template #person>
+          <SkeletDivs v-if="loading && !data" :rows="itemsFields.person.length" />
           <PersonView
             v-else
             :class="{ 'animate-pulse': loading }"

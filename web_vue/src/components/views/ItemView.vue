@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, type PropType, ref, shallowRef } from "vue";
 import { ofetch } from "ofetch";
-import { itemFields } from "@/schema/items";
-import { formFields } from "@/schema/forms";
+import { itemsFields } from "@/schema/items";
+import { itemsForms } from "@/schema/forms";
 import type { Items } from "@/types";
 
 // Определяем данные которые передаются из родительского компонента
@@ -25,8 +25,8 @@ const props = defineProps({
   },
 });
 
-const data = shallowRef<Items[keyof Items][]>([]);
-const item = shallowRef<Items[keyof Items]>({});
+const item = shallowRef({} as Items[keyof Items]);
+const data = shallowRef([] as typeof item.value[]);
 const loading = ref(false); // ← триггер для анимации
 const modal = ref(false); // Флаг для открытия модального окна
 const method = ref<"POST" | "PATCH">("POST");
@@ -90,7 +90,7 @@ async function deleteItem(itemId: string) {
     </template>
   </UEmpty>
 
-  <SkeletDivs v-if="loading && !data" :rows="itemFields[view].length" />
+  <SkeletDivs v-if="loading && !data" :rows="itemsFields[view].length" />
 
   <div
     v-for="(content, index) in data"
@@ -109,7 +109,7 @@ async function deleteItem(itemId: string) {
       @delete="deleteItem(content.id)"
     />
     <!-- Выводим элемент данных -->
-    <ItemDiv :item="content" :fields="itemFields[view]" />
+    <ItemDiv :item="content" :fields="itemsFields[view]" />
     <USeparator v-if="index + 1 < data.length" />
   </div>
 
@@ -129,7 +129,7 @@ async function deleteItem(itemId: string) {
       @click="method = 'POST'"
     />
     <template #body>
-      <FormDiv :item="item" :fields="formFields[view]" @submit="submitItem" />
+      <FormDiv :item="item" :fields="itemsForms[view]" @submit="submitItem" />
     </template>
   </UModal>
 </template>

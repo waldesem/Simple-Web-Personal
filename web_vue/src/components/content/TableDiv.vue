@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType } from "vue";
-import { TableColumns } from "@/types";
+import type { PropType } from "vue";
+import type { TableColumns } from "@/types";
 
 const emit = defineEmits(["select"]);
 

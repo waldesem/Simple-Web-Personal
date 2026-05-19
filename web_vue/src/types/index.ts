@@ -1,16 +1,21 @@
-export const conclusions = {
-  agreed: "СОГЛАСОВАНО",
-  comments: "СОГЛАСОВАНО С КОММЕНТАРИЕМ",
-  cancel: "СНЯТ С ПРОВЕРКИ",
-  denied: "ОТКАЗАНО В СОГЛАСОВАНИИ",
-};
+import { InputProps } from "@nuxt/ui/runtime/components/Input.vue.js";
+import { SelectProps } from "@nuxt/ui/runtime/components/Select.vue.js";
+import { TextareaProps } from "@nuxt/ui/runtime/components/Textarea.vue.js";
+import type { Component } from "vue";
 
-export const decisions = {
-  agreed: "БЕЗ ЗАМЕЧАНИЙ",
-  comments: "С КОММЕНТАРИЯМИ",
-  cancel: "ОТКАЗ ОТ ПРОВЕРКИ",
-  denied: "НЕГАТИВ",
-};
+export enum Conclusions {
+  agreed = "СОГЛАСОВАНО",
+  comments = "СОГЛАСОВАНО С КОММЕНТАРИЕМ",
+  cancel = "СНЯТ С ПРОВЕРКИ",
+  denied = "ОТКАЗАНО В СОГЛАСОВАНИИ",
+}
+
+export enum Decisions {
+  agreed = "БЕЗ ЗАМЕЧАНИЙ",
+  comments = "С КОММЕНТАРИЯМИ",
+  cancel = "ОТКАЗ ОТ ПРОВЕРКИ",
+  denied = "НЕГАТИВ",
+}
 
 export interface TableColumns<T> {
   name: keyof T;
@@ -18,7 +23,7 @@ export interface TableColumns<T> {
   cell?: (row: T) => string;
 }
 
-export interface ItemField<T> {
+export interface ItemFields<T> {
   key: keyof T;
   label: string;
   slot?: boolean;
@@ -26,26 +31,21 @@ export interface ItemField<T> {
   component?: (row: T) => Component;
 }
 
-export interface FormField<T> {
-  element: "input" | "select" | "textarea";
-  key: keyof T;
-  label: string;
-  attrs?: {
-    [K in
-      | "pattern"
-      | "type"
-      | "required"
-      | "name"
-      | "disabled"
-      | "placeholder"
-      | "autofocus"
-      | "max"
-      | "maxlength"
-      | "min"
-      | "minlength"]?: any;
-  };
-  items?: string[];
-}
+type FormElementAttrs = {
+  input: Omit<InputProps, "modelValue" | "defaultValue">;
+  select: Omit<SelectProps, "modelValue" | "defaultValue">;
+  textarea: Omit<TextareaProps, "modelValue" | "defaultValue">;
+};
+
+export type FormFields<T> = {
+  [K in keyof FormElementAttrs]: {
+    element: K;
+    key: keyof T;
+    label: string;
+    props?: Partial<FormElementAttrs[K]>;
+    items?: K extends 'select' ? string[] : never;
+  }
+}[keyof FormElementAttrs];
 
 export interface Person {
   id: string;
@@ -140,7 +140,7 @@ export interface Verification {
   internet?: string;
   cronos?: string;
   addition?: string;
-  conclusion: string;
+  conclusion: Conclusions;
   comment?: string;
   created: string;
 }
@@ -149,7 +149,7 @@ export interface Pfo {
   id: string;
   theme: string;
   results: string;
-  conclusion: string;
+  conclusion: Decisions;
   created: string;
 }
 
@@ -177,8 +177,9 @@ export interface Items {
   educations: Education;
   inquiries: Needs;
   investigations: Inquisition;
+  person: Person;
   poligrafs: Pfo;
-  previous: Previous[];
-  staffs: Staff[];
-  workplaces: Work[];
+  previous: Previous;
+  staffs: Staff;
+  workplaces: Work;
 }

@@ -1,33 +1,39 @@
 import { h } from "vue";
 import { localStr } from "@/utils";
-import { conclusions, decisions } from "@/types";
-import type {
-  Address,
-  Affilation,
-  Contact,
-  Education,
-  Inquisition,
-  ItemField,
-  Needs,
-  Passport,
-  Pfo,
-  Previous,
-  Staff,
-  Verification,
-  Work,
-} from "@/types";
+import { Conclusions, Decisions } from "@/types";
+import type { Items, ItemFields } from "@/types";
+
+export const person = [
+  { key: "surname", label: "Фамилия" },
+  { key: "firstname", label: "Имя" },
+  { key: "patronymic", label: "Отчество" },
+  {
+    key: "birthday",
+    label: "Дата рождения",
+    div: (row) => localStr(row.birthday),
+  },
+  { key: "birthplace", label: "Место рождения" },
+  { key: "citizenship", label: "Гражданство" },
+  { key: "dual", label: "Двойное гражданство" },
+  { key: "snils", label: "СНИЛС" },
+  { key: "inn", label: "ИНН" },
+  { key: "marital", label: "Семейное положение" },
+  { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
+  { key: "addition", label: "Дополнительная информация" },
+  { key: "destination", label: "Материалы проверок", slot: true },
+] as ItemFields<Items["person"]>[];
 
 const addresses = [
   { key: "view", label: "Вид адреса" },
   { key: "address", label: "Адрес" },
-] as ItemField<Address>[];
+] as ItemFields<Items["addresses"]>[];
 
 const affilations = [
   { key: "view", label: "Вид участия" },
   { key: "organization", label: "Организация" },
   { key: "inn", label: "ИНН" },
   { key: "activity", label: "Деятельность" },
-] as ItemField<Affilation>[];
+] as ItemFields<Items["affilations"]>[];
 
 const checks = [
   { key: "workplace", label: "Проверка по местам работы" },
@@ -47,24 +53,18 @@ const checks = [
     label: "Результат",
     component: (row) => {
       const color =
-        row.conclusion === conclusions.agreed
+        row.conclusion === Conclusions.agreed
           ? "bg-green-500"
-          : row.conclusion === conclusions.cancel
+          : row.conclusion === Conclusions.cancel
             ? "bg-gray-500"
-            : row.conclusion === conclusions.comments
+            : row.conclusion === Conclusions.comments
               ? "bg-blue-500"
               : "bg-red-500";
       return h(
-        "div",
+        "span",
         {
           class: [
-            "flex",
-            "items-center",
-            "inline-flex",
-            "py-1 px-2",
-            "rounded-md",
-            "text-sm",
-            "text-white",
+            "flex inline-flex items-center py-1 px-2 rounded-md text-sm text-white",
             color,
           ],
         },
@@ -73,12 +73,12 @@ const checks = [
     },
   },
   { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
-] as ItemField<Verification>[];
+] as ItemFields<Items["checks"]>[];
 
 const contacts = [
   { key: "view", label: "Вид контакта" },
   { key: "contact", label: "Контакт" },
-] as ItemField<Contact>[];
+] as ItemFields<Items["contacts"]>[];
 
 const documents = [
   { key: "view", label: "Вид документа" },
@@ -86,26 +86,26 @@ const documents = [
   { key: "digits", label: "Номер документа" },
   { key: "agency", label: "Кем выдан" },
   { key: "issue", label: "Дата выдачи", div: (row) => localStr(row.issue) },
-] as ItemField<Passport>[];
+] as ItemFields<Items["documents"]>[];
 
 const educations = [
   { key: "view", label: "Вид образования" },
   { key: "institution", label: "Учебное заведение" },
   { key: "finished", label: "Год окончания" },
   { key: "specialty", label: "Специальность" },
-] as ItemField<Education>[];
+] as ItemFields<Items["educations"]>[];
 
 const inquiries = [
   { key: "info", label: "Информация" },
   { key: "initiator", label: "Инициатор" },
   { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
-] as ItemField<Needs>[];
+] as ItemFields<Items["inquiries"]>[];
 
 const investigations = [
   { key: "theme", label: "Тема проверки" },
   { key: "info", label: "Информация" },
   { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
-] as ItemField<Inquisition>[];
+] as ItemFields<Items["investigations"]>[];
 
 const poligrafs = [
   { key: "theme", label: "Тема проверки" },
@@ -115,34 +115,27 @@ const poligrafs = [
     label: "Результат",
     component: (row) => {
       const color =
-        row.conclusion === decisions.agreed
+        row.conclusion === Decisions.agreed
           ? "bg-green-500"
-          : row.conclusion === decisions.cancel
+          : row.conclusion === Decisions.cancel
             ? "bg-gray-500"
-            : row.conclusion === decisions.comments
+            : row.conclusion === Decisions.comments
               ? "bg-blue-500"
               : "bg-red-500";
-      return () =>
-        h(
-          "div",
-          {
-            class: [
-              "flex",
-              "items-center",
-              "inline-flex",
-              "py-1 px-2",
-              "rounded-md",
-              "text-sm",
-              "text-white",
-              color,
-            ],
-          },
-          row.conclusion,
-        );
+      return h(
+        "span",
+        {
+          class: [
+            "flex inline-flex items-center py-1 px-2 rounded-md text-sm text-white",
+            color,
+          ],
+        },
+        row.conclusion,
+      );
     },
   },
   { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
-] as ItemField<Pfo>[];
+] as ItemFields<Items["poligrafs"]>[];
 
 const previous = [
   { key: "surname", label: "Фамилия" },
@@ -150,12 +143,12 @@ const previous = [
   { key: "patronymic", label: "Отчество" },
   { key: "changed", label: "Год изменения" },
   { key: "reason", label: "Причина" },
-] as ItemField<Previous>[];
+] as ItemFields<Items["previous"]>[];
 
 const staffs = [
   { key: "position", label: "Должность" },
   { key: "department", label: "Подразделение" },
-] as ItemField<Staff>[];
+] as ItemFields<Items["staffs"]>[];
 
 const workplaces = [
   { key: "starts", label: "Начало работы", div: (row) => localStr(row.starts) },
@@ -168,9 +161,9 @@ const workplaces = [
   { key: "position", label: "Должность" },
   { key: "address", label: "Адрес организации" },
   { key: "reason", label: "Причина увольнения" },
-] as ItemField<Work>[];
+] as ItemFields<Items["workplaces"]>[];
 
-export const itemFields = {
+export const itemsFields = {
   addresses,
   affilations,
   checks,
@@ -179,8 +172,9 @@ export const itemFields = {
   educations,
   inquiries,
   investigations,
+  person,
   poligrafs,
   previous,
   staffs,
   workplaces,
-} as { [key in keyof Items]: ItemField<Items[keyof Items]>[] };
+} as { [key in keyof Items]: ItemFields<Items[keyof Items]>[] };

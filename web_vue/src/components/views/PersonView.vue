@@ -2,7 +2,8 @@
 import { type PropType, ref } from "vue";
 import { useClipboard } from "@vueuse/core";
 import { ofetch } from "ofetch";
-import { divsPerson, formPerson } from "@/schema/persona";
+import { itemsFields } from "@/schema/items";
+import { itemsForms } from "@/schema/forms";
 import type { Person } from "@/types";
 
 const props = defineProps({
@@ -39,7 +40,7 @@ async function submitPerson(form: Person) {
     <!-- Выводим кнопки редактирования или удаления данных -->
     <DropMenu v-show="props.flag" @update="modal = true" @delete="null" />
 
-    <ItemDiv :fields="divsPerson" :item="props.person">
+    <ItemDiv :fields="itemsFields.person" :item="props.person">
       <template v-if="props.person.destination" #destination>
         <UButton
           variant="outline"
@@ -59,7 +60,7 @@ async function submitPerson(form: Person) {
     >
       <template #body>
         <FormDiv
-          :fields="formPerson"
+          :fields="itemsForms.person"
           :item="props.person"
           @submit="submitPerson"
         />

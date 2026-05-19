@@ -3,8 +3,9 @@ import { ref, watch, shallowRef, onMounted } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { ofetch } from "ofetch";
-import { formPerson, tableColumns } from "@/schema/persona";
-import type { Person } from "@/types";
+import { localStr, timeAgoStr } from "@/utils";
+import { itemsForms } from "@/schema/forms";
+import type { Person, TableColumns } from "@/types";
 
 const router = useRouter();
 
@@ -64,6 +65,35 @@ async function submitPerson(form: Person) {
     alert("Невозможно выполнить действие!");
   }
 }
+
+export const tableColumns: TableColumns<Person>[] = [
+  {
+    name: "id",
+    header: "#",
+  },
+  {
+    name: "surname",
+    header: "Фамилия",
+  },
+  {
+    name: "firstname",
+    header: "Имя",
+  },
+  {
+    name: "patronymic",
+    header: "Отчество",
+  },
+  {
+    name: "birthday",
+    header: "Дата рождения",
+    cell: (row) => localStr(row.birthday),
+  },
+  {
+    name: "created",
+    header: "Обновлено",
+    cell: (row) => timeAgoStr(row.created),
+  },
+];
 </script>
 
 <template>
@@ -85,7 +115,7 @@ async function submitPerson(form: Person) {
             @click="modal = true"
           />
           <template #body>
-            <FormDiv :fields="formPerson" @submit="submitPerson" />
+            <FormDiv :fields="itemsForms.person" @submit="submitPerson" />
           </template>
         </UModal>
       </template>
