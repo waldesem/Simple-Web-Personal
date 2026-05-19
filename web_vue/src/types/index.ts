@@ -1,6 +1,6 @@
-import { InputProps } from "@nuxt/ui/runtime/components/Input.vue.js";
-import { SelectProps } from "@nuxt/ui/runtime/components/Select.vue.js";
-import { TextareaProps } from "@nuxt/ui/runtime/components/Textarea.vue.js";
+import type { InputProps } from "@nuxt/ui/runtime/components/Input.vue.js";
+import type { SelectProps } from "@nuxt/ui/runtime/components/Select.vue.js";
+import type { TextareaProps } from "@nuxt/ui/runtime/components/Textarea.vue.js";
 import type { Component } from "vue";
 
 export enum Conclusions {
@@ -17,13 +17,13 @@ export enum Decisions {
   denied = "НЕГАТИВ",
 }
 
-export interface TableColumns<T> {
+export type TableColumns<T> = {
   name: keyof T;
   header: string;
   cell?: (row: T) => string;
 }
 
-export interface ItemFields<T> {
+export type ItemFields<T> = {
   key: keyof T;
   label: string;
   slot?: boolean;
@@ -168,7 +168,7 @@ export interface Needs {
   created: string;
 }
 
-export interface Items {
+export type Items = {
   addresses: Address;
   affilations: Affilation;
   checks: Verification;
