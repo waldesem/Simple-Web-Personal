@@ -183,4 +183,4 @@ export const itemFields = {
   previous,
   staffs,
   workplaces,
-};
+} as { [key in keyof Items]: ItemField<Items[keyof Items]>[] };
