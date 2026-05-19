@@ -23,7 +23,7 @@ export interface ItemField<T> {
   label: string;
   slot?: boolean;
   div?: (row: T) => string;
-  component?: (row: T) => string;
+  component?: (row: T) => Component;
 }
 
 export interface FormField<T> {
