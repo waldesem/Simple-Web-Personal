@@ -30,18 +30,18 @@ const form = toRef(props.item);
       <UInput
         v-if="field.element === 'input'"
         v-model.trim.lazy="form[field.key]"
-        v-bind="{ ...field.props }"
+        v-bind="field.props"
       />
       <USelect
         v-else-if="field.element === 'select'"
         v-model="form[field.key]"
-        v-bind="{ ...field.props }"
+        v-bind="field.props"
         :items="field.items"
       />
       <UTextarea
         v-else-if="field.element === 'textarea'"
         v-model.trim.lazy="form[field.key]"
-        v-bind="{ ...field.props }"
+        v-bind="field.props"
         autoresize
       />
     </UFormField>

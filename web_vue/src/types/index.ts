@@ -1,7 +1,7 @@
+import type { Component } from "vue";
 import type { InputProps } from "@nuxt/ui/runtime/components/Input.vue.js";
 import type { SelectProps } from "@nuxt/ui/runtime/components/Select.vue.js";
 import type { TextareaProps } from "@nuxt/ui/runtime/components/Textarea.vue.js";
-import type { Component } from "vue";
 
 export enum Conclusions {
   agreed = "СОГЛАСОВАНО",
@@ -21,7 +21,7 @@ export type TableColumns<T> = {
   name: keyof T;
   header: string;
   cell?: (row: T) => string;
-}
+};
 
 export type ItemFields<T> = {
   key: keyof T;
@@ -29,12 +29,12 @@ export type ItemFields<T> = {
   slot?: boolean;
   div?: (row: T) => string;
   component?: (row: T) => Component;
-}
+};
 
 type FormElementAttrs = {
-  input: Omit<InputProps, "modelValue" | "defaultValue">;
-  select: Omit<SelectProps, "modelValue" | "defaultValue">;
-  textarea: Omit<TextareaProps, "modelValue" | "defaultValue">;
+  input: InputProps;
+  select: SelectProps;
+  textarea: TextareaProps;
 };
 
 export type FormFields<T> = {
@@ -42,9 +42,9 @@ export type FormFields<T> = {
     element: K;
     key: keyof T;
     label: string;
-    props?: Partial<FormElementAttrs[K]>;
-    items?: K extends 'select' ? string[] : never;
-  }
+    props: Omit<FormElementAttrs[K], "modelValue" | "defaultValue">;
+    items?: K extends "select" ? string[] : never;
+  };
 }[keyof FormElementAttrs];
 
 export interface Person {
@@ -182,4 +182,4 @@ export type Items = {
   previous: Previous;
   staffs: Staff;
   workplaces: Work;
-}
+};

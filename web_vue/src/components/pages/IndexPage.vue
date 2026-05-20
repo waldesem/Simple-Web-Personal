@@ -66,7 +66,7 @@ async function submitPerson(form: Person) {
   }
 }
 
-export const tableColumns: TableColumns<Person>[] = [
+const tableColumns: TableColumns<Person>[] = [
   {
     name: "id",
     header: "#",
