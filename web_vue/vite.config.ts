@@ -33,7 +33,7 @@ export default defineConfig({
           },
         },
         pageBody: {
-          base: "mt-8 pb-8 space-y-8",
+          base: "my-8 space-y-8",
         },
         pageHeader: {
           slots: {
@@ -44,6 +44,9 @@ export default defineConfig({
         textarea: {
           slots: {
             root: "w-full",
+          },
+          variants: {
+            autoresize: { true: "vertical" },
           },
         },
       },

@@ -55,8 +55,8 @@ const accordion = [
     <UPageHeader :title="fullname">
       <template #links>
         <UButton
-          :icon="flag ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
           :color="flag ? 'success' : 'error'"
+          :icon="flag ? 'i-lucide-pencil' : 'i-lucide-pencil-off'"
           :title="flag ? 'Откл.Редакт.' : 'Вкл.Редакт.'"
           @click="flag = !flag"
         />
@@ -67,19 +67,14 @@ const accordion = [
       <UTabs
         :items="[anketa, ...tabs]"
         :unmount-on-hide="false"
-        variant="pill"
         class="mt-4"
+        variant="pill"
       >
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
-          <SkeletDivs v-if="loading && !data" :rows="itemsFields.person.length" />
-          <PersonView
-            v-else
-            :class="{ 'animate-pulse': loading }"
-            :person="data"
-            :flag="flag"
-            @update="getPerson"
-          />
+          <SkeletDivs v-if="loading" :rows="itemsFields.person.length" />
+          <PersonView v-else :flag="flag" :person="data" @update="getPerson" />
+
           <USeparator />
 
           <!-- Aккордеон с данными staffs, educations и т.д. -->
@@ -90,10 +85,10 @@ const accordion = [
               :key="accord.slot"
             >
               <ItemView
-                :flag="flag"
-                :view="accord.slot"
-                :title="accord.label"
                 :cand-id="candId"
+                :flag="flag"
+                :title="accord.label"
+                :view="accord.slot"
               />
             </template>
           </UAccordion>
@@ -101,14 +96,12 @@ const accordion = [
 
         <!-- Вкладки проверки, полиграф и др. -->
         <template v-for="tab in tabs" #[tab.slot] :key="tab.slot">
-          <div class="mt-2">
-            <ItemView
-              :flag="flag"
-              :view="tab.slot"
-              :title="tab.label"
-              :cand-id="candId"
-            />
-          </div>
+          <ItemView
+            :cand-id="candId"
+            :flag="flag"
+            :title="tab.label"
+            :view="tab.slot"
+          />
         </template>
       </UTabs>
     </UPageBody>

@@ -5,7 +5,6 @@ const pattern = "^[А-ЯЁ][А-ЯЁ\\-.,' ]+[А-ЯЁ]$";
 
 export const person = [
   {
-    element: "input",
     key: "surname",
     label: "Фамилия",
     props: {
@@ -16,7 +15,6 @@ export const person = [
     },
   },
   {
-    element: "input",
     key: "firstname",
     label: "Имя",
     props: {
@@ -27,7 +25,6 @@ export const person = [
     },
   },
   {
-    element: "input",
     key: "patronymic",
     label: "Отчество",
     props: {
@@ -37,43 +34,36 @@ export const person = [
     },
   },
   {
-    element: "input",
     key: "birthday",
     label: "Дата рождения",
     props: { type: "date", required: true },
   },
   {
-    element: "input",
     key: "birthplace",
     label: "Место рождения",
     props: { placeholder: "Место рождения", maxlength: 255 },
   },
   {
-    element: "input",
     key: "citizenship",
     label: "Гражданство",
     props: { placeholder: "Гражданство", maxlength: 255 },
   },
   {
-    element: "input",
     key: "dual",
     label: "Двойное гражданство",
     props: { placeholder: "Двойное гражданство", maxlength: 255 },
   },
   {
-    element: "input",
     key: "snils",
     label: "СНИЛС",
     props: { pattern: "^\\d{11}$", placeholder: "СНИЛС" },
   },
   {
-    element: "input",
     key: "inn",
     label: "ИНН",
     props: { pattern: "^\\d{12}$", placeholder: "ИНН" },
   },
   {
-    element: "input",
     key: "marital",
     label: "Семейное положение",
     props: { placeholder: "Семейное положение", maxlength: 255 },
@@ -91,8 +81,11 @@ const addresses = [
     element: "select",
     key: "view",
     label: "Вид адреса",
-    items: ["Адрес регистрации", "Адрес проживания", "Другое"],
-    props: { placeholder: "Выберите адрес", required: true },
+    props: {
+      items: ["Адрес регистрации", "Адрес проживания", "Другое"],
+      placeholder: "Выберите адрес",
+      required: true,
+    },
   },
   {
     element: "textarea",
@@ -104,19 +97,16 @@ const addresses = [
 
 const affilations = [
   {
-    element: "input",
     key: "view",
     label: "Вид участия",
     props: { placeholder: "Вид участия", maxlength: 255, required: true },
   },
   {
-    element: "input",
     key: "organization",
     label: "Организация",
     props: { placeholder: "Организация", maxlength: 255, required: true },
   },
   {
-    element: "input",
     key: "inn",
     label: "ИНН",
     props: { placeholder: "Организация", pattern: "^\\d{10,12}$" },
@@ -206,8 +196,11 @@ const checks = [
     element: "select",
     key: "conclusion",
     label: "Результат",
-    items: Object.values(Conclusions),
-    props: { placeholder: "Выберите результат", required: true },
+    props: {
+      items: Object.values(Conclusions),
+      placeholder: "Выберите результат",
+      required: true,
+    },
   },
 ] as FormFields<Items["checks"]>[];
 
@@ -216,15 +209,14 @@ const contacts = [
     element: "select",
     key: "view",
     label: "Вид контакта",
-    items: ["Телефон", "Электронная почта", "Другое"],
     props: {
+      items: ["Телефон", "Электронная почта", "Другое"],
       placeholder: "Выберите контакт",
       maxlength: 255,
       required: true,
     },
   },
   {
-    element: "input",
     key: "contact",
     label: "Контакт",
     props: { placeholder: "Контакт", maxlength: 255, required: true },
@@ -236,29 +228,28 @@ const documents = [
     element: "select",
     key: "view",
     label: "Вид документа",
-    items: ["Паспорт", "Иностранный паспорт", "Другое"],
-    props: { placeholder: "Выберите документ", required: true },
+    props: {
+      items: ["Паспорт", "Иностранный паспорт", "Другое"],
+      placeholder: "Выберите документ",
+      required: true,
+    },
   },
   {
-    element: "input",
     key: "series",
     label: "Серия",
     props: { placeholder: "Серия", maxlength: 16 },
   },
   {
-    element: "input",
     key: "digits",
     label: "Номер",
     props: { placeholder: "Номер", maxlength: 16, required: true },
   },
   {
-    element: "input",
     key: "agency",
     label: "Кем выдан",
     props: { placeholder: "Орган выдавший", maxlength: 255 },
   },
   {
-    element: "input",
     key: "issue",
     label: "Дата выдачи",
     props: { type: "date", required: true },
@@ -270,18 +261,20 @@ const educations = [
     element: "select",
     key: "view",
     label: "Вид образования",
-    items: [
-      "Основное общее",
-      "Среднее общее",
-      "Среднее профессиональное",
-      "Высшее",
-      "Неоконченное высшее образование",
-      "Другое образование",
-    ],
-    props: { placeholder: "Выберите образование", required: true },
+    props: {
+      items: [
+        "Основное общее",
+        "Среднее общее",
+        "Среднее профессиональное",
+        "Высшее",
+        "Неоконченное высшее образование",
+        "Другое образование",
+      ],
+      placeholder: "Выберите образование",
+      required: true,
+    },
   },
   {
-    element: "input",
     key: "institution",
     label: "Учебное заведение",
     props: {
@@ -291,13 +284,11 @@ const educations = [
     },
   },
   {
-    element: "input",
     key: "finished",
     label: "Год окончания",
     props: { placeholder: "Год окончания", pattern: "^\\d{4}$" },
   },
   {
-    element: "input",
     key: "specialty",
     label: "Специальность",
     props: { placeholder: "Специальность", maxlength: 255, required: true },
@@ -312,7 +303,6 @@ const inquiries = [
     props: { placeholder: "Информация", maxlength: 4096, required: true },
   },
   {
-    element: "input",
     key: "initiator",
     label: "Инициатор",
     props: { placeholder: "Инициатор", maxlength: 255, required: true },
@@ -321,7 +311,6 @@ const inquiries = [
 
 const investigations = [
   {
-    element: "input",
     key: "theme",
     label: "Тема проверки",
     props: { placeholder: "Тема проверки", maxlength: 255, required: true },
@@ -339,13 +328,16 @@ const poligrafs = [
     element: "select",
     key: "theme",
     label: "Тема проверки",
-    items: [
-      "Проверка кандидата",
-      "Служебная проверка",
-      "Служебное расследование",
-      "Плановое мероприятие",
-    ],
-    props: { placeholder: "Выберите тему", required: true },
+    props: {
+      items: [
+        "Проверка кандидата",
+        "Служебная проверка",
+        "Служебное расследование",
+        "Плановое мероприятие",
+      ],
+      placeholder: "Выберите тему",
+      required: true,
+    },
   },
   {
     element: "textarea",
@@ -357,32 +349,31 @@ const poligrafs = [
     element: "select",
     key: "conclusion",
     label: "Результат",
-    items: Object.values(Decisions),
-    props: { placeholder: "Выберите результат", required: true },
+    props: {
+      items: Object.values(Decisions),
+      placeholder: "Выберите результат",
+      required: true,
+    },
   },
 ] as FormFields<Items["poligrafs"]>[];
 
 const previous = [
   {
-    element: "input",
     key: "surname",
     label: "Фамилия",
     props: { placeholder: "Фамилия", maxlength: 255, required: true },
   },
   {
-    element: "input",
     key: "firstname",
     label: "Имя",
     props: { placeholder: "Имя", maxlength: 255 },
   },
   {
-    element: "input",
     key: "patronymic",
     label: "Отчество",
     props: { placeholder: "Отчество", maxlength: 255 },
   },
   {
-    element: "input",
     key: "changed",
     label: "Год изменения",
     props: { placeholder: "Год изменения", pattern: "^\\d{4}$" },
@@ -397,13 +388,11 @@ const previous = [
 
 const staffs = [
   {
-    element: "input",
     key: "position",
     label: "Должность",
     props: { placeholder: "Должность", maxlength: 255, required: true },
   },
   {
-    element: "input",
     key: "department",
     label: "Подразделение",
     props: { placeholder: "Подразделение", maxlength: 255 },
@@ -412,31 +401,26 @@ const staffs = [
 
 const workplaces = [
   {
-    element: "input",
     key: "starts",
     label: "Начало работы",
     props: { type: "date", required: true },
   },
   {
-    element: "input",
     key: "finished",
     label: "Окончание работы",
     props: { type: "date" },
   },
   {
-    element: "input",
     key: "workplace",
     label: "Место работы",
     props: { placeholder: "Место работы", maxlength: 255, required: true },
   },
   {
-    element: "input",
     key: "position",
     label: "Должность",
     props: { placeholder: "Должность", maxlength: 255, required: true },
   },
   {
-    element: "input",
     key: "address",
     label: "Адрес организации",
     props: { placeholder: "Адрес организации", maxlength: 255 },

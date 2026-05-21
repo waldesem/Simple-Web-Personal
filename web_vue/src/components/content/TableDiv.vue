@@ -30,6 +30,7 @@ const props = defineProps({
           </th>
         </tr>
       </thead>
+      
       <tbody class="isolate divide-y divide-default">
         <tr
           v-for="(item, index) in props.data"

@@ -18,8 +18,8 @@ export const person = [
   { key: "snils", label: "СНИЛС" },
   { key: "inn", label: "ИНН" },
   { key: "marital", label: "Семейное положение" },
-  { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
   { key: "addition", label: "Дополнительная информация" },
+  { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
   { key: "destination", label: "Материалы проверок", slot: true },
 ] as ItemFields<Items["person"]>[];
 

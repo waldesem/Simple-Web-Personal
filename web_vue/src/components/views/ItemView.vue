@@ -26,7 +26,7 @@ const props = defineProps({
 });
 
 const item = shallowRef({} as Items[keyof Items]);
-const data = shallowRef([] as typeof item.value[]);
+const data = shallowRef([] as (typeof item.value)[]);
 const loading = ref(false); // ← триггер для анимации
 const modal = ref(false); // Флаг для открытия модального окна
 const method = ref<"POST" | "PATCH">("POST");
@@ -52,7 +52,7 @@ async function submitItem(form: typeof item.value) {
       body: form,
     },
   );
-  item.value = ({} as typeof item.value);
+  item.value = {} as typeof item.value;
   if (status !== 201 && status !== 200) alert("Невозможно выполнить действие!");
   await getItem();
 }
@@ -75,13 +75,13 @@ async function deleteItem(itemId: string) {
 
 <template>
   <!-- Выводим сообщение если данные отсутствуют -->
-  <UEmpty v-if="!data?.length" class="m-4" title="Данные отсутствуют" size="sm">
+  <UEmpty v-if="!data?.length" class="m-2" title="Данные отсутствуют" size="sm">
     <template #body>
       <UButton
         v-show="props.flag"
         label="Добавить запись"
-        variant="outline"
         size="sm"
+        variant="outline"
         @click="
           modal = true;
           method = 'POST';
@@ -96,7 +96,6 @@ async function deleteItem(itemId: string) {
     v-for="(content, index) in data"
     :key="index"
     :class="{ 'animate-pulse': loading }"
-    class="p-2 my-2"
   >
     <!-- Выводим кнопки редактирования/удаления данных, в режиме редактирования -->
     <DropMenu
@@ -116,16 +115,18 @@ async function deleteItem(itemId: string) {
   <!-- Модальное окно для редактирования данных -->
   <UModal
     v-model:open="modal"
+    :description="
+      method === 'POST' ? 'Добавить данные' : 'Редактировать данные'
+    "
     :title="props.title"
-    description="Добавить/редактировать данные"
   >
     <UButton
       v-if="props.flag && data?.length"
+      block
       class="my-2"
       label="Добавить запись"
-      variant="outline"
       size="sm"
-      block
+      variant="outline"
       @click="method = 'POST'"
     />
     <template #body>

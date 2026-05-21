@@ -10,13 +10,14 @@ import type { Person, TableColumns } from "@/types";
 const router = useRouter();
 
 const data = shallowRef([] as Person[]);
-const page = ref(0); // Страница таблицы
-const limit = ref(10); // Количество записей на странице
-const search = ref(""); // Поисковый запрос
-const updated = ref(""); // Время обновления
 const modal = ref(false); // Состояние модального окна
 const hasNext = ref(false); // Состояние наличия следующей страницы
+const limit = ref(10); // Количество записей на странице
 const loading = ref(false); // Состояние загрузки
+const page = ref(0); // Страница таблицы
+const search = ref(""); // Поисковый запрос
+const updated = ref(""); // Время обновления
+
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
 onMounted(() => getItem());
@@ -36,20 +37,20 @@ async function getItem() {
   const response = await ofetch<Person[]>("/routes/candidates", {
     query: {
       limit: limit.value,
-      search: debounced.value,
       page: page.value,
+      search: debounced.value,
     },
   });
-  hasNext.value = response.length > limit.value;
   data.value = response.slice(0, limit.value);
-  updated.value = new Date().toLocaleTimeString();
+  hasNext.value = response.length > limit.value;
   loading.value = false;
+  updated.value = new Date().toLocaleTimeString();
 }
 
 // Обработчик результата загрузки данных
 async function submitPerson(form: Person) {
-  modal.value = false;
   loading.value = true;
+  modal.value = false;
   const resp = await ofetch.raw("/routes/persons", {
     method: "POST",
     body: form,
@@ -103,14 +104,14 @@ const tableColumns: TableColumns<Person>[] = [
         <!-- Модальное окно для добавления анкеты -->
         <UModal
           v-model:open="modal"
-          title="Анкета"
           description="Введите анкетные данные"
+          title="Анкета"
         >
           <UButton
             icon="i-lucide-user-plus"
+            size="xl"
             title="Добавить анкету"
             variant="ghost"
-            size="xl"
             :loading="loading"
             @click="modal = true"
           />
@@ -125,9 +126,9 @@ const tableColumns: TableColumns<Person>[] = [
     <UPageBody>
       <UInput
         id="search"
+        icon="i-lucide-search"
         v-model.trim="search"
         :loading="loading"
-        icon="i-lucide-search"
         type="search"
         placeholder="поиск по фаимилии, имени, отчеству"
       />
@@ -144,19 +145,19 @@ const tableColumns: TableColumns<Person>[] = [
 
       <UEmpty
         v-if="!data"
-        title="Данные отсутствуют"
         size="sm"
+        title="Данные отсутствуют"
         variant="naked"
       />
 
       <!-- Время последнего обновления -->
       <UButton
-        :loading="loading"
-        variant="ghost"
-        size="sm"
         icon="i-lucide-refresh-cw"
         :label="`Последнее обновление в: ${updated}`"
+        :loading="loading"
+        size="sm"
         title="Обновить"
+        variant="ghost"
         @click="getItem"
       />
 
@@ -166,10 +167,10 @@ const tableColumns: TableColumns<Person>[] = [
         class="flex justify-center border-t border-default py-4"
       >
         <UButton
+          class="me-2 rounded-full"
+          :disabled="!page || loading"
           icon="i-lucide-arrow-left"
           title="Вперед"
-          :disabled="!page || loading"
-          class="me-2 rounded-full"
           @click="page--"
         />
         <USelect
@@ -179,10 +180,10 @@ const tableColumns: TableColumns<Person>[] = [
           @change="getItem"
         />
         <UButton
+          class="ms-2 rounded-full"
+          :disabled="!hasNext || loading"
           icon="i-lucide-arrow-right"
           title="Назад"
-          :disabled="!hasNext || loading"
-          class="ms-2 rounded-full"
           @click="page++"
         />
       </div>

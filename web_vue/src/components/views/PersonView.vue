@@ -7,14 +7,14 @@ import { itemsForms } from "@/schema/forms";
 import type { Person } from "@/types";
 
 const props = defineProps({
-  person: {
-    type: Object as PropType<Person>,
-    required: true,
-  },
   flag: {
     type: Boolean,
     required: true,
+  },  person: {
+    type: Object as PropType<Person>,
+    required: true,
   },
+
 });
 
 const { copy, copied } = useClipboard();
@@ -36,35 +36,33 @@ async function submitPerson(form: Person) {
 </script>
 
 <template>
-  <div class="ms-2 mt-4">
-    <!-- Выводим кнопки редактирования или удаления данных -->
-    <DropMenu v-show="props.flag" @update="modal = true" @delete="null" />
+  <!-- Выводим кнопки редактирования или удаления данных -->
+  <DropMenu v-show="props.flag" @update="modal = true" @delete="null" />
 
-    <ItemDiv :fields="itemsFields.person" :item="props.person">
-      <template v-if="props.person.destination" #destination>
-        <UButton
-          variant="outline"
-          size="sm"
-          :color="copied ? 'success' : 'info'"
-          :label="copied ? 'Скопировано' : 'Копировать'"
-          @click="copy(props.person.destination)"
-        />
-      </template>
-    </ItemDiv>
+  <ItemDiv :fields="itemsFields.person" :item="props.person">
+    <template v-if="props.person.destination" #destination>
+      <UButton
+        :color="copied ? 'success' : 'info'"
+        :label="copied ? 'Скопировано' : 'Копировать'"
+        size="sm"
+        variant="outline"
+        @click="copy(props.person.destination)"
+      />
+    </template>
+  </ItemDiv>
 
-    <!-- Выводим модальное окно для редактирования данных -->
-    <UModal
-      v-model:open="modal"
-      title="Aнкета"
-      description="Редактирование анкетные данные"
-    >
-      <template #body>
-        <FormDiv
-          :fields="itemsForms.person"
-          :item="props.person"
-          @submit="submitPerson"
-        />
-      </template>
-    </UModal>
-  </div>
+  <!-- Выводим модальное окно для редактирования данных -->
+  <UModal
+    v-model:open="modal"
+    title="Aнкета"
+    description="Редактирование анкетные данные"
+  >
+    <template #body>
+      <FormDiv
+        :fields="itemsForms.person"
+        :item="props.person"
+        @submit="submitPerson"
+      />
+    </template>
+  </UModal>
 </template>

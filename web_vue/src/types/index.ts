@@ -31,7 +31,7 @@ export type ItemFields<T> = {
   component?: (row: T) => Component;
 };
 
-type FormElementAttrs = {
+export type FormElementAttrs = {
   input: InputProps;
   select: SelectProps;
   textarea: TextareaProps;
@@ -39,11 +39,10 @@ type FormElementAttrs = {
 
 export type FormFields<T> = {
   [K in keyof FormElementAttrs]: {
-    element: K;
+    element?: K;
     key: keyof T;
     label: string;
     props: Omit<FormElementAttrs[K], "modelValue" | "defaultValue">;
-    items?: K extends "select" ? string[] : never;
   };
 }[keyof FormElementAttrs];
 
@@ -61,14 +60,12 @@ export interface Person {
   marital?: string;
   addition?: string;
   destination?: string;
-  editable: boolean;
   created: string;
-  user_id: string;
 }
 
 export interface Previous {
   id: string;
-  surname?: string;
+  surname: string;
   firstname?: string;
   patronymic?: string;
   changed?: string;
@@ -164,7 +161,6 @@ export interface Needs {
   id: string;
   info: string;
   initiator: string;
-  origins?: string;
   created: string;
 }
 

@@ -15,9 +15,9 @@ export default {
 const router = createRouter({
   routes: [
     {
-      name: "index",
+      name: "home",
       path: "/",
-      component: () => import("./components/pages/IndexPage.vue"),
+      component: () => import("./components/pages/HomePage.vue"),
     },
     {
       name: "profile",
@@ -32,6 +32,4 @@ const router = createRouter({
   history: createWebHistory(),
 });
 
-const app = createApp(App).use(router).use(ui);
-
-app.mount("#app");
+createApp(App).use(router).use(ui).mount("#app");
