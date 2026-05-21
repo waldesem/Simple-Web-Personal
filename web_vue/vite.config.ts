@@ -33,7 +33,7 @@ export default defineConfig({
           },
         },
         pageBody: {
-          base: "my-8 space-y-8",
+          base: "pb-8 my-4 space-y-4",
         },
         pageHeader: {
           slots: {

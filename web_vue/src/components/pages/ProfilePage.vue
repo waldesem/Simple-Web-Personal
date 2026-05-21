@@ -64,12 +64,7 @@ const accordion = [
     </UPageHeader>
 
     <UPageBody>
-      <UTabs
-        :items="[anketa, ...tabs]"
-        :unmount-on-hide="false"
-        class="mt-4"
-        variant="pill"
-      >
+      <UTabs :items="[anketa, ...tabs]" :unmount-on-hide="false" variant="pill">
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
           <SkeletDivs v-if="loading" :rows="itemsFields.person.length" />
