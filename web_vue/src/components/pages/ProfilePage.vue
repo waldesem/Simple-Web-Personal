@@ -2,8 +2,9 @@
 import { computed, onMounted, ref, shallowRef } from "vue";
 import { useRoute } from "vue-router";
 import { ofetch } from "ofetch";
+import { anketaTab, itemsAccordion, itemsTabs } from "@/schema/elements";
 import { itemsFields } from "@/schema/items";
-import type { Items, Person } from "@/types";
+import type { Person } from "@/types";
 
 // Получаем данные id кандидата из URL
 const candId = computed(() => useRoute().params.id as string);
@@ -27,27 +28,6 @@ const fullname = computed(
       data.value.patronymic ?? ""
     }`,
 );
-
-const anketa = { label: "Анкета", slot: "person" as keyof Items };
-
-const tabs = [
-  { label: "Проверки", slot: "checks" },
-  { label: "Полиграф", slot: "poligrafs" },
-  { label: "Расследования", slot: "investigations" },
-  { label: "Запросы", slot: "inquiries" },
-] as { label: string; slot: keyof Items }[];
-
-// Определяем массив элементов аккордеона
-const accordion = [
-  { label: "Должности", slot: "staffs" },
-  { label: "Образование", slot: "educations" },
-  { label: "Места работы", slot: "workplaces" },
-  { label: "Документы", slot: "documents" },
-  { label: "Адреса", slot: "addresses" },
-  { label: "Контакты", slot: "contacts" },
-  { label: "Изменения имени", slot: "previous" },
-  { label: "Аффилированность", slot: "affilations" },
-] as { label: string; slot: keyof Items }[];
 </script>
 
 <template>
@@ -64,7 +44,11 @@ const accordion = [
     </UPageHeader>
 
     <UPageBody>
-      <UTabs :items="[anketa, ...tabs]" :unmount-on-hide="false" variant="pill">
+      <UTabs
+        :items="[anketaTab, ...itemsTabs]"
+        :unmount-on-hide="false"
+        variant="pill"
+      >
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
           <SkeletDivs v-if="loading" :rows="itemsFields.person.length" />
@@ -73,9 +57,9 @@ const accordion = [
           <USeparator />
 
           <!-- Aккордеон с данными staffs, educations и т.д. -->
-          <UAccordion :items="accordion" :unmount-on-hide="false">
+          <UAccordion :items="itemsAccordion" :unmount-on-hide="false">
             <template
-              v-for="accord in accordion"
+              v-for="accord in itemsAccordion"
               #[accord.slot]
               :key="accord.slot"
             >
@@ -90,7 +74,7 @@ const accordion = [
         </template>
 
         <!-- Вкладки проверки, полиграф и др. -->
-        <template v-for="tab in tabs" #[tab.slot] :key="tab.slot">
+        <template v-for="tab in itemsTabs" #[tab.slot] :key="tab.slot">
           <ItemView
             :cand-id="candId"
             :flag="flag"

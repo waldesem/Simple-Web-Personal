@@ -3,9 +3,9 @@ import { ref, watch, shallowRef, onMounted } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { ofetch } from "ofetch";
-import { localStr, timeAgoStr } from "@/utils";
+import { tableCols } from "@/schema/elements";
 import { itemsForms } from "@/schema/forms";
-import type { Person, TableColumns } from "@/types";
+import type { Person } from "@/types";
 
 const router = useRouter();
 
@@ -66,35 +66,6 @@ async function submitPerson(form: Person) {
     alert("Невозможно выполнить действие!");
   }
 }
-
-const tableColumns: TableColumns<Person>[] = [
-  {
-    name: "id",
-    header: "#",
-  },
-  {
-    name: "surname",
-    header: "Фамилия",
-  },
-  {
-    name: "firstname",
-    header: "Имя",
-  },
-  {
-    name: "patronymic",
-    header: "Отчество",
-  },
-  {
-    name: "birthday",
-    header: "Дата рождения",
-    cell: (row) => localStr(row.birthday),
-  },
-  {
-    name: "created",
-    header: "Обновлено",
-    cell: (row) => timeAgoStr(row.created),
-  },
-];
 </script>
 
 <template>
@@ -136,7 +107,7 @@ const tableColumns: TableColumns<Person>[] = [
       <!-- Таблица с данными кандидатов -->
       <TableDiv
         :class="{ 'animate-pulse': loading }"
-        :cols="tableColumns"
+        :cols="tableCols"
         :data="data"
         @select="
           (id: any) => router.push({ name: 'profile', params: { id: id } })
