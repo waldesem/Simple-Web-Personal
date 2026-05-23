@@ -7,8 +7,6 @@ import { tableCols } from "@/schema/elements";
 import { itemsForms } from "@/schema/forms";
 import type { Person } from "@/types";
 
-const router = useRouter();
-
 const data = shallowRef([] as Person[]);
 const modal = ref(false); // Состояние модального окна
 const hasNext = ref(false); // Состояние наличия следующей страницы
@@ -20,9 +18,11 @@ const updated = ref(""); // Время обновления
 
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
+const router = useRouter();
+
 onMounted(() => getItem());
 
-watch(debounced, async () => {
+watch([debounced, limit], async () => {
   page.value = 0;
   await getItem();
 });
@@ -69,7 +69,7 @@ async function submitPerson(form: Person) {
 </script>
 
 <template>
-  <UContainer class="pt-16">
+  <UContainer>
     <UPageHeader title="КАНДИДАТЫ">
       <template #links>
         <!-- Модальное окно для добавления анкеты -->
@@ -135,7 +135,7 @@ async function submitPerson(form: Person) {
       <!-- Пагинация -->
       <div
         v-show="data"
-        class="flex justify-center border-t border-default py-4"
+        class="flex justify-center border-t border-default pt-8 pb-2"
       >
         <UButton
           class="me-2 rounded-full"
@@ -148,7 +148,6 @@ async function submitPerson(form: Person) {
           v-model="limit"
           :items="[10, 50, 100]"
           title="Количество записей"
-          @change="getItem"
         />
         <UButton
           class="ms-2 rounded-full"

@@ -35,7 +35,7 @@ const fullname = computed(
 </script>
 
 <template>
-  <UContainer class="pt-16">
+  <UContainer>
     <UPageHeader :title="fullname">
       <template #links>
         <UButton

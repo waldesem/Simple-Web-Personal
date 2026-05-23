@@ -1,5 +1,5 @@
 import { localStr, timeAgoStr } from "@/utils";
-import type { Items, Person, TableColumns } from "@/types";
+import type { ItemsAccordionTabs, Person, TableColumns } from "@/types";
 
 export const tableCols: TableColumns<Person>[] = [
   {
@@ -30,14 +30,17 @@ export const tableCols: TableColumns<Person>[] = [
   },
 ];
 
-export const anketaTab = { label: "Анкета", slot: "person" as keyof Items };
+export const anketaTab = {
+  label: "Анкета",
+  slot: "person",
+} as ItemsAccordionTabs;
 
 export const itemsTabs = [
   { label: "Проверки", slot: "checks" },
   { label: "Полиграф", slot: "poligrafs" },
   { label: "Расследования", slot: "investigations" },
   { label: "Запросы", slot: "inquiries" },
-] as { label: string; slot: keyof Items }[];
+] as ItemsAccordionTabs[];
 
 export const itemsAccordion = [
   { label: "Должности", slot: "staffs" },
@@ -48,4 +51,4 @@ export const itemsAccordion = [
   { label: "Контакты", slot: "contacts" },
   { label: "Изменения имени", slot: "previous" },
   { label: "Аффилированность", slot: "affilations" },
-] as { label: string; slot: keyof Items }[];
+] as ItemsAccordionTabs[];

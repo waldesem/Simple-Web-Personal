@@ -33,11 +33,11 @@ export default defineConfig({
           },
         },
         pageBody: {
-          base: "pb-8 my-4 space-y-4",
+          base: "pb-4 my-4 space-y-4",
         },
         pageHeader: {
           slots: {
-            root: "relative border-none py-4",
+            root: "relative border-none pt-20 pb-4",
             title: "text-2xl sm:text-3xl text-red-800",
           },
         },

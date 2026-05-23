@@ -10,11 +10,11 @@ const props = defineProps({
   flag: {
     type: Boolean,
     required: true,
-  },  person: {
+  },
+  person: {
     type: Object as PropType<Person>,
     required: true,
   },
-
 });
 
 const { copy, copied } = useClipboard();

@@ -1,7 +1,5 @@
 import type { Component } from "vue";
-import type { InputProps } from "@nuxt/ui/runtime/components/Input.vue.js";
-import type { SelectProps } from "@nuxt/ui/runtime/components/Select.vue.js";
-import type { TextareaProps } from "@nuxt/ui/runtime/components/Textarea.vue.js";
+import type { InputProps, SelectProps, TextareaProps } from "@nuxt/ui";
 
 export enum Conclusions {
   agreed = "СОГЛАСОВАНО",
@@ -45,6 +43,11 @@ export type FormFields<T> = {
     props: Omit<FormElementAttrs[K], "modelValue" | "defaultValue">;
   };
 }[keyof FormElementAttrs];
+
+export interface ItemsAccordionTabs {
+  label: string;
+  slot: keyof Items;
+}
 
 export interface Person {
   id: string;
