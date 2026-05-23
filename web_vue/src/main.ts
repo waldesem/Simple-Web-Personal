@@ -22,6 +22,7 @@ const router = createRouter({
     {
       name: "profile",
       path: "/profile/:id",
+      props: true,
       component: () => import("./components/pages/ProfilePage.vue"),
     },
     {

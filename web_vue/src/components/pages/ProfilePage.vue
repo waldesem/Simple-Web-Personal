@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, shallowRef } from "vue";
-import { useRoute } from "vue-router";
 import { ofetch } from "ofetch";
 import { anketaTab, itemsAccordion, itemsTabs } from "@/schema/elements";
 import { itemsFields } from "@/schema/items";
 import type { Person } from "@/types";
 
-// Получаем данные id кандидата из URL
-const candId = computed(() => useRoute().params.id as string);
+// Определяем данные которые передаются через router из HomePage.vue
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
+});
 
 const data = shallowRef({} as Person);
 const flag = ref(false);
@@ -18,7 +22,7 @@ onMounted(() => getPerson());
 // Определяем функцию для получения данных из API
 async function getPerson() {
   loading.value = true;
-  data.value = await ofetch<Person>("/routes/persons/" + candId.value);
+  data.value = await ofetch<Person>("/routes/persons/" + props.id);
   loading.value = false;
 }
 
@@ -64,7 +68,7 @@ const fullname = computed(
               :key="accord.slot"
             >
               <ItemView
-                :cand-id="candId"
+                :cand-id="props.id"
                 :flag="flag"
                 :title="accord.label"
                 :view="accord.slot"
@@ -76,7 +80,7 @@ const fullname = computed(
         <!-- Вкладки проверки, полиграф и др. -->
         <template v-for="tab in itemsTabs" #[tab.slot] :key="tab.slot">
           <ItemView
-            :cand-id="candId"
+            :cand-id="props.id"
             :flag="flag"
             :title="tab.label"
             :view="tab.slot"
