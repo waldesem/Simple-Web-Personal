@@ -3,7 +3,7 @@
     <router-view v-slot="{ Component }">
       <LayoutView>
         <Transition mode="out-in" name="fade">
-          <KeepAlive include="IndexView" :max="1">
+          <KeepAlive include="HomePage" :max="1">
             <component :is="Component" />
           </KeepAlive>
         </Transition>
