@@ -32,23 +32,72 @@ export const tableCols: TableColumns<Person>[] = [
 
 export const anketaTab = {
   label: "Анкета",
+  icon: "i-lucide-user",
   slot: "person",
 } as ItemsAccordionTabs;
 
 export const itemsTabs = [
-  { label: "Проверки", slot: "checks" },
-  { label: "Полиграф", slot: "poligrafs" },
-  { label: "Расследования", slot: "investigations" },
-  { label: "Запросы", slot: "inquiries" },
+  {
+    label: "Проверки",
+    icon: "i-lucide-shield-check",
+    slot: "checks",
+  },
+  {
+    label: "Полиграф",
+    icon: "i-lucide-heart-pulse",
+    slot: "poligrafs",
+  },
+  {
+    label: "Расследования",
+    icon: "i-lucide-hat-glasses",
+    slot: "investigations",
+  },
+  {
+    label: "Запросы",
+    icon: "i-lucide-file-question-mark",
+    slot: "inquiries",
+  },
 ] as ItemsAccordionTabs[];
 
 export const itemsAccordion = [
-  { label: "Должности", slot: "staffs" },
-  { label: "Образование", slot: "educations" },
-  { label: "Места работы", slot: "workplaces" },
-  { label: "Документы", slot: "documents" },
-  { label: "Адреса", slot: "addresses" },
-  { label: "Контакты", slot: "contacts" },
-  { label: "Изменения имени", slot: "previous" },
-  { label: "Аффилированность", slot: "affilations" },
+  {
+    label: "Должности",
+    icon: "i-lucide-workflow",
+    slot: "staffs",
+  },
+  {
+    label: "Образование",
+    icon: "i-lucide-graduation-cap",
+    slot: "educations",
+  },
+  {
+    label: "Места работы",
+    icon: "i-lucide-briefcase-business",
+    slot: "workplaces",
+  },
+  {
+    label: "Документы",
+    icon: "i-lucide-book-text",
+    slot: "documents",
+  },
+  {
+    label: "Адреса",
+    icon: "i-lucide-house",
+    slot: "addresses",
+  },
+  {
+    label: "Контакты",
+    icon: "i-lucide-phone-call",
+    slot: "contacts",
+  },
+  {
+    label: "Изменения имени",
+    icon: "i-lucide-file-pen-line",
+    slot: "previous",
+  },
+  {
+    label: "Аффилированность",
+    icon: "i-lucide-users-round",
+    slot: "affilations",
+  },
 ] as ItemsAccordionTabs[];

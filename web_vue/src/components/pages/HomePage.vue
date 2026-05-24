@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, watch, shallowRef, onMounted } from "vue";
+import ky from "ky";
+import { ref, watch, shallowRef } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { useRouter } from "vue-router";
-import { ofetch } from "ofetch";
 import { tableCols } from "@/schema/elements";
 import { itemsForms } from "@/schema/forms";
 import type { Person } from "@/types";
@@ -20,27 +20,31 @@ const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
 const router = useRouter();
 
-onMounted(() => getItem());
-
 watch([debounced, limit], async () => {
-  page.value = 0;
-  await getItem();
+  if (page.value === 0) await getItem();
+  else page.value = 0;
 });
 
-watch(page, async () => {
-  await getItem();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
+watch(
+  page,
+  async () => {
+    await getItem();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  },
+  { immediate: true },
+);
 
 async function getItem() {
   loading.value = true;
-  const response = await ofetch<Person[]>("/routes/candidates", {
-    query: {
-      limit: limit.value,
-      page: page.value,
-      search: debounced.value,
-    },
-  });
+  const response = await ky
+    .get<Person[]>("/routes/candidates", {
+      searchParams: {
+        limit: limit.value,
+        page: page.value,
+        search: debounced.value,
+      },
+    })
+    .json();
   data.value = response.slice(0, limit.value);
   hasNext.value = response.length > limit.value;
   loading.value = false;
@@ -51,14 +55,15 @@ async function getItem() {
 async function submitPerson(form: Person) {
   loading.value = true;
   modal.value = false;
-  const resp = await ofetch.raw("/routes/persons", {
+  const resp = await ky.post("/routes/persons", {
     method: "POST",
-    body: form,
+    json: form,
   });
   loading.value = false;
   if (resp.status === 201) {
-    if (resp._data.person_id) {
-      router.push({ name: "profile", params: { id: resp._data.person_id } });
+    const json = (await resp.json()) as { person_id: string };
+    if (json?.person_id) {
+      router.push({ name: "profile", params: { id: json.person_id } });
     } else {
       alert("Анкета уже существует!");
     }
@@ -110,7 +115,7 @@ async function submitPerson(form: Person) {
         :cols="tableCols"
         :data="data"
         @select="
-          (id: any) => router.push({ name: 'profile', params: { id: id } })
+          (id: string) => router.push({ name: 'profile', params: { id: id } })
         "
       />
 

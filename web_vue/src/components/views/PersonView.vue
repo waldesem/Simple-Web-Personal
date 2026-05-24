@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import ky from "ky";
 import { type PropType, ref } from "vue";
 import { useClipboard } from "@vueuse/core";
-import { ofetch } from "ofetch";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
 import type { Person } from "@/types";
@@ -26,9 +26,9 @@ const modal = ref(false); // Объявляем переменную модал�
 // Определяем функцию для отправки данных формы на сервер
 async function submitPerson(form: Person) {
   modal.value = false;
-  const { status } = await ofetch.raw("/routes/persons/" + props.person.id, {
+  const { status } = await ky.patch("/routes/persons/" + props.person.id, {
     method: "PATCH",
-    body: form,
+    json: form,
   });
   if (status !== 200) alert("Невозможно выполнить действие!");
   emit("update");

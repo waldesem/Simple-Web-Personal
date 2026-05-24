@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import ky from "ky";
 import { computed, onMounted, ref, shallowRef } from "vue";
-import { ofetch } from "ofetch";
 import { anketaTab, itemsAccordion, itemsTabs } from "@/schema/elements";
 import { itemsFields } from "@/schema/items";
 import type { Person } from "@/types";
@@ -22,7 +22,7 @@ onMounted(() => getPerson());
 // Определяем функцию для получения данных из API
 async function getPerson() {
   loading.value = true;
-  data.value = await ofetch<Person>("/routes/persons/" + props.id);
+  data.value = await ky.get<Person>("/routes/persons/" + props.id).json();
   loading.value = false;
 }
 
@@ -48,11 +48,7 @@ const fullname = computed(
     </UPageHeader>
 
     <UPageBody>
-      <UTabs
-        :items="[anketaTab, ...itemsTabs]"
-        :unmount-on-hide="false"
-        variant="pill"
-      >
+      <UTabs :items="[anketaTab, ...itemsTabs]" :unmount-on-hide="false">
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
           <SkeletDivs v-if="loading" :rows="itemsFields.person.length" />

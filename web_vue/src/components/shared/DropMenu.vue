@@ -9,7 +9,7 @@ const emits = defineEmits(["update", "delete"]);
         :items="[
           {
             label: 'Изменить',
-            icon: 'i-lucide-square-pen',
+            icon: 'i-lucide-pencil',
             onSelect() {
               emits('update');
             },

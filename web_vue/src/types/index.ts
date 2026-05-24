@@ -45,6 +45,7 @@ export type FormFields<T> = {
 }[keyof FormElementAttrs];
 
 export interface ItemsAccordionTabs {
+  icon: string;
   label: string;
   slot: keyof Items;
 }

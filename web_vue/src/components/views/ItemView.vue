@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import ky from "ky";
 import { onMounted, type PropType, ref, shallowRef } from "vue";
-import { ofetch } from "ofetch";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
 import type { Items } from "@/types";
@@ -36,7 +36,7 @@ onMounted(() => getItem());
 // Определяем функцию для получения данных из API
 async function getItem() {
   loading.value = true;
-  data.value = await ofetch(`/routes/${props.view}/${props.candId}`);
+  data.value = await ky.get(`/routes/${props.view}/${props.candId}`).json();
   loading.value = false;
 }
 
@@ -45,11 +45,11 @@ async function submitItem(form: typeof item.value) {
   modal.value = false;
   loading.value = true;
   const url = `/routes/${props.view}/${props.candId}`;
-  const { status } = await ofetch.raw(
+  const { status } = await ky(
     method.value === "POST" ? url : `${url}/${item.value.id}`,
     {
       method: method.value,
-      body: form,
+      json: form,
     },
   );
   item.value = {} as typeof item.value;
@@ -61,7 +61,7 @@ async function submitItem(form: typeof item.value) {
 async function deleteItem(itemId: string) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
   loading.value = true;
-  const { status } = await ofetch.raw(`/routes/${props.view}/${itemId}`, {
+  const { status } = await ky.delete(`/routes/${props.view}/${itemId}`, {
     method: "DELETE",
   });
   if (status === 204) {
