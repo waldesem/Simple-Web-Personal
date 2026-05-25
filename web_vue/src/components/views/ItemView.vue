@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import ky from "ky";
 import { type PropType, ref, shallowRef } from "vue";
+import { useFetch } from "@vueuse/core";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
 import type { Items } from "@/types";
-import { useFetch } from "@vueuse/core";
 
 // Определяем данные которые передаются из родительского компонента
 const props = defineProps({
@@ -45,9 +45,9 @@ async function submitItem(form: typeof item.value) {
       json: form,
     },
   );
+  await execute();
   item.value = {} as typeof item.value;
   if (status !== 201 && status !== 200) alert("Невозможно выполнить действие!");
-  await execute();
 }
 
 // Определяем функцию для удаления данных

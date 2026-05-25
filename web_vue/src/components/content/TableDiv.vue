@@ -36,7 +36,7 @@ const props = defineProps({
           v-for="(item, index) in props.data"
           :key="index"
           class="hover:bg-gray-100 cursor-pointer"
-          @click="emit('select', item.id)"
+          @click="emit('select', item)"
         >
           <td
             v-for="(row, idx) in props.cols"

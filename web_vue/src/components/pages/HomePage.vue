@@ -115,7 +115,8 @@ async function submitPerson(form: Person) {
         :cols="tableCols"
         :data="data"
         @select="
-          (id: string) => router.push({ name: 'profile', params: { id: id } })
+          (row: Person) =>
+            router.push({ name: 'profile', params: { id: row.id } })
         "
       />
 
