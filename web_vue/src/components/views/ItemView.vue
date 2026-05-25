@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import ky from "ky";
-import { onMounted, type PropType, ref, shallowRef } from "vue";
+import { type PropType, ref, shallowRef } from "vue";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
 import type { Items } from "@/types";
+import { useFetch } from "@vueuse/core";
 
 // Определяем данные которые передаются из родительского компонента
 const props = defineProps({
@@ -26,24 +27,16 @@ const props = defineProps({
 });
 
 const item = shallowRef({} as Items[keyof Items]);
-const data = shallowRef([] as (typeof item.value)[]);
-const loading = ref(false); // ← триггер для анимации
 const modal = ref(false); // Флаг для открытия модального окна
 const method = ref<"POST" | "PATCH">("POST");
 
-onMounted(() => getItem());
-
-// Определяем функцию для получения данных из API
-async function getItem() {
-  loading.value = true;
-  data.value = await ky.get(`/routes/${props.view}/${props.candId}`).json();
-  loading.value = false;
-}
+const { execute, isFetching, data } = useFetch(
+  `/routes/${props.view}/${props.candId}`,
+).json<Items[keyof Items][]>();
 
 // Определяем функцию для отправки данных формы на сервер
 async function submitItem(form: typeof item.value) {
   modal.value = false;
-  loading.value = true;
   const url = `/routes/${props.view}/${props.candId}`;
   const { status } = await ky(
     method.value === "POST" ? url : `${url}/${item.value.id}`,
@@ -54,22 +47,17 @@ async function submitItem(form: typeof item.value) {
   );
   item.value = {} as typeof item.value;
   if (status !== 201 && status !== 200) alert("Невозможно выполнить действие!");
-  await getItem();
+  await execute();
 }
 
 // Определяем функцию для удаления данных
 async function deleteItem(itemId: string) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
-  loading.value = true;
   const { status } = await ky.delete(`/routes/${props.view}/${itemId}`, {
     method: "DELETE",
   });
-  if (status === 204) {
-    await getItem();
-  } else {
-    alert("Невозможно выполнить действие!");
-    loading.value = false;
-  }
+  if (status === 204) await execute();
+  else alert("Невозможно выполнить действие!");
 }
 </script>
 
@@ -90,12 +78,12 @@ async function deleteItem(itemId: string) {
     </template>
   </UEmpty>
 
-  <SkeletDivs v-if="loading && !data" :rows="itemsFields[view].length" />
+  <SkeletDivs v-if="isFetching && !data" :rows="itemsFields[view].length" />
 
   <div
     v-for="(content, index) in data"
     :key="index"
-    :class="{ 'animate-pulse': loading }"
+    :class="{ 'animate-pulse': isFetching }"
   >
     <!-- Выводим кнопки редактирования/удаления данных, в режиме редактирования -->
     <DropMenu
@@ -109,7 +97,7 @@ async function deleteItem(itemId: string) {
     />
     <!-- Выводим элемент данных -->
     <ItemDiv :item="content" :fields="itemsFields[view]" />
-    <USeparator v-if="index + 1 < data.length" />
+    <USeparator v-if="data && index + 1 < data.length" />
   </div>
 
   <!-- Модальное окно для редактирования данных -->

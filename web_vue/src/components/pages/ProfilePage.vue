@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ky from "ky";
-import { computed, onMounted, ref, shallowRef } from "vue";
+import { computed, ref } from "vue";
+import { useFetch } from "@vueuse/core";
 import { anketaTab, itemsAccordion, itemsTabs } from "@/schema/elements";
 import { itemsFields } from "@/schema/items";
 import type { Person } from "@/types";
@@ -13,23 +13,16 @@ const props = defineProps({
   },
 });
 
-const data = shallowRef({} as Person);
 const flag = ref(false);
-const loading = ref(false); // ← триггер для анимации
 
-onMounted(() => getPerson());
-
-// Определяем функцию для получения данных из API
-async function getPerson() {
-  loading.value = true;
-  data.value = await ky.get<Person>("/routes/persons/" + props.id).json();
-  loading.value = false;
-}
+const { execute, isFetching, data } = useFetch(
+  "/routes/persons/" + props.id,
+).json<Person>();
 
 const fullname = computed(
   () =>
-    `${data.value.surname ?? ""} ${data.value.firstname ?? ""} ${
-      data.value.patronymic ?? ""
+    `${data.value?.surname ?? ""} ${data.value?.firstname ?? ""} ${
+      data.value?.patronymic ?? ""
     }`,
 );
 </script>
@@ -51,8 +44,13 @@ const fullname = computed(
       <UTabs :items="[anketaTab, ...itemsTabs]" :unmount-on-hide="false">
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
-          <SkeletDivs v-if="loading" :rows="itemsFields.person.length" />
-          <PersonView v-else :flag="flag" :person="data" @update="getPerson" />
+          <SkeletDivs v-if="isFetching" :rows="itemsFields.person.length" />
+          <PersonView
+            v-else
+            :flag="flag"
+            :person="data || ({} as Person)"
+            @update="execute"
+          />
 
           <USeparator />
 

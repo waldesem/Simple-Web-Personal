@@ -20,7 +20,7 @@ const props = defineProps({
       <div class="col-span-3">
         {{ field.label }}
       </div>
-      <div class="col-span-9 wrap-break-word"">
+      <div class="col-span-9 wrap-break-word">
         <component v-if="field.component" :is="field.component(item)" />
         <slot v-else-if="field.slot" :name="field.key" />
         <span v-else>{{ field.div ? field.div(item) : item[field.key] }}</span>
