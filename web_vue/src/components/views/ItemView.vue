@@ -30,11 +30,8 @@ const item = shallowRef({} as Items[keyof Items]);
 const modal = ref(false); // Флаг для открытия модального окна
 const method = ref<"POST" | "PATCH">("POST");
 
-const { execute, isLoading, state } = useAsyncState(
-  async () =>
-    await ky
-      .get(`/routes/${props.view}/${props.candId}`)
-      .json<Items[keyof Items][]>(),
+const { execute, isLoading, state } = useAsyncState<Items[keyof Items][]>(
+  async () => await ky.get(`/routes/${props.view}/${props.candId}`).json(),
   [],
 );
 

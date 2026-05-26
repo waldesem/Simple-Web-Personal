@@ -18,10 +18,10 @@ const updated = ref(""); // Время обновления
 
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
-const { execute, isLoading, state } = useAsyncState(
+const { execute, isLoading, state } = useAsyncState<Person[]>(
   async () =>
     await ky
-      .get<Person[]>("/routes/candidates", {
+      .get("/routes/candidates", {
         searchParams: {
           limit: limit.value,
           page: page.value,
@@ -32,9 +32,9 @@ const { execute, isLoading, state } = useAsyncState(
   [],
   {
     onSuccess(data) {
-      data = data.slice(0, limit.value);
       hasNext.value = data.length > limit.value;
       updated.value = new Date().toLocaleTimeString();
+      data = data.slice(0, limit.value);
     },
     onError(e) {
       alert(e);
@@ -59,10 +59,11 @@ async function submitPerson(form: Person) {
     json: form,
   });
   if (resp.status === 201) {
-    const json = (await resp.json()) as { person_id: string };
-    if (json?.person_id) {
-      router.push({ name: "profile", params: { id: json.person_id } });
+    const { person_id } = (await resp.json()) as { person_id: string | null };
+    if (person_id) {
+      router.push({ name: "profile", params: { id: person_id } });
     } else {
+      search.value = `${form.surname} ${form.firstname} ${form.patronymic ?? ""}`;
       alert("Анкета уже существует!");
     }
   } else {
@@ -120,6 +121,7 @@ async function submitPerson(form: Person) {
 
       <UEmpty
         v-if="!state"
+        icon="i-lucide-octagon-x"
         size="sm"
         title="Данные отсутствуют"
         variant="naked"
