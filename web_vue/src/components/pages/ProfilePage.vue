@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import ky from "ky";
 import { computed, ref } from "vue";
-import { useFetch } from "@vueuse/core";
+import { useAsyncState } from "@vueuse/core";
 import { anketaTab, itemsAccordion, itemsTabs } from "@/schema/elements";
 import { itemsFields } from "@/schema/items";
 import type { Person } from "@/types";
@@ -15,14 +16,15 @@ const props = defineProps({
 
 const flag = ref(false);
 
-const { execute, isFetching, data } = useFetch(
-  "/routes/persons/" + props.id,
-).json<Person>();
+const { execute, isLoading, state } = useAsyncState(
+  async () => await ky.get("/routes/persons/" + props.id).json<Person>(),
+  {} as Person,
+);
 
 const fullname = computed(
   () =>
-    `${data.value?.surname ?? ""} ${data.value?.firstname ?? ""} ${
-      data.value?.patronymic ?? ""
+    `${state.value?.surname ?? ""} ${state.value?.firstname ?? ""} ${
+      state.value?.patronymic ?? ""
     }`,
 );
 </script>
@@ -44,13 +46,8 @@ const fullname = computed(
       <UTabs :items="[anketaTab, ...itemsTabs]" :unmount-on-hide="false">
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
-          <SkeletDivs v-if="isFetching" :rows="itemsFields.person.length" />
-          <PersonView
-            v-else
-            :flag="flag"
-            :person="data || ({} as Person)"
-            @update="execute"
-          />
+          <SkeletDivs v-if="isLoading" :rows="itemsFields.person.length" />
+          <PersonView v-else :flag="flag" :person="state" @update="execute" />
 
           <USeparator />
 

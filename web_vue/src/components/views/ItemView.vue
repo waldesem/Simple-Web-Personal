@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ky from "ky";
 import { type PropType, ref, shallowRef } from "vue";
-import { useFetch } from "@vueuse/core";
+import { useAsyncState } from "@vueuse/core";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
 import type { Items } from "@/types";
@@ -30,9 +30,13 @@ const item = shallowRef({} as Items[keyof Items]);
 const modal = ref(false); // Флаг для открытия модального окна
 const method = ref<"POST" | "PATCH">("POST");
 
-const { execute, isFetching, data } = useFetch(
-  `/routes/${props.view}/${props.candId}`,
-).json<Items[keyof Items][]>();
+const { execute, isLoading, state } = useAsyncState(
+  async () =>
+    await ky
+      .get(`/routes/${props.view}/${props.candId}`)
+      .json<Items[keyof Items][]>(),
+  [],
+);
 
 // Определяем функцию для отправки данных формы на сервер
 async function submitItem(form: typeof item.value) {
@@ -63,7 +67,7 @@ async function deleteItem(itemId: string) {
 
 <template>
   <!-- Выводим сообщение если данные отсутствуют -->
-  <UEmpty v-if="!data?.length" class="m-2" title="Данные отсутствуют" size="sm">
+  <UEmpty v-if="!state.length" class="m-2" title="Данные отсутствуют" size="sm">
     <template #body>
       <UButton
         v-show="props.flag"
@@ -78,12 +82,12 @@ async function deleteItem(itemId: string) {
     </template>
   </UEmpty>
 
-  <SkeletDivs v-if="isFetching && !data" :rows="itemsFields[view].length" />
+  <SkeletDivs v-if="isLoading && !state" :rows="itemsFields[view].length" />
 
   <div
-    v-for="(content, index) in data"
+    v-for="(content, index) in state"
     :key="index"
-    :class="{ 'animate-pulse': isFetching }"
+    :class="{ 'animate-pulse': isLoading }"
   >
     <!-- Выводим кнопки редактирования/удаления данных, в режиме редактирования -->
     <DropMenu
@@ -97,7 +101,7 @@ async function deleteItem(itemId: string) {
     />
     <!-- Выводим элемент данных -->
     <ItemDiv :item="content" :fields="itemsFields[view]" />
-    <USeparator v-if="data && index + 1 < data.length" />
+    <USeparator v-if="index + 1 < state.length" />
   </div>
 
   <!-- Модальное окно для редактирования данных -->
@@ -109,7 +113,7 @@ async function deleteItem(itemId: string) {
     :title="props.title"
   >
     <UButton
-      v-if="props.flag && data?.length"
+      v-if="props.flag && state.length"
       block
       class="my-2"
       label="Добавить запись"

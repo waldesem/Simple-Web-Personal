@@ -1,65 +1,63 @@
 <script setup lang="ts">
 import ky from "ky";
-import { ref, watch, shallowRef } from "vue";
-import { refDebounced } from "@vueuse/core";
+import { ref, watch } from "vue";
+import { refDebounced, useAsyncState } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { tableCols } from "@/schema/elements";
 import { itemsForms } from "@/schema/forms";
 import type { Person } from "@/types";
 
-const data = shallowRef([] as Person[]);
-const modal = ref(false); // Состояние модального окна
+const router = useRouter();
+
 const hasNext = ref(false); // Состояние наличия следующей страницы
 const limit = ref(10); // Количество записей на странице
-const loading = ref(false); // Состояние загрузки
+const modal = ref(false); // Состояние модального окна
 const page = ref(0); // Страница таблицы
 const search = ref(""); // Поисковый запрос
 const updated = ref(""); // Время обновления
 
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
-const router = useRouter();
+const { execute, isLoading, state } = useAsyncState(
+  async () =>
+    await ky
+      .get<Person[]>("/routes/candidates", {
+        searchParams: {
+          limit: limit.value,
+          page: page.value,
+          search: debounced.value,
+        },
+      })
+      .json(),
+  [],
+  {
+    onSuccess(data) {
+      data = data.slice(0, limit.value);
+      hasNext.value = data.length > limit.value;
+      updated.value = new Date().toLocaleTimeString();
+    },
+    onError(e) {
+      alert(e);
+    },
+  },
+);
 
 watch([debounced, limit], async () => {
-  if (page.value === 0) await getItem();
+  if (page.value === 0) await execute();
   else page.value = 0;
 });
 
-watch(
-  page,
-  async () => {
-    await getItem();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  },
-  { immediate: true },
-);
-
-async function getItem() {
-  loading.value = true;
-  const response = await ky
-    .get<Person[]>("/routes/candidates", {
-      searchParams: {
-        limit: limit.value,
-        page: page.value,
-        search: debounced.value,
-      },
-    })
-    .json();
-  data.value = response.slice(0, limit.value);
-  hasNext.value = response.length > limit.value;
-  loading.value = false;
-  updated.value = new Date().toLocaleTimeString();
-}
+watch(page, async () => {
+  await execute();
+});
 
 // Обработчик результата загрузки данных
 async function submitPerson(form: Person) {
-  loading.value = true;
   modal.value = false;
   const resp = await ky.post("/routes/persons", {
     method: "POST",
     json: form,
   });
-  loading.value = false;
   if (resp.status === 201) {
     const json = (await resp.json()) as { person_id: string };
     if (json?.person_id) {
@@ -88,7 +86,7 @@ async function submitPerson(form: Person) {
             size="xl"
             title="Добавить анкету"
             variant="ghost"
-            :loading="loading"
+            :loading="isLoading"
             @click="modal = true"
           />
           <template #body>
@@ -104,16 +102,16 @@ async function submitPerson(form: Person) {
         id="search"
         icon="i-lucide-search"
         v-model.trim="search"
-        :loading="loading"
+        :loading="isLoading"
         type="search"
         placeholder="поиск по фаимилии, имени, отчеству"
       />
 
       <!-- Таблица с данными кандидатов -->
       <TableDiv
-        :class="{ 'animate-pulse': loading }"
+        :class="{ 'animate-pulse': isLoading }"
         :cols="tableCols"
-        :data="data"
+        :data="state"
         @select="
           (row: Person) =>
             router.push({ name: 'profile', params: { id: row.id } })
@@ -121,7 +119,7 @@ async function submitPerson(form: Person) {
       />
 
       <UEmpty
-        v-if="!data"
+        v-if="!state"
         size="sm"
         title="Данные отсутствуют"
         variant="naked"
@@ -131,21 +129,21 @@ async function submitPerson(form: Person) {
       <UButton
         icon="i-lucide-refresh-cw"
         :label="`Последнее обновление в: ${updated}`"
-        :loading="loading"
+        :loading="isLoading"
         size="sm"
         title="Обновить"
         variant="ghost"
-        @click="getItem"
+        @click="execute()"
       />
 
       <!-- Пагинация -->
       <div
-        v-show="data"
+        v-show="state"
         class="flex justify-center border-t border-default pt-8 pb-2"
       >
         <UButton
           class="me-2 rounded-full"
-          :disabled="!page || loading"
+          :disabled="!page || isLoading"
           icon="i-lucide-arrow-left"
           title="Вперед"
           @click="page--"
@@ -157,7 +155,7 @@ async function submitPerson(form: Person) {
         />
         <UButton
           class="ms-2 rounded-full"
-          :disabled="!hasNext || loading"
+          :disabled="!hasNext || isLoading"
           icon="i-lucide-arrow-right"
           title="Назад"
           @click="page++"
