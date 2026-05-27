@@ -33,8 +33,8 @@ const { execute, isLoading, state } = useAsyncState<Person[]>(
   {
     onSuccess(data) {
       hasNext.value = data.length > limit.value;
+      data = hasNext.value ? data.slice(0, limit.value) : data;
       updated.value = new Date().toLocaleTimeString();
-      data = data.slice(0, limit.value);
     },
     onError(e) {
       alert(e);
@@ -52,7 +52,7 @@ watch(page, async () => {
 });
 
 // Обработчик результата загрузки данных
-async function submitPerson(form: Person) {
+async function submit(form: Person) {
   modal.value = false;
   const resp = await ky.post("/routes/persons", {
     method: "POST",
@@ -60,15 +60,9 @@ async function submitPerson(form: Person) {
   });
   if (resp.status === 201) {
     const { person_id } = (await resp.json()) as { person_id: string | null };
-    if (person_id) {
-      router.push({ name: "profile", params: { id: person_id } });
-    } else {
-      search.value = `${form.surname} ${form.firstname} ${form.patronymic ?? ""}`;
-      alert("Анкета уже существует!");
-    }
-  } else {
-    alert("Невозможно выполнить действие!");
-  }
+    if (person_id) router.push({ name: "profile", params: { id: person_id } });
+    else alert("Анкета уже существует!");
+  } else alert("Невозможно выполнить действие!");
 }
 </script>
 
@@ -91,7 +85,7 @@ async function submitPerson(form: Person) {
             @click="modal = true"
           />
           <template #body>
-            <FormDiv :fields="itemsForms.person" @submit="submitPerson" />
+            <FormDiv :fields="itemsForms.person" @submit="submit" />
           </template>
         </UModal>
       </template>

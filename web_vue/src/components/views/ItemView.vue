@@ -12,10 +12,6 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  flag: {
-    type: Boolean,
-    required: true,
-  },
   title: {
     type: String,
     required: true,
@@ -67,7 +63,6 @@ async function deleteItem(itemId: string) {
   <UEmpty v-if="!state.length" class="m-2" title="Данные отсутствуют" size="sm">
     <template #body>
       <UButton
-        v-show="props.flag"
         label="Добавить запись"
         size="sm"
         variant="outline"
@@ -79,25 +74,22 @@ async function deleteItem(itemId: string) {
     </template>
   </UEmpty>
 
-  <SkeletDivs v-if="isLoading && !state" :rows="itemsFields[view].length" />
-
   <div
     v-for="(content, index) in state"
     :key="index"
     :class="{ 'animate-pulse': isLoading }"
   >
-    <!-- Выводим кнопки редактирования/удаления данных, в режиме редактирования -->
-    <DropMenu
-      v-show="props.flag"
+    <!-- Выводим элемент данных -->
+    <ItemDiv
+      :item="content"
+      :fields="itemsFields[view]"
+      @delete="deleteItem(content.id)"
       @update="
         item = content;
         modal = true;
         method = 'PATCH';
       "
-      @delete="deleteItem(content.id)"
     />
-    <!-- Выводим элемент данных -->
-    <ItemDiv :item="content" :fields="itemsFields[view]" />
     <USeparator v-if="index + 1 < state.length" />
   </div>
 
@@ -110,10 +102,12 @@ async function deleteItem(itemId: string) {
     :title="props.title"
   >
     <UButton
-      v-if="props.flag && state.length"
+      v-if="state.length"
       block
       class="my-2"
-      label="Добавить запись"
+      color="neutral"
+      icon="i-lucide-plus"
+      title="Добавить запись"
       size="sm"
       variant="outline"
       @click="method = 'POST'"

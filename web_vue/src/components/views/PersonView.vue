@@ -7,10 +7,6 @@ import { itemsForms } from "@/schema/forms";
 import type { Person } from "@/types";
 
 const props = defineProps({
-  flag: {
-    type: Boolean,
-    required: true,
-  },
   person: {
     type: Object as PropType<Person>,
     required: true,
@@ -36,10 +32,12 @@ async function submitPerson(form: Person) {
 </script>
 
 <template>
-  <!-- Выводим кнопки редактирования или удаления данных -->
-  <DropMenu v-show="props.flag" @update="modal = true" @delete="null" />
-
-  <ItemDiv :fields="itemsFields.person" :item="props.person">
+  <ItemDiv
+    :fields="itemsFields.person"
+    :item="props.person"
+    @update="modal = true"
+    @delete="null"
+  >
     <template v-if="props.person.destination" #destination>
       <UButton
         :color="copied ? 'success' : 'info'"
