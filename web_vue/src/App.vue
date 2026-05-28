@@ -1,6 +1,6 @@
 <template>
   <UApp>
-    <router-view v-slot="{ Component }">
+    <RouterView v-slot="{ Component }">
       <LayoutView>
         <Transition mode="out-in" name="fade">
           <KeepAlive include="HomePage" :max="1">
@@ -8,7 +8,7 @@
           </KeepAlive>
         </Transition>
       </LayoutView>
-    </router-view>
+    </RouterView>
   </UApp>
 </template>
 
