@@ -18,6 +18,11 @@ const router = createRouter({
       component: () => import("./components/pages/ProfilePage.vue"),
     },
     {
+      name: "users",
+      path: "/users",
+      component: () => import("./components/pages/UsersPage.vue"),
+    },
+    {
       path: "/:catchAll(.*)",
       redirect: "/",
     },

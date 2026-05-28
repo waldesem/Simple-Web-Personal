@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, type PropType } from "vue";
-import type { ItemFields, Items } from "@/types";
+import type { ItemFields, } from "@/types";
 
 const emits = defineEmits(["update", "delete"]);
 
@@ -8,11 +8,11 @@ const visible = ref(false);
 
 const props = defineProps({
   fields: {
-    type: Array as PropType<ItemFields<Items[keyof Items]>[]>,
+    type: Array as PropType<ItemFields<any>[]>,
     required: true,
   },
   item: {
-    type: Object as PropType<Items[keyof Items]>,
+    type: Object as PropType<any>,
     default: () => ({}),
   },
 });
@@ -45,7 +45,6 @@ const props = defineProps({
           {{ field.label }}
         </div>
         <div class="col-span-9 wrap-break-word">
-          <!-- <USkeleton class="h-6 w-md" /> -->
           <component v-if="field.component" :is="field.component(item)" />
           <slot v-else-if="field.slot" :name="field.key" />
           <span v-else>{{
@@ -54,5 +53,6 @@ const props = defineProps({
         </div>
       </div>
     </div>
+    <slot></slot>
   </div>
 </template>

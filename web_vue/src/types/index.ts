@@ -1,6 +1,19 @@
 import type { Component } from "vue";
 import type { InputProps, SelectProps, TextareaProps } from "@nuxt/ui";
 
+export enum Actions {
+  delete = "delete",
+  block = "block",
+  reset = "reset",
+}
+
+export enum Roles {
+  admin = "admin",
+  api = "api",
+  user = "user",
+  guest = "guest",
+}
+
 export enum Conclusions {
   agreed = "СОГЛАСОВАНО",
   comments = "СОГЛАСОВАНО С КОММЕНТАРИЕМ",
@@ -48,6 +61,39 @@ export interface ItemsAccordionTabs {
   icon: string;
   label: string;
   slot: keyof Items;
+}
+
+export interface Auth {
+  message: string;
+  access_token: string;
+  refresh_token: string;
+}
+
+export interface Login {
+  username: string;
+  password: string;
+  new_pswd: string;
+  conf_pswd: string;
+}
+
+export interface UserForm {
+  fullname: string;
+  username: string;
+  email: string;
+}
+
+export interface Session extends UserForm {
+  id: string;
+  role: Roles;
+}
+
+export interface User extends Session {
+  pswd_create: string;
+  change_pswd: boolean;
+  blocked: boolean;
+  deleted: boolean;
+  created: string;
+  attempt: string;
 }
 
 export interface Person {

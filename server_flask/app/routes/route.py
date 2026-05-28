@@ -2,12 +2,13 @@
 
 import getpass
 import sqlite3
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timezone
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from flask import Blueprint, Response, g, jsonify, request
+from flask import Blueprint, Response, abort, g, jsonify, request
+from werkzeug.security import generate_password_hash
 
 from constants import BASE_PATH, DATABASE_URI
 
@@ -15,14 +16,16 @@ bp = Blueprint("routes", __name__, url_prefix="/routes")
 
 
 @lru_cache
-def get_user_id(cur: sqlite3.Cursor) -> int | None:
+def get_user(cur: sqlite3.Cursor) -> dict:
     """Retrieve the current user."""
     username = getpass.getuser()
     user = cur.execute(
-        "SELECT id FROM users WHERE username = ?",
+        "SELECT * FROM users WHERE username = ?",
         (username.lower(),),
     ).fetchone()
-    return user[0] if user else None
+    if user:
+        return dict(user)
+    return abort(404)
 
 
 @bp.before_request
@@ -39,6 +42,97 @@ def _load_connection() -> None | Response:
 def _close_connection(_exception: Exception) -> None:
     if db := g.pop("db", None):
         db.close()
+
+
+@bp.get("/session")
+def get_session() -> tuple[Response, Literal[200]]:
+    """Retrieve a session."""
+    cur: sqlite3.Cursor = g.db.cursor()
+    session = get_user(cur)
+    return jsonify(session), 200
+
+
+@bp.get("/users")
+def get_users() -> tuple[Response, Literal[200]]:
+    """Retrieve a list of users or once user by id."""
+    cur: sqlite3.Cursor = g.db.cursor()
+    stmt = """
+        SELECT id, fullname, username, email, role, created,
+        pswd_create, change_pswd, blocked, deleted, attempt FROM users
+        """
+    users = cur.execute(stmt).fetchall()
+    return jsonify([dict(user) for user in users]), 200
+
+
+@bp.post("/user")
+def post_user() -> tuple[Literal[""], Literal[201, 204]]:
+    """Create a new user."""
+    cur: sqlite3.Cursor = g.db.cursor()
+    resume: dict = request.get_json()
+    if cur.execute(
+        "SELECT * FROM users WHERE username = ? OR email = ?",
+        (resume["username"], resume["email"]),
+    ).fetchone():
+        return "", 204
+
+    cur.execute(
+        """INSERT INTO users
+        (fullname, username, email, role, created, passhash,
+        pswd_create, change_pswd, blocked, deleted, attempt)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        """,
+        (
+            resume["fullname"],
+            resume["username"],
+            resume["email"],
+            "user",
+            datetime.now(timezone.utc).isoformat(),  # noqa: UP017
+            generate_password_hash("88888888"),
+            datetime.now(timezone.utc).isoformat(),  # noqa: UP017
+            True,
+            False,
+            False,
+            0,
+        ),
+    )
+    g.db.commit()
+
+    return "", 201
+
+
+@bp.patch("/users/<int:user_id>")
+def patch_user(user_id: int) -> tuple[Literal[""], Literal[201]]:
+    """Change a user's information in the database."""
+    cur: sqlite3.Cursor = g.db.cursor()
+    actions: dict = request.get_json()
+    match actions["action"]:
+        case "reset":
+            # Сбросить пароль пользователя и обнулить попытки входа
+            cur.execute(
+                """
+                UPDATE users SET
+                passhash = ?, attempt = 0, blocked = 0, change_pswd = 1
+                WHERE id = ?
+                """,
+                (generate_password_hash("88888888"), user_id),
+            )
+        case "block":
+            # Заблокировать или разблокировать пользователя
+            cur.execute(
+                "UPDATE users SET blocked = NOT blocked WHERE id = ?",
+                (user_id,),
+            )
+        case "delete":
+            # Удалить или восстановить пользователя
+            cur.execute(
+                "UPDATE users SET deleted = NOT deleted WHERE id = ?",
+                (user_id,),
+            )
+        case _:
+            cur.execute(
+                "UPDATE users SET role=? WHERE id=?", (actions["action"], user_id),
+            )
+    return "", 201
 
 
 @bp.get("/candidates")
@@ -101,7 +195,7 @@ def post_person() -> tuple[Response, Literal[201]]:
     if not (cand_id := person[0] if person else None):
         resume.update(
             editable=False,
-            user_id=get_user_id(cur),
+            user_id=get_user(cur)["id"],
             created=datetime.now(UTC),
         )
         cand_id = cur.execute(
@@ -139,7 +233,7 @@ def patch_person(person_id: int) -> tuple[Literal[""], Literal[200]]:
     # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
     cur: sqlite3.Cursor = g.db.cursor()
     resume: dict = request.get_json()
-    resume["user_id"] = get_user_id(cur)
+    resume["user_id"] = get_user(cur)["id"]
     cur.execute(
         "UPDATE persons SET {} WHERE id = ?".format(  # noqa: S608
             ",".join(f"{k}=?" for k in resume),

@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { type PropType, resolveComponent, toRef } from "vue";
-import type { FormElementAttrs, FormFields, Items } from "@/types";
+import type { FormElementAttrs, FormFields } from "@/types";
 
 const emit = defineEmits(["submit"]);
 
 const props = defineProps({
   fields: {
-    type: Array as PropType<FormFields<Items[keyof Items]>[]>,
+    type: Array as PropType<FormFields<Record<string, any>>[]>,
     required: true,
   },
   item: {
-    type: Object as PropType<Items[keyof Items]>,
+    type: Object as PropType<any>,
     default: () => ({}),
   },
 });

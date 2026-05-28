@@ -20,7 +20,7 @@ const emit = defineEmits(["update"]);
 const modal = ref(false); // Объявляем переменную модального окна
 
 // Определяем функцию для отправки данных формы на сервер
-async function submitPerson(form: Person) {
+async function submit(form: Person) {
   modal.value = false;
   const { status } = await ky.patch("/routes/persons/" + props.person.id, {
     method: "PATCH",
@@ -59,7 +59,7 @@ async function submitPerson(form: Person) {
       <FormDiv
         :fields="itemsForms.person"
         :item="props.person"
-        @submit="submitPerson"
+        @submit="submit"
       />
     </template>
   </UModal>

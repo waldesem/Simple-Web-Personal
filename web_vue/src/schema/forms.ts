@@ -1,7 +1,40 @@
 import { Conclusions, Decisions } from "@/types";
-import type { Items, FormFields } from "@/types";
+import type { Items, FormFields, User } from "@/types";
 
 const pattern = "^[А-ЯЁ][А-ЯЁ\\-.,' ]+[А-ЯЁ]$";
+
+export const formUser = [
+  {
+    key: "fullname",
+    label: "Имя пользователя",
+    props: {
+      pattern: "^[а-яёЁА-Я-\s]+$",
+      placeholder: "Имя (заглавными буквами)",
+      maxlength: 255,
+      required: true,
+    },
+  },
+  {
+    key: "username",
+    label: "Логин",
+    props: {
+      pattern: "^[a-z0-9_-]{3,255}$",
+      placeholder: "Логин (прописными буквами)",
+      maxlength: 255,
+      required: true,
+    },
+  },
+  {
+    key: "Email",
+    label: "email",
+    props: {
+      placeholder: "Email",
+      maxlength: 255,
+      required: true,
+      type: "email",
+    },
+  },
+] as FormFields<User>[];
 
 export const person = [
   {

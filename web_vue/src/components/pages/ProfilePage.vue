@@ -13,7 +13,7 @@ const props = defineProps({
   },
 });
 
-const { execute, isLoading, state } = useAsyncState<Person>(
+const { execute, state } = useAsyncState<Person>(
   async () => await ky.get("/routes/persons/" + props.id).json(),
   {} as Person,
 );
@@ -34,7 +34,6 @@ const fullname = computed(
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
           <PersonView
-            :class="{ 'animate-pulse': isLoading }"
             :person="state"
             @update="execute"
           />
