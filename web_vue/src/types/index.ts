@@ -76,14 +76,11 @@ export interface Login {
   conf_pswd: string;
 }
 
-export interface UserForm {
+export interface Session {
+  id: string;
   fullname: string;
   username: string;
   email: string;
-}
-
-export interface Session extends UserForm {
-  id: string;
   role: Roles;
 }
 

@@ -7,8 +7,13 @@ import "./assets/main.css";
 const router = createRouter({
   routes: [
     {
-      name: "home",
+      name: "index",
       path: "/",
+      redirect: "/home",
+    },
+    {
+      name: "home",
+      path: "/home",
       component: () => import("./components/pages/HomePage.vue"),
     },
     {
@@ -24,7 +29,7 @@ const router = createRouter({
     },
     {
       path: "/:catchAll(.*)",
-      redirect: "/",
+      redirect: "/home",
     },
   ],
   history: createWebHistory(),

@@ -4,12 +4,11 @@ import { ref } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { formUser } from "@/schema/forms";
 import { userCols, userDivs } from "@/schema/users";
-import { Actions, Roles, type User, type UserForm } from "@/types";
+import { session } from "@/state";
+import { Actions, Roles, type User } from "@/types";
 
 // Определяем переменные для работы с данными
-const item = ref<"form" | "item">("form");
-const form = ref({} as UserForm);
-const method = ref<"PATCH" | "POST">("POST");
+const content = ref<"form" | "item">("form");
 const modal = ref(false);
 const user = ref({} as User);
 
@@ -20,7 +19,7 @@ const { execute, isLoading, state } = useAsyncState<User[]>(
 
 // Объявляем функцию для действия с пользователем
 async function edit(action: Actions | Roles, userId: string) {
-  //   if (user_id === session.user?.id) return;
+  if (userId === session.value.id) return;
   if (!confirm("Подтвердить действие?")) return;
   const resp = await ky.post("/routes/user/" + userId, {
     json: { actions: action },
@@ -31,14 +30,10 @@ async function edit(action: Actions | Roles, userId: string) {
   } else alert("Невозможно выполнить действие!");
 }
 
-async function submit() {
-  const resp = await ky("/routes/user", {
-    method: method.value,
-    json: form.value,
-  });
+async function submit(form: User) {
+  const resp = await ky.post("/routes/user", { json: form });
   if (resp.status === 201) {
     await execute();
-    form.value = {} as UserForm;
     alert("Пользователь успешно добавлен");
   } else alert("Невозможно выполнить действие!");
 }
@@ -84,28 +79,27 @@ function actions(user: User) {
       <template #links>
         <UModal v-model:open="modal" title="Пользователь">
           <UButton
-            variant="ghost"
             icon="i-lucide-user-plus"
             size="lg"
             title="Добавить пользователя"
+            variant="ghost"
             @click="
-              item = 'form';
+              content = 'form';
               modal = true;
             "
           />
-          <!-- Вставляем форму для добавления пользователя -->
           <template #body>
             <FormDiv
-              v-if="item === 'form'"
+              v-if="content === 'form'"
               :fields="formUser"
               @submit="submit"
             />
             <ItemDiv v-else :item="user" :fields="userDivs">
               <UDropdownMenu :items="actions(user)">
                 <UButton
+                  color="neutral"
                   icon="i-lucide-chevron-down"
                   label="Действия"
-                  color="neutral"
                   variant="outline"
                 />
               </UDropdownMenu>
@@ -122,7 +116,7 @@ function actions(user: User) {
         :data="state"
         @select="
           (row: User) => {
-            item = 'item';
+            content = 'item';
             modal = true;
             user = row;
           }
