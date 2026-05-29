@@ -14,7 +14,6 @@ const limit = ref(10); // Количество записей на страни�
 const modal = ref(false); // Состояние модального окна
 const page = ref(0); // Страница таблицы
 const search = ref(""); // Поисковый запрос
-const updated = ref(""); // Время обновления
 
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
@@ -34,7 +33,6 @@ const { execute, isLoading, state } = useAsyncState<Person[]>(
     onSuccess(data) {
       hasNext.value = data.length > limit.value;
       data = hasNext.value ? data.slice(0, limit.value) : data;
-      updated.value = new Date().toLocaleTimeString();
     },
     onError(e) {
       alert(e);
@@ -54,10 +52,7 @@ watch(page, async () => {
 // Обработчик результата загрузки данных
 async function submit(form: Person) {
   modal.value = false;
-  const resp = await ky.post("/routes/persons", {
-    method: "POST",
-    json: form,
-  });
+  const resp = await ky.post("/routes/persons", { json: form });
   if (resp.status === 201) {
     const { person_id } = (await resp.json()) as { person_id: string | null };
     if (person_id) router.push({ name: "profile", params: { id: person_id } });
@@ -124,7 +119,7 @@ async function submit(form: Person) {
       <!-- Время последнего обновления -->
       <UButton
         icon="i-lucide-refresh-cw"
-        :label="`Последнее обновление в: ${updated}`"
+        label="Обновить"
         :loading="isLoading"
         size="sm"
         title="Обновить"
