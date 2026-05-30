@@ -19,17 +19,17 @@ const form = toRef(props.item);
 
 const resolveFormElement = (element: keyof FormElementAttrs = "input") => {
   const resolved = {
-    input: resolveComponent("UInput"),
-    select: resolveComponent("USelect"),
-    textarea: resolveComponent("UTextarea"),
+    input: resolveComponent("NUInput"),
+    select: resolveComponent("NUSelect"),
+    textarea: resolveComponent("NUTextarea"),
   };
   return resolved[element];
 };
 </script>
 
 <template>
-  <UForm :state="form" @submit.prevent="emit('submit', form)">
-    <UFormField
+  <NUForm :state="form" @submit.prevent="emit('submit', form)">
+    <NUFormField
       v-for="field in fields"
       :key="field.key"
       :label="field.label"
@@ -41,7 +41,7 @@ const resolveFormElement = (element: keyof FormElementAttrs = "input") => {
         v-model.lazy.trim="form[field.key]"
         v-bind="field.props"
       />
-    </UFormField>
-    <UButton label="Принять" color="success" variant="outline" type="submit" />
-  </UForm>
+    </NUFormField>
+    <NUButton label="Принять" color="success" variant="outline" type="submit" />
+  </NUForm>
 </template>

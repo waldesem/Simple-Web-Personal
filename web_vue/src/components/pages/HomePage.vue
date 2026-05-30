@@ -62,16 +62,16 @@ async function submit(form: Person) {
 </script>
 
 <template>
-  <UContainer>
-    <UPageHeader title="КАНДИДАТЫ">
+  <NUContainer>
+    <NUPageHeader title="КАНДИДАТЫ">
       <template #links>
         <!-- Модальное окно для добавления анкеты -->
-        <UModal
+        <NUModal
           v-model:open="modal"
           description="Введите анкетные данные"
           title="Анкета"
         >
-          <UButton
+          <NUButton
             icon="i-lucide-user-plus"
             size="xl"
             title="Добавить анкету"
@@ -82,13 +82,13 @@ async function submit(form: Person) {
           <template #body>
             <FormDiv :fields="itemsForms.person" @submit="submit" />
           </template>
-        </UModal>
+        </NUModal>
       </template>
-    </UPageHeader>
+    </NUPageHeader>
 
     <!-- Строка поиска -->
-    <UPageBody>
-      <UInput
+    <NUPageBody>
+      <NUInput
         id="search"
         icon="i-lucide-search"
         v-model.trim="search"
@@ -108,7 +108,7 @@ async function submit(form: Person) {
         "
       />
 
-      <UEmpty
+      <NUEmpty
         v-if="!state"
         icon="i-lucide-octagon-x"
         size="sm"
@@ -117,7 +117,7 @@ async function submit(form: Person) {
       />
 
       <!-- Время последнего обновления -->
-      <UButton
+      <NUButton
         icon="i-lucide-refresh-cw"
         label="Обновить"
         :loading="isLoading"
@@ -132,19 +132,19 @@ async function submit(form: Person) {
         v-show="state"
         class="flex justify-center border-t border-default pt-8 pb-2"
       >
-        <UButton
+        <NUButton
           class="me-2 rounded-full"
           :disabled="!page || isLoading"
           icon="i-lucide-arrow-left"
           title="Вперед"
           @click="page--"
         />
-        <USelect
+        <NUSelect
           v-model="limit"
           :items="[10, 50, 100]"
           title="Количество записей"
         />
-        <UButton
+        <NUButton
           class="ms-2 rounded-full"
           :disabled="!hasNext || isLoading"
           icon="i-lucide-arrow-right"
@@ -152,6 +152,6 @@ async function submit(form: Person) {
           @click="page++"
         />
       </div>
-    </UPageBody>
-  </UContainer>
+    </NUPageBody>
+  </NUContainer>
 </template>

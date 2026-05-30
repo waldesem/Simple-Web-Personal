@@ -39,7 +39,7 @@ async function submit(form: Person) {
     @delete="null"
   >
     <template v-if="props.person.destination" #destination>
-      <UButton
+      <NUButton
         :color="copied ? 'success' : 'info'"
         :label="copied ? 'Скопировано' : 'Копировать'"
         size="sm"
@@ -50,7 +50,7 @@ async function submit(form: Person) {
   </ItemDiv>
 
   <!-- Выводим модальное окно для редактирования данных -->
-  <UModal
+  <NUModal
     v-model:open="modal"
     title="Aнкета"
     description="Редактирование анкетные данные"
@@ -62,5 +62,5 @@ async function submit(form: Person) {
         @submit="submit"
       />
     </template>
-  </UModal>
+  </NUModal>
 </template>

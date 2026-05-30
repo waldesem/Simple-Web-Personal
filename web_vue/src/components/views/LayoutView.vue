@@ -10,8 +10,8 @@ onBeforeMount(
 </script>
 
 <template>
-  <UPage>
-    <UHeader to="/">
+  <NUPage>
+    <NUHeader to="/">
       <template #title>
         <div class="inline-flex items-center text-xl font-bold space-x-1">
           <div class="text-blue-600">КАДРОВАЯ</div>
@@ -19,7 +19,7 @@ onBeforeMount(
         </div>
       </template>
       <template #default>
-        <UNavigationMenu
+        <NUNavigationMenu
           v-if="session.role === 'admin'"
           :items="[
             {
@@ -32,12 +32,12 @@ onBeforeMount(
         />
       </template>
       <template #right>
-        <UAvatar :alt="session?.fullname ?? '?'" size="md" />
+        <NUAvatar :alt="session?.fullname ?? '?'" size="md" />
       </template>
-    </UHeader>
-    <UMain>
+    </NUHeader>
+    <NUMain>
       <slot />
-    </UMain>
-    <UFooter v-once />
-  </UPage>
+    </NUMain>
+    <NUFooter v-once />
+  </NUPage>
 </template>

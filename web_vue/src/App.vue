@@ -1,5 +1,5 @@
 <template>
-  <UApp>
+  <NUApp>
     <RouterView v-slot="{ Component }">
       <LayoutView>
         <Transition mode="out-in" name="fade">
@@ -9,7 +9,7 @@
         </Transition>
       </LayoutView>
     </RouterView>
-  </UApp>
+  </NUApp>
 </template>
 
 <style>

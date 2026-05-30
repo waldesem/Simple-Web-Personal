@@ -43,11 +43,11 @@ async function submit(form: User) {
 </script>
 
 <template>
-  <UContainer>
-    <UPageHeader title="ПОЛЬЗОВАТЕЛИ" :ui="{ title: 'text-gray-600' }">
+  <NUContainer>
+    <NUPageHeader title="ПОЛЬЗОВАТЕЛИ" :ui="{ title: 'text-gray-600' }">
       <template #links>
-        <UModal v-model:open="modal" title="Пользователь">
-          <UButton
+        <NUModal v-model:open="modal" title="Пользователь">
+          <NUButton
             icon="i-lucide-user-plus"
             size="lg"
             title="Добавить пользователя"
@@ -73,19 +73,19 @@ async function submit(form: User) {
               @update="method = 'PATCH'"
             >
               <div class="flex flex-wrap gap-2">
-                <UButton
+                <NUButton
                   color="error"
                   variant="outline"
                   :label="user.deleted ? 'Восстановить' : 'Удалить'"
                   @click="edit(Actions.delete, user.id)"
                 />
-                <UButton
+                <NUButton
                   color="neutral"
                   variant="outline"
                   :label="user.blocked ? 'Разблокировать' : 'Заблокировать'"
                   @click="edit(Actions.block, user.id)"
                 />
-                <UButton
+                <NUButton
                   color="warning"
                   variant="outline"
                   label="Сбросить пароль"
@@ -94,11 +94,11 @@ async function submit(form: User) {
               </div>
             </ItemDiv>
           </template>
-        </UModal>
+        </NUModal>
       </template>
-    </UPageHeader>
+    </NUPageHeader>
 
-    <UPageBody>
+    <NUPageBody>
       <TableDiv
         :class="{ 'animate-pulse': isLoading }"
         :cols="userCols"
@@ -111,6 +111,6 @@ async function submit(form: User) {
           }
         "
       />
-    </UPageBody>
-  </UContainer>
+    </NUPageBody>
+  </NUContainer>
 </template>

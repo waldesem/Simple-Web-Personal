@@ -27,18 +27,18 @@ const fullname = computed(
 </script>
 
 <template>
-  <UContainer>
-    <UPageHeader :title="fullname" />
-    <UPageBody>
-      <UTabs :items="[anketaTab, ...itemsTabs]" :unmount-on-hide="false">
+  <NUContainer>
+    <NUPageHeader :title="fullname" />
+    <NUPageBody>
+      <NUTabs :items="[anketaTab, ...itemsTabs]" :unmount-on-hide="false">
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
           <PersonView :person="state" @update="execute" />
 
-          <USeparator />
+          <NUSeparator />
 
           <!-- Aккордеон с данными staffs, educations и т.д. -->
-          <UAccordion :items="itemsAccordion" :unmount-on-hide="false">
+          <NUAccordion :items="itemsAccordion" :unmount-on-hide="false">
             <template
               v-for="accord in itemsAccordion"
               #[accord.slot]
@@ -50,14 +50,14 @@ const fullname = computed(
                 :view="accord.slot"
               />
             </template>
-          </UAccordion>
+          </NUAccordion>
         </template>
 
         <!-- Вкладки проверки, полиграф и др. -->
         <template v-for="tab in itemsTabs" #[tab.slot] :key="tab.slot">
           <ItemView :cand-id="props.id" :title="tab.label" :view="tab.slot" />
         </template>
-      </UTabs>
-    </UPageBody>
-  </UContainer>
+      </NUTabs>
+    </NUPageBody>
+  </NUContainer>
 </template>
