@@ -85,7 +85,7 @@ def post_user() -> tuple[Literal[""], Literal[201, 204]]:
             resume["fullname"],
             resume["username"],
             resume["email"],
-            "user",
+            resume["role"],
             datetime.now(timezone.utc).isoformat(),  # noqa: UP017
             generate_password_hash("88888888"),
             datetime.now(timezone.utc).isoformat(),  # noqa: UP017
@@ -98,6 +98,19 @@ def post_user() -> tuple[Literal[""], Literal[201, 204]]:
     g.db.commit()
 
     return "", 201
+
+
+@bp.patch("/user/<user_id>")
+def update_user(user_id: int) -> tuple[Literal[""], Literal[200]]:
+    """Create a new user."""
+    cur: sqlite3.Cursor = g.db.cursor()
+    form: dict = request.get_json()
+    stmt = "UPDATE users SET {} WHERE id = ?".format(  # noqa: S608
+        ",".join(f"{k}=?" for k in form),
+    )
+    cur.execute(stmt, (*form.values(), user_id))
+    g.db.commit()
+    return "", 200
 
 
 @bp.patch("/users/<int:user_id>")
@@ -130,7 +143,8 @@ def patch_user(user_id: int) -> tuple[Literal[""], Literal[201]]:
             )
         case _:
             cur.execute(
-                "UPDATE users SET role=? WHERE id=?", (actions["action"], user_id),
+                "UPDATE users SET role=? WHERE id=?",
+                (actions["action"], user_id),
             )
     return "", 201
 

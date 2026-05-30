@@ -36,7 +36,7 @@ async function submitItem(form: typeof item.value) {
   modal.value = false;
   const url = `/routes/${props.view}/${props.candId}`;
   const { status } = await ky(
-    method.value === "POST" ? url : `${url}/${item.value.id}`,
+    method.value === "POST" ? url : url + "/" + item.value.id,
     {
       method: method.value,
       json: form,
@@ -60,7 +60,7 @@ async function deleteItem(itemId: string) {
 
 <template>
   <!-- Выводим сообщение если данные отсутствуют -->
-  <UEmpty v-if="!state.length" class="m-2" title="Данные отсутствуют" size="sm">
+  <UEmpty v-if="!state.length" size="sm" title="Нет данных" variant="naked">
     <template #body>
       <UButton
         label="Добавить запись"

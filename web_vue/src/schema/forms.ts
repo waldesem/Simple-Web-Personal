@@ -1,4 +1,4 @@
-import { Conclusions, Decisions } from "@/types";
+import { Conclusions, Decisions, Roles } from "@/types";
 import type { Items, FormFields, User } from "@/types";
 
 const pattern = "^[А-ЯЁ][А-ЯЁ\\-.,' ]+[А-ЯЁ]$";
@@ -32,6 +32,16 @@ export const formUser = [
       maxlength: 255,
       required: true,
       type: "email",
+    },
+  },
+  {
+    element: "select",
+    key: "conclusion",
+    label: "Результат",
+    props: {
+      items: Object.values(Roles),
+      placeholder: "Выберите результат",
+      required: true,
     },
   },
 ] as FormFields<User>[];

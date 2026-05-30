@@ -9,6 +9,7 @@ import { Actions, Roles, type User } from "@/types";
 
 // Определяем переменные для работы с данными
 const content = ref<"form" | "item">("form");
+const method = ref<"POST" | "PATCH">("POST");
 const modal = ref(false);
 const user = ref({} as User);
 
@@ -24,52 +25,20 @@ async function edit(action: Actions | Roles, userId: string) {
   const resp = await ky.post("/routes/user/" + userId, {
     json: { actions: action },
   });
-  if (resp?.status == 201) {
+  if (resp?.status == 201 || resp?.status == 200) {
     await execute();
     alert("Действие успешно выполнено");
   } else alert("Невозможно выполнить действие!");
 }
 
 async function submit(form: User) {
-  const resp = await ky.post("/routes/user", { json: form });
+  const url =
+    "/routes/user" + (method.value === "POST" ? "" : "/" + user.value.id);
+  const resp = await ky(url, { method: method.value, json: form });
   if (resp.status === 201) {
     await execute();
     alert("Пользователь успешно добавлен");
   } else alert("Невозможно выполнить действие!");
-}
-
-function actions(user: User) {
-  return [
-    {
-      label: user.deleted ? "Восстановить" : "Удалить",
-      onSelect() {
-        edit(Actions.delete, user.id);
-      },
-    },
-    {
-      label: user.blocked ? "Разблокировать" : "Заблокировать",
-      onSelect() {
-        edit(Actions.block, user.id);
-      },
-    },
-    {
-      label: "Сбросить пароль",
-      onSelect() {
-        edit(Actions.reset, user.id);
-      },
-    },
-    {
-      label: "Изменить роль",
-      children: (Object.keys(Roles.admin) as Array<Roles>).map((element) => {
-        return {
-          label: element,
-          onSelect() {
-            edit(element, user.id);
-          },
-        };
-      }),
-    },
-  ];
 }
 </script>
 
@@ -85,24 +54,44 @@ function actions(user: User) {
             variant="ghost"
             @click="
               content = 'form';
+              method = 'POST';
               modal = true;
+              user = {} as User;
             "
           />
           <template #body>
             <FormDiv
               v-if="content === 'form'"
               :fields="formUser"
+              :item="user"
               @submit="submit"
             />
-            <ItemDiv v-else :item="user" :fields="userDivs">
-              <UDropdownMenu :items="actions(user)">
+            <ItemDiv
+              v-else
+              :item="user"
+              :fields="userDivs"
+              @update="method = 'PATCH'"
+            >
+              <div class="flex flex-wrap gap-2">
+                <UButton
+                  color="error"
+                  variant="outline"
+                  :label="user.deleted ? 'Восстановить' : 'Удалить'"
+                  @click="edit(Actions.delete, user.id)"
+                />
                 <UButton
                   color="neutral"
-                  icon="i-lucide-chevron-down"
-                  label="Действия"
                   variant="outline"
+                  :label="user.blocked ? 'Разблокировать' : 'Заблокировать'"
+                  @click="edit(Actions.block, user.id)"
                 />
-              </UDropdownMenu>
+                <UButton
+                  color="warning"
+                  variant="outline"
+                  label="Сбросить пароль"
+                  @click="edit(Actions.reset, user.id)"
+                />
+              </div>
             </ItemDiv>
           </template>
         </UModal>

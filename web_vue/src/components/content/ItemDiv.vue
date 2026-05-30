@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, type PropType } from "vue";
-import type { ItemFields, } from "@/types";
+import type { ItemFields } from "@/types";
 
 const emits = defineEmits(["update", "delete"]);
 
@@ -21,7 +21,7 @@ const props = defineProps({
 <template>
   <div @mouseover="visible = true" @mouseleave="visible = false">
     <div v-show="visible" class="relative">
-      <UFieldGroup class="absolute right-1" size="md">
+      <UFieldGroup class="absolute right-1" size="sm">
         <UButton
           color="neutral"
           icon="i-lucide-pencil"
@@ -47,7 +47,9 @@ const props = defineProps({
         <div class="col-span-9 wrap-break-word">
           <component v-if="field.component" :is="field.component(item)" />
           <slot v-else-if="field.slot" :name="field.key" />
-          <span v-else>{{ field.div ? field.div(item) : item[field.key] }}</span>
+          <span v-else>{{
+            field.div ? field.div(item) : item[field.key]
+          }}</span>
         </div>
       </div>
     </div>

@@ -33,10 +33,7 @@ const fullname = computed(
       <UTabs :items="[anketaTab, ...itemsTabs]" :unmount-on-hide="false">
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
-          <PersonView
-            :person="state"
-            @update="execute"
-          />
+          <PersonView :person="state" @update="execute" />
 
           <USeparator />
 

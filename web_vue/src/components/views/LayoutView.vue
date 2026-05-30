@@ -20,6 +20,7 @@ onBeforeMount(
       </template>
       <template #default>
         <UNavigationMenu
+          v-if="session.role === 'admin'"
           :items="[
             {
               label: 'Пользователи',
