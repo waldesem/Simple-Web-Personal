@@ -62,10 +62,10 @@ export default defineConfig({
     host: "localhost",
     port: 8000,
     proxy: {
-      "/routes": {
-        target: "http://127.0.0.1:5000/routes/",
+      "/api": {
+        target: "http://127.0.0.1:5000/api/",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/routes/, ""),
+        rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
   },

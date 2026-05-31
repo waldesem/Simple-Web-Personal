@@ -5,7 +5,8 @@ import { session } from "@/state";
 import type { Session } from "@/types";
 
 onBeforeMount(
-  async () => (session.value = await ky.get<Session>("/routes/session").json()),
+  async () =>
+    (session.value = await ky.get<Session>("/api/auth/session").json()),
 );
 </script>
 
@@ -19,20 +20,12 @@ onBeforeMount(
         </div>
       </template>
       <template #default>
-        <NUNavigationMenu
-          v-if="session.role === 'admin'"
-          :items="[
-            {
-              label: 'Пользователи',
-              icon: 'i-lucide-users',
-              to: '/users',
-            },
-          ]"
-          variant="link"
-        />
+        <NULink to="/users" :replace="false" class="font-bold">
+          Пользователи
+        </NULink>
       </template>
       <template #right>
-        <NUAvatar :alt="session?.fullname ?? '?'" size="md" />
+        <NUAvatar :alt="session.fullname ?? '?'" size="md" />
       </template>
     </NUHeader>
     <NUMain>

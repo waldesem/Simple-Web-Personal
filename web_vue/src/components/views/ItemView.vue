@@ -27,14 +27,14 @@ const modal = ref(false); // Флаг для открытия модальног
 const method = ref<"POST" | "PATCH">("POST");
 
 const { execute, isLoading, state } = useAsyncState<Items[keyof Items][]>(
-  async () => await ky.get(`/routes/${props.view}/${props.candId}`).json(),
+  async () => await ky.get(`/api/items/${props.view}/${props.candId}`).json(),
   [],
 );
 
 // Определяем функцию для отправки данных формы на сервер
 async function submitItem(form: typeof item.value) {
   modal.value = false;
-  const url = `/routes/${props.view}/${props.candId}`;
+  const url = `/api/items/${props.view}/${props.candId}`;
   const { status } = await ky(
     method.value === "POST" ? url : url + "/" + item.value.id,
     {
@@ -50,7 +50,7 @@ async function submitItem(form: typeof item.value) {
 // Определяем функцию для удаления данных
 async function deleteItem(itemId: string) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
-  const { status } = await ky.delete(`/routes/${props.view}/${itemId}`, {
+  const { status } = await ky.delete(`/api/items/${props.view}/${itemId}`, {
     method: "DELETE",
   });
   if (status === 204) await execute();

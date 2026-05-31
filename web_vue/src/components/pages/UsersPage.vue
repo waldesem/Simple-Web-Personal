@@ -14,7 +14,7 @@ const modal = ref(false);
 const user = ref({} as User);
 
 const { execute, isLoading, state } = useAsyncState<User[]>(
-  async () => await ky.get("/routes/users").json(),
+  async () => await ky.get("/api/users/").json(),
   [],
 );
 
@@ -22,7 +22,7 @@ const { execute, isLoading, state } = useAsyncState<User[]>(
 async function edit(action: Actions | Roles, userId: string) {
   if (userId === session.value.id) return;
   if (!confirm("Подтвердить действие?")) return;
-  const resp = await ky.post("/routes/user/" + userId, {
+  const resp = await ky.post("/api/users/" + userId, {
     json: { actions: action },
   });
   if (resp?.status == 201 || resp?.status == 200) {
@@ -33,7 +33,7 @@ async function edit(action: Actions | Roles, userId: string) {
 
 async function submit(form: User) {
   const url =
-    "/routes/user" + (method.value === "POST" ? "" : "/" + user.value.id);
+    "/api/users" + (method.value === "POST" ? "" : "/" + user.value.id);
   const resp = await ky(url, { method: method.value, json: form });
   if (resp.status === 201) {
     await execute();

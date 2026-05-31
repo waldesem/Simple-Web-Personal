@@ -20,7 +20,7 @@ const debounced = refDebounced(search, 1000); // Дебаунс поиска
 const { execute, isLoading, state } = useAsyncState<Person[]>(
   async () =>
     await ky
-      .get("/routes/candidates", {
+      .get("/api/candidates", {
         searchParams: {
           limit: limit.value,
           page: page.value,
@@ -52,7 +52,7 @@ watch(page, async () => {
 // Обработчик результата загрузки данных
 async function submit(form: Person) {
   modal.value = false;
-  const resp = await ky.post("/routes/persons", { json: form });
+  const resp = await ky.post("/api/persons/", { json: form });
   if (resp.status === 201) {
     const { person_id } = (await resp.json()) as { person_id: string | null };
     if (person_id) router.push({ name: "profile", params: { id: person_id } });

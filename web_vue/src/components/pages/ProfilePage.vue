@@ -14,7 +14,7 @@ const props = defineProps({
 });
 
 const { execute, state } = useAsyncState<Person>(
-  async () => await ky.get("/routes/persons/" + props.id).json(),
+  async () => await ky.get("/api/persons/" + props.id).json(),
   {} as Person,
 );
 

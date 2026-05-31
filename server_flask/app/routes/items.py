@@ -1,0 +1,69 @@
+"""Routes."""
+
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING, Literal
+
+from flask import Blueprint, Response, g, jsonify, request
+
+if TYPE_CHECKING:
+    import sqlite3
+
+bp = Blueprint("items", __name__, url_prefix="/items")
+
+
+@bp.get("/<item>/<int:person_id>")
+def get_item(item: str, person_id: int) -> tuple[Response, Literal[200]]:
+    """Get an item based on the provided item."""
+    cur: sqlite3.Cursor = g.db.cursor()
+    items = cur.execute(
+        f"SELECT * FROM {item} WHERE person_id = ?",  # noqa: S608
+        (person_id,),
+    ).fetchall()
+    return jsonify([dict(itm) for itm in items]), 200
+
+
+@bp.post("/<item>/<int:person_id>")
+def post_item(item: str, person_id: int) -> tuple[Literal[""], Literal[201]]:
+    """Insert a record in the specified table."""
+    json_dict: dict = request.get_json()
+    json_dict.update({"person_id": person_id, "created": datetime.now(UTC)})
+    cur: sqlite3.Cursor = g.db.cursor()
+    stmt = "INSERT INTO {} ({}) VALUES ({})".format(  # noqa: S608
+        item,
+        ",".join(json_dict.keys()),
+        ",".join(["?"] * len(json_dict)),
+    )
+    cur.execute(stmt, tuple(json_dict.values()))
+    g.db.commit()
+    return "", 201
+
+
+@bp.patch("/<item>/<int:person_id>/<int:item_id>")
+def patch_item(
+    item: str,
+    item_id: int,
+    person_id: int,
+) -> tuple[Literal[""], Literal[200]]:
+    """Update a record in the specified table."""
+    json_dict: dict = request.get_json()
+    json_dict.update({"person_id": person_id, "created": datetime.now(UTC)})
+    cur: sqlite3.Cursor = g.db.cursor()
+    stmt = "UPDATE {} SET {} WHERE id = ?".format(  # noqa: S608
+        item,
+        ",".join(f"{k}=?" for k in json_dict),
+    )
+    cur.execute(stmt, (*json_dict.values(), item_id))
+    g.db.commit()
+    return "", 200
+
+
+@bp.delete("/<item>/<int:item_id>")
+def delete_item(item: str, item_id: int) -> tuple[Literal[""], Literal[204]]:
+    """Delete an item from the database with provided item name and item ID."""
+    cur: sqlite3.Cursor = g.db.cursor()
+    cur.execute(
+        f"DELETE FROM {item} WHERE id = ?",  # noqa: S608
+        (item_id,),
+    )
+    g.db.commit()
+    return "", 204

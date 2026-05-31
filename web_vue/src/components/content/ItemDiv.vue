@@ -40,7 +40,10 @@ const props = defineProps({
     </div>
 
     <div v-for="field in fields" :key="field.key" class="m-2">
-      <div v-if="item[field.key]" class="flex grid grid-cols-12 gap-3 mb-4">
+      <div
+        v-if="typeof item[field.key] !== 'object'"
+        class="flex grid grid-cols-12 gap-3 mb-4"
+      >
         <div class="col-span-3">
           {{ field.label }}
         </div>

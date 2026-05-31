@@ -23,7 +23,7 @@ export const api = ky.create({
           });
         } else {
           const router = useRouter();
-          router.push({ name: "login" });
+          router.replace({ name: "login" });
         }
       },
     ],
