@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Literal
 
 from flask import Blueprint, Response, g, jsonify, request
 
-from app.depends.depend import get_user
+from app.depends.depend import auth_required
 from constants import BASE_PATH
 
 if TYPE_CHECKING:
@@ -27,7 +27,8 @@ def get_person(person_id: int) -> tuple[Response, Literal[200]]:
 
 
 @bp.post("/")
-def post_person() -> tuple[Response, Literal[201]]:
+@auth_required
+def post_person() -> Response:
     """Replace a record in persons table."""
     # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
     cur: sqlite3.Cursor = g.db.cursor()
@@ -48,7 +49,7 @@ def post_person() -> tuple[Response, Literal[201]]:
     if not (cand_id := person[0] if person else None):
         resume.update(
             editable=False,
-            user_id=get_user(cur).id,
+            user_id=g.current_user.id,
             created=datetime.now(UTC),
         )
         cand_id = cur.execute(
@@ -81,12 +82,13 @@ def post_person() -> tuple[Response, Literal[201]]:
 
 
 @bp.patch("/<int:person_id>")
+@auth_required
 def patch_person(person_id: int) -> tuple[Literal[""], Literal[200]]:
     """Replace a record in persons table."""
     # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
     cur: sqlite3.Cursor = g.db.cursor()
     resume: dict = request.get_json()
-    resume["user_id"] = get_user(cur).id
+    resume["user_id"] = g.current_user.id
     cur.execute(
         "UPDATE persons SET {} WHERE id = ?".format(  # noqa: S608
             ",".join(f"{k}=?" for k in resume),

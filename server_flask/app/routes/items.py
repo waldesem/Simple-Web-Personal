@@ -1,7 +1,7 @@
 """Routes."""
 
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 
 from flask import Blueprint, Response, g, jsonify, request
 
@@ -12,7 +12,7 @@ bp = Blueprint("items", __name__, url_prefix="/items")
 
 
 @bp.get("/<item>/<int:person_id>")
-def get_item(item: str, person_id: int) -> tuple[Response, Literal[200]]:
+def get_item(item: str, person_id: int) -> Response:
     """Get an item based on the provided item."""
     cur: sqlite3.Cursor = g.db.cursor()
     items = cur.execute(
@@ -23,7 +23,7 @@ def get_item(item: str, person_id: int) -> tuple[Response, Literal[200]]:
 
 
 @bp.post("/<item>/<int:person_id>")
-def post_item(item: str, person_id: int) -> tuple[Literal[""], Literal[201]]:
+def post_item(item: str, person_id: int) -> Response:
     """Insert a record in the specified table."""
     json_dict: dict = request.get_json()
     json_dict.update({"person_id": person_id, "created": datetime.now(UTC)})
@@ -43,7 +43,7 @@ def patch_item(
     item: str,
     item_id: int,
     person_id: int,
-) -> tuple[Literal[""], Literal[200]]:
+) -> Response:
     """Update a record in the specified table."""
     json_dict: dict = request.get_json()
     json_dict.update({"person_id": person_id, "created": datetime.now(UTC)})
@@ -58,7 +58,7 @@ def patch_item(
 
 
 @bp.delete("/<item>/<int:item_id>")
-def delete_item(item: str, item_id: int) -> tuple[Literal[""], Literal[204]]:
+def delete_item(item: str, item_id: int) -> Response:
     """Delete an item from the database with provided item name and item ID."""
     cur: sqlite3.Cursor = g.db.cursor()
     cur.execute(
