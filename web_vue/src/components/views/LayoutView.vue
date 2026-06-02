@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import ky from "ky";
-import { onBeforeMount } from "vue";
+import { useAsyncState } from "@vueuse/core";
 import { session } from "@/state";
 import type { Session } from "@/types";
 
-onBeforeMount(
+const { state } = useAsyncState<Session>(
   async () =>
-    (session.value = await ky.get<Session>("/api/auth/session").json()),
+    await ky
+      .get("/api/auth/session")
+      .json(),
+  {} as Session,
+  {
+    onSuccess(data) {
+      session.value = data;
+    },
+  },
 );
 </script>
 
@@ -25,7 +33,7 @@ onBeforeMount(
         </NULink>
       </template>
       <template #right>
-        <NUAvatar :alt="session.fullname ?? '?'" size="md" />
+        <NUAvatar :alt="state.fullname ?? '?'" size="md" />
       </template>
     </NUHeader>
     <NUMain>

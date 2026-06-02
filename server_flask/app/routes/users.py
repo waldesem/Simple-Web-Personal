@@ -16,7 +16,10 @@ bp = Blueprint("users", __name__, url_prefix="/users")
 def get_users() -> Response:
     """Retrieve a list of users or once user by id."""
     cur: sqlite3.Cursor = g.db.cursor()
-    users = cur.execute("SELECT * FROM users").fetchall()
+    users = cur.execute(
+        "SELECT id, fullname, username, email, role, created,\
+        pswd_create, change_pswd, blocked, deleted, attempt FROM users",
+    ).fetchall()
     return jsonify([dict(user) for user in users]), 200
 
 
@@ -102,4 +105,4 @@ def patch_user(user_id: int) -> Response:
                 "UPDATE users SET role=? WHERE id=?",
                 (actions["action"], user_id),
             )
-    return "", 201
+    return "", 200

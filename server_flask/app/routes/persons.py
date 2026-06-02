@@ -27,7 +27,7 @@ def get_person(person_id: int) -> Response:
 
 
 @bp.post("/")
-@auth_required
+@auth_required()
 def post_person() -> Response:
     """Replace a record in persons table."""
     # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
@@ -82,7 +82,7 @@ def post_person() -> Response:
 
 
 @bp.patch("/<int:person_id>")
-@auth_required
+@auth_required()
 def patch_person(person_id: int) -> Response:
     """Replace a record in persons table."""
     # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
