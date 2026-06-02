@@ -32,14 +32,15 @@ def create_app() -> Flask:
         db.row_factory = sqlite3.Row
         g.db = db
 
-    @app.teardown_appcontext  # ty:ignore[invalid-argument-type]
+    @app.teardown_appcontext
     def _close_connection(_exception: Exception) -> None:
+        g.current_user = None
         if db := g.pop("db", None):
             db.close()
 
     @app.errorhandler(404)
     def handle_404(error: HTTPException) -> Response:  # noqa: ARG001
-        return app.redirect("/")  # ty:ignore[invalid-return-type]
+        return app.redirect("/")
 
     @app.errorhandler(HTTPException)
     def handle_exception(error: HTTPException) -> HTTPException:

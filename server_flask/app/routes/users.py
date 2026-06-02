@@ -1,7 +1,7 @@
 """Routes."""
 
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 
 from flask import Blueprint, Response, g, jsonify, request
 from werkzeug.security import generate_password_hash
@@ -13,7 +13,7 @@ bp = Blueprint("users", __name__, url_prefix="/users")
 
 
 @bp.get("/")
-def get_users() -> tuple[Response, Literal[200]]:
+def get_users() -> Response:
     """Retrieve a list of users or once user by id."""
     cur: sqlite3.Cursor = g.db.cursor()
     users = cur.execute("SELECT * FROM users").fetchall()
@@ -21,7 +21,7 @@ def get_users() -> tuple[Response, Literal[200]]:
 
 
 @bp.post("/")
-def post_user() -> tuple[Literal[""], Literal[201, 204]]:
+def post_user() -> Response:
     """Create a new user."""
     cur: sqlite3.Cursor = g.db.cursor()
     resume: dict = request.get_json()
@@ -57,7 +57,7 @@ def post_user() -> tuple[Literal[""], Literal[201, 204]]:
 
 
 @bp.post("/<int:user_id>")
-def update_user(user_id: int) -> tuple[Literal[""], Literal[201]]:
+def update_user(user_id: int) -> Response:
     """Create a new user."""
     cur: sqlite3.Cursor = g.db.cursor()
     form: dict = request.get_json()
@@ -70,7 +70,7 @@ def update_user(user_id: int) -> tuple[Literal[""], Literal[201]]:
 
 
 @bp.patch("/<int:user_id>")
-def patch_user(user_id: int) -> tuple[Literal[""], Literal[201]]:
+def patch_user(user_id: int) -> Response:
     """Change a user's information in the database."""
     cur: sqlite3.Cursor = g.db.cursor()
     actions: dict = request.get_json()

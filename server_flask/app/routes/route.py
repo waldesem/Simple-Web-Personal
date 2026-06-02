@@ -1,6 +1,6 @@
 """Routes."""
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 
 from flask import Blueprint, Response, g, jsonify, request
 
@@ -11,7 +11,7 @@ bp = Blueprint("route", __name__)
 
 
 @bp.get("/candidates")
-def get_candidates() -> tuple[Response, Literal[200]]:
+def get_candidates() -> Response:
     """Retrieve a paginated list of persons from the database."""
     query = request.args
     params = []

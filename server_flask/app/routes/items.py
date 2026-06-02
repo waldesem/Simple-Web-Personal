@@ -25,15 +25,15 @@ def get_item(item: str, person_id: int) -> Response:
 @bp.post("/<item>/<int:person_id>")
 def post_item(item: str, person_id: int) -> Response:
     """Insert a record in the specified table."""
-    json_dict: dict = request.get_json()
-    json_dict.update({"person_id": person_id, "created": datetime.now(UTC)})
+    item_dict: dict = request.get_json()
+    item_dict.update({"person_id": person_id, "created": datetime.now(UTC)})
     cur: sqlite3.Cursor = g.db.cursor()
     stmt = "INSERT INTO {} ({}) VALUES ({})".format(  # noqa: S608
         item,
-        ",".join(json_dict.keys()),
-        ",".join(["?"] * len(json_dict)),
+        ",".join(item_dict.keys()),
+        ",".join(["?"] * len(item_dict)),
     )
-    cur.execute(stmt, tuple(json_dict.values()))
+    cur.execute(stmt, tuple(item_dict.values()))
     g.db.commit()
     return "", 201
 
@@ -45,14 +45,14 @@ def patch_item(
     person_id: int,
 ) -> Response:
     """Update a record in the specified table."""
-    json_dict: dict = request.get_json()
-    json_dict.update({"person_id": person_id, "created": datetime.now(UTC)})
+    item_dict: dict = request.get_json()
+    item_dict.update({"person_id": person_id, "created": datetime.now(UTC)})
     cur: sqlite3.Cursor = g.db.cursor()
     stmt = "UPDATE {} SET {} WHERE id = ?".format(  # noqa: S608
         item,
-        ",".join(f"{k}=?" for k in json_dict),
+        ",".join(f"{k}=?" for k in item_dict),
     )
-    cur.execute(stmt, (*json_dict.values(), item_id))
+    cur.execute(stmt, (*item_dict.values(), item_id))
     g.db.commit()
     return "", 200
 

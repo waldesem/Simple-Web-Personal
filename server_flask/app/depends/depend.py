@@ -8,8 +8,6 @@ from typing import TYPE_CHECKING
 from flask import Response, abort, g
 from werkzeug.local import LocalProxy
 
-from app.data.classes import User
-
 if TYPE_CHECKING:
     import sqlite3
 
@@ -17,7 +15,7 @@ current_user = LocalProxy(lambda: get_user)
 
 
 @lru_cache
-def get_user() -> User | None:
+def get_user() -> dict | None:
     """Retrieve the current user."""
     username = getpass.getuser()
     cur: sqlite3.Cursor = g.db.cursor()
@@ -26,7 +24,7 @@ def get_user() -> User | None:
         (username.lower(),),
     ).fetchone()
     if user:
-        return User(*user)
+        return dict(user)
     return None
 
 
