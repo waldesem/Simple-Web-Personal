@@ -34,9 +34,7 @@ const fullname = computed(
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
           <PersonView :person="state" @update="execute" />
-
           <NUSeparator />
-
           <!-- Aккордеон с данными staffs, educations и т.д. -->
           <NUAccordion :items="itemsAccordion" :unmount-on-hide="false">
             <template
@@ -52,7 +50,6 @@ const fullname = computed(
             </template>
           </NUAccordion>
         </template>
-
         <!-- Вкладки проверки, полиграф и др. -->
         <template v-for="tab in itemsTabs" #[tab.slot] :key="tab.slot">
           <ItemView :cand-id="props.id" :title="tab.label" :view="tab.slot" />

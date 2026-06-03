@@ -1,11 +1,11 @@
 import { useStorage } from "@vueuse/core";
 import { Session } from "@/types";
 
-export const accessToken = useStorage("accessToken", "", localStorage, {
+export const access = useStorage("access", "", localStorage, {
   mergeDefaults: true,
 });
 
-export const refreshToken = useStorage("refreshToken", "", localStorage, {
+export const refresh = useStorage("refresh", "", localStorage, {
   mergeDefaults: true,
 });
 

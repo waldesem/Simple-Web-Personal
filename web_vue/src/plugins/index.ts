@@ -1,7 +1,7 @@
 import ky from "ky";
 import { App } from "vue";
 import { useRouter } from "vue-router";
-import { accessToken, refreshToken } from "@/state";
+import { access, refresh } from "@/state";
 
 export const api = {
   install(app: App) {
@@ -9,7 +9,7 @@ export const api = {
       hooks: {
         beforeRequest: [
           ({ request }) => {
-            request.headers.set("Authorization", `Bearer ${accessToken.value}`);
+            request.headers.set("Authorization", `Bearer ${access.value}`);
           },
         ],
         afterResponse: [
@@ -17,12 +17,12 @@ export const api = {
             if (response.status === 401 && retryCount === 0) {
               request.headers.set(
                 "Authorization",
-                `Bearer ${refreshToken.value}`,
+                `Bearer ${refresh.value}`,
               );
-              const response = await ky.post("/routes/auth/refresh");
-              accessToken.value = await response.text();
+              const resp = await ky.post("/routes/auth/refresh");
+              access.value = await resp.text();
               const headers = new Headers(request.headers);
-              headers.set("Authorization", `Bearer ${accessToken.value}`);
+              headers.set("Authorization", `Bearer ${access.value}`);
 
               return ky.retry({
                 request: new Request(request, { headers }),

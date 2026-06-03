@@ -50,9 +50,7 @@ async function submitItem(form: typeof item.value) {
 // Определяем функцию для удаления данных
 async function deleteItem(itemId: string) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
-  const { status } = await ky.delete(`/api/items/${props.view}/${itemId}`, {
-    method: "DELETE",
-  });
+  const { status } = await ky.delete(`/api/items/${props.view}/${itemId}`);
   if (status === 204) await execute();
   else alert("Невозможно выполнить действие!");
 }
