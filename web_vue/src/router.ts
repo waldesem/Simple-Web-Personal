@@ -3,6 +3,12 @@ import { createRouter, createWebHistory } from "vue-router";
 export const router = createRouter({
   routes: [
     {
+      name: "error",
+      path: "/error",
+      props: true,
+      component: () => import("./components/pages/ErrorPage.vue"),
+    },
+    {
       name: "index",
       path: "/",
       redirect: "/home",
@@ -25,7 +31,7 @@ export const router = createRouter({
     },
     {
       path: "/:catchAll(.*)",
-      redirect: "/home",
+      redirect: "/error",
     },
   ],
   history: createWebHistory(),

@@ -1,14 +1,11 @@
-import ky, { KyInstance } from "ky";
+import ky from "ky";
+import { App } from "vue";
 import { useRouter } from "vue-router";
 import { accessToken, refreshToken } from "@/state";
 
-export const ApiPlugin = {
-  install(
-    app: { config: { globalProperties: { $api: KyInstance } } },
-    options: { baseURL: any },
-  ) {
-    const api = ky.create({
-      baseUrl: options?.baseURL || "http://127.0.0.1:5000/api/",
+export const api = {
+  install(app: App) {
+    const instanceKy = ky.create({
       hooks: {
         beforeRequest: [
           ({ request }) => {
@@ -32,12 +29,18 @@ export const ApiPlugin = {
               });
             } else {
               const router = useRouter();
-              router.replace({ name: "login" });
+              router.replace({
+                name: "error",
+                params: {
+                  statusCode: response.status,
+                  statusMessage: response.statusText,
+                },
+              });
             }
           },
         ],
       },
     });
-    app.config.globalProperties.$api = api;
+    app.config.globalProperties.$api = instanceKy;
   },
 };
