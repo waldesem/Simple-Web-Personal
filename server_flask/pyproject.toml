@@ -12,6 +12,7 @@ dependencies = [
     "jinja2==3.1.4",
     "markupsafe==3.0.1",
     "psutil==5.9.0",
+    "pydantic==1.10.26",
     "typing-extensions==4.12.2",
     "werkzeug==3.0.4",
 ]

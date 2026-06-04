@@ -3,8 +3,11 @@
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
-from flask import Blueprint, Response, g, jsonify, request
+from flask import Blueprint, Response, g, jsonify
 from werkzeug.security import generate_password_hash
+
+from app.depends.depend import validize
+from app.models.model import Action, User
 
 if TYPE_CHECKING:
     import sqlite3
@@ -24,13 +27,13 @@ def get_users() -> Response:
 
 
 @bp.post("/")
-def post_user() -> Response:
+@validize()
+def post_user(json_data: User) -> Response:
     """Create a new user."""
     cur: sqlite3.Cursor = g.db.cursor()
-    resume: dict = request.get_json()
     if cur.execute(
         "SELECT * FROM users WHERE username = ? OR email = ?",
-        (resume["username"], resume["email"]),
+        (json_data.username, json_data.email),
     ).fetchone():
         return "", 204
 
@@ -41,10 +44,10 @@ def post_user() -> Response:
         VALUES (?,?,?,?,?,?,?,?,?,?,?)
         """,
         (
-            resume["fullname"],
-            resume["username"],
-            resume["email"],
-            resume["role"],
+            json_data.fullname,
+            json_data.username,
+            json_data.email,
+            json_data.role,
             datetime.now(timezone.utc).isoformat(),  # noqa: UP017
             generate_password_hash("88888888"),
             datetime.now(timezone.utc).isoformat(),  # noqa: UP017
@@ -60,24 +63,23 @@ def post_user() -> Response:
 
 
 @bp.post("/<int:user_id>")
-def update_user(user_id: int) -> Response:
+def update_user(user_id: int, json_data: User) -> Response:
     """Create a new user."""
     cur: sqlite3.Cursor = g.db.cursor()
-    form: dict = request.get_json()
-    stmt = "UPDATE users SET {} WHERE id = ?".format(  # noqa: S608
-        ",".join(f"{k}=?" for k in form),
+    data = json_data.dict(exclude=["username", "email"])
+    stmt = "UPDATE users SET {}, change_pswd = 1 WHERE id = ?".format(  # noqa: S608
+        ",".join(f"{k}=?" for k in data),
     )
-    cur.execute(stmt, (*form.values(), user_id))
+    cur.execute(stmt, (*data.values(), user_id))
     g.db.commit()
     return "", 201
 
 
 @bp.patch("/<int:user_id>")
-def patch_user(user_id: int) -> Response:
+def patch_user(user_id: int, json_data: Action) -> Response:
     """Change a user's information in the database."""
     cur: sqlite3.Cursor = g.db.cursor()
-    actions: dict = request.get_json()
-    match actions["action"]:
+    match json_data.action:
         case "reset":
             # Сбросить пароль пользователя и обнулить попытки входа
             cur.execute(
@@ -99,10 +101,5 @@ def patch_user(user_id: int) -> Response:
             cur.execute(
                 "UPDATE users SET deleted = NOT deleted WHERE id = ?",
                 (user_id,),
-            )
-        case _:
-            cur.execute(
-                "UPDATE users SET role=? WHERE id=?",
-                (actions["action"], user_id),
             )
     return "", 200

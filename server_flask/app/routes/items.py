@@ -3,7 +3,10 @@
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
-from flask import Blueprint, Response, g, jsonify, request
+from flask import Blueprint, Response, g, jsonify
+
+from app.depends.depend import validize
+from app.models.model import ItemModel, ItemType
 
 if TYPE_CHECKING:
     import sqlite3
@@ -12,7 +15,7 @@ bp = Blueprint("items", __name__, url_prefix="/items")
 
 
 @bp.get("/<item>/<int:person_id>")
-def get_item(item: str, person_id: int) -> Response:
+def get_item(item: ItemType, person_id: int) -> Response:
     """Get an item based on the provided item."""
     cur: sqlite3.Cursor = g.db.cursor()
     items = cur.execute(
@@ -23,42 +26,47 @@ def get_item(item: str, person_id: int) -> Response:
 
 
 @bp.post("/<item>/<int:person_id>")
-def post_item(item: str, person_id: int) -> Response:
+@validize()
+def post_item(item: ItemType, person_id: int, json_data: ItemModel) -> Response:
     """Insert a record in the specified table."""
-    item_dict: dict = request.get_json()
-    item_dict.update({"person_id": person_id, "created": datetime.now(UTC)})
+    data = json_data.dict(exclude=["item"])
+    data["person_id"] = person_id
+    data["created"] = datetime.now(UTC)
     cur: sqlite3.Cursor = g.db.cursor()
     stmt = "INSERT INTO {} ({}) VALUES ({})".format(  # noqa: S608
         item,
-        ",".join(item_dict.keys()),
-        ",".join(["?"] * len(item_dict)),
+        ",".join(data.keys()),
+        ",".join(["?"] * len(data)),
     )
-    cur.execute(stmt, tuple(item_dict.values()))
+    cur.execute(stmt, tuple(data.values()))
     g.db.commit()
     return "", 201
 
 
 @bp.patch("/<item>/<int:person_id>/<int:item_id>")
+@validize()
 def patch_item(
-    item: str,
+    item: ItemType,
     item_id: int,
     person_id: int,
+    json_data: ItemModel,
 ) -> Response:
     """Update a record in the specified table."""
-    item_dict: dict = request.get_json()
-    item_dict.update({"person_id": person_id, "created": datetime.now(UTC)})
+    data = json_data.dict()
+    data["person_id"] = person_id
+    data["created"] = datetime.now(UTC)
     cur: sqlite3.Cursor = g.db.cursor()
     stmt = "UPDATE {} SET {} WHERE id = ?".format(  # noqa: S608
         item,
-        ",".join(f"{k}=?" for k in item_dict),
+        ",".join(f"{k}=?" for k in data),
     )
-    cur.execute(stmt, (*item_dict.values(), item_id))
+    cur.execute(stmt, (*data.values(), item_id))
     g.db.commit()
     return "", 200
 
 
 @bp.delete("/<item>/<int:item_id>")
-def delete_item(item: str, item_id: int) -> Response:
+def delete_item(item: ItemType, item_id: int) -> Response:
     """Delete an item from the database with provided item name and item ID."""
     cur: sqlite3.Cursor = g.db.cursor()
     cur.execute(

@@ -3,9 +3,10 @@
 import getpass
 from collections.abc import Callable
 from functools import lru_cache, wraps
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, get_type_hints
 
-from flask import Response, abort, g
+from flask import Response, abort, g, request
+from pydantic import ValidationError
 
 if TYPE_CHECKING:
     import sqlite3
@@ -24,7 +25,7 @@ def get_user(username: str) -> dict | None:
     return dict(user) if user else None
 
 
-def auth_required() -> Callable:
+def authorize() -> Callable:
     """Decorate a function that checks a user."""
 
     def decorator(func: Callable) -> Callable:
@@ -36,6 +37,26 @@ def auth_required() -> Callable:
                 return abort(401)
             g.current_user = user
             return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
+
+
+def validize() -> Callable:
+    """Decorate a function for validate data using Pydantic models."""
+
+    def decorator(func: Callable) -> Callable:
+        @wraps(func)
+        def wrapper(*args: tuple, **kwargs: dict) -> Callable:
+            try:
+                type_hints = get_type_hints(func)
+                if model := type_hints.get("json_data"):
+                    kwargs["json_data"] = model(**request.get_json())
+                return func(*args, **kwargs)
+
+            except ValidationError:
+                return abort(400)
 
         return wrapper
 
