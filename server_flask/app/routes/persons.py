@@ -18,13 +18,10 @@ bp = Blueprint("persons", __name__, url_prefix="/persons")
 
 @bp.get("/<int:person_id>")
 def get_person(person_id: int) -> Response:
-    """Retrieve an item from the database based on the provided item ID."""
+    """Retrieve a person from the database based on the provided ID."""
     cur: sqlite3.Cursor = g.db.cursor()
-    return jsonify(
-        dict(
-            cur.execute("SELECT * FROM persons WHERE id = ?", (person_id,)).fetchone(),
-        ),
-    ), 200
+    person = cur.execute("SELECT * FROM persons WHERE id = ?", (person_id,)).fetchone()
+    return jsonify(dict(person)), 200
 
 
 @bp.post("/")
@@ -35,19 +32,17 @@ def post_person(json_data: Person) -> Response:
     # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
     cur: sqlite3.Cursor = g.db.cursor()
     person = cur.execute(
-        """
-        SELECT id FROM persons WHERE
-        surname=? AND firstname=? AND patronymic=? AND birthday=DATE(?)
-        """,
+        "SELECT id FROM persons WHERE\
+            surname=? AND firstname=? AND patronymic=? AND birthday=?",
         (
             json_data.surname,
             json_data.firstname,
             json_data.patronymic,
             json_data.birthday,
         ),
-    ).fetchone()
-
-    if not (cand_id := person[0] if person else None):
+    )
+    cand_id = person[0] if person.fetchone() else None
+    if not cand_id:
         data_dict = json_data.dict()
         data_dict["user_id"] = g.current_user["id"]
         data_dict["created"] = datetime.now(UTC)

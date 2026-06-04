@@ -1,6 +1,6 @@
 """Routes."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from flask import Blueprint, Response, g, jsonify
@@ -35,7 +35,7 @@ def post_user(json_data: User) -> Response:
         "SELECT * FROM users WHERE username = ? OR email = ?",
         (json_data.username, json_data.email),
     ).fetchone():
-        return "", 204
+        return "", 200
 
     cur.execute(
         """INSERT INTO users
@@ -48,9 +48,9 @@ def post_user(json_data: User) -> Response:
             json_data.username,
             json_data.email,
             json_data.role,
-            datetime.now(timezone.utc).isoformat(),  # noqa: UP017
+            datetime.now(UTC),
             generate_password_hash("88888888"),
-            datetime.now(timezone.utc).isoformat(),  # noqa: UP017
+            datetime.now(UTC),
             True,
             False,
             False,
@@ -58,48 +58,35 @@ def post_user(json_data: User) -> Response:
         ),
     )
     g.db.commit()
-
     return "", 201
 
 
 @bp.post("/<int:user_id>")
 def update_user(user_id: int, json_data: User) -> Response:
-    """Create a new user."""
+    """Change a user's role."""
     cur: sqlite3.Cursor = g.db.cursor()
-    data = json_data.dict(exclude=["username", "email"])
-    stmt = "UPDATE users SET {}, change_pswd = 1 WHERE id = ?".format(  # noqa: S608
-        ",".join(f"{k}=?" for k in data),
-    )
-    cur.execute(stmt, (*data.values(), user_id))
+    stmt = "UPDATE users SET role = ?, change_pswd = 1 WHERE id = ?"
+    cur.execute(stmt, (json_data.role, user_id))
     g.db.commit()
     return "", 201
 
 
 @bp.patch("/<int:user_id>")
-def patch_user(user_id: int, json_data: Action) -> Response:
-    """Change a user's information in the database."""
+def edit_user(user_id: int, json_data: Action) -> Response:
+    """Change a user's information."""
     cur: sqlite3.Cursor = g.db.cursor()
-    match json_data.action:
-        case "reset":
-            # Сбросить пароль пользователя и обнулить попытки входа
-            cur.execute(
-                """
-                UPDATE users SET
-                passhash = ?, attempt = 0, blocked = 0, change_pswd = 1
-                WHERE id = ?
-                """,
-                (generate_password_hash("88888888"), user_id),
-            )
-        case "block":
-            # Заблокировать или разблокировать пользователя
-            cur.execute(
-                "UPDATE users SET blocked = NOT blocked WHERE id = ?",
-                (user_id,),
-            )
-        case "delete":
-            # Удалить или восстановить пользователя
-            cur.execute(
-                "UPDATE users SET deleted = NOT deleted WHERE id = ?",
-                (user_id,),
-            )
+    stmt = "UPDATE users SET "
+    params = []
+    if json_data.action == "reset":
+        # Сбросить пароль пользователя и обнулить попытки входа
+        stmt += "passhash = ?, attempt = 0, blocked = 0, change_pswd = 1"
+        params.append(generate_password_hash("88888888"))
+    elif json_data.action == "block":
+        # Заблокировать или разблокировать пользователя
+        stmt += "blocked = NOT blocked"
+    elif json_data.action == "delete":
+        # Удалить или восстановить пользователя
+        stmt += "SET deleted = NOT deleted"
+    cur.execute(stmt + " WHERE id = ?", (*params, user_id))
+    g.db.commit()
     return "", 200

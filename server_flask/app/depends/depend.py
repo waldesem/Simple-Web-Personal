@@ -20,7 +20,7 @@ def get_user(username: str) -> dict | None:
         "SELECT id, fullname, username, email, role, created,\
         pswd_create, change_pswd, blocked, deleted, attempt\
         FROM users WHERE username = ?",
-        (username,),
+        (username.lower(),),
     ).fetchone()
     return dict(user) if user else None
 
@@ -31,7 +31,7 @@ def authorize() -> Callable:
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args: tuple, **kwargs: dict) -> Response | Callable:
-            username = getpass.getuser().lower()
+            username = getpass.getuser()
             user = get_user(username)
             if not user or user.blocked or user.deleted:
                 return abort(401)
@@ -46,13 +46,14 @@ def authorize() -> Callable:
 def validize() -> Callable:
     """Decorate a function for validate data using Pydantic models."""
 
-    def decorator(func: Callable) -> Callable:
+    def decorator(func: Callable) -> Callable | Response:
         @wraps(func)
         def wrapper(*args: tuple, **kwargs: dict) -> Callable:
             try:
                 type_hints = get_type_hints(func)
                 if model := type_hints.get("json_data"):
-                    kwargs["json_data"] = model(**request.get_json())
+                    data = request.get_json()
+                    kwargs["json_data"] = model(**data)
                 return func(*args, **kwargs)
 
             except ValidationError:

@@ -26,12 +26,10 @@ def get_candidates() -> Response:
             if len(search) > 2:
                 stmt += " AND patronymic = ?"
                 params.append(search[2])
-    stmt += " ORDER BY id DESC LIMIT ? OFFSET ?"
-
     # Пагинация списка кандидатов
     cur: sqlite3.Cursor = g.db.cursor()
     candidates = cur.execute(
-        stmt,
+        stmt + " ORDER BY id DESC LIMIT ? OFFSET ?",
         (*params, int(query["limit"]) + 1, int(query["page"]) * int(query["limit"])),
     ).fetchall()
     return jsonify([dict(cand) for cand in candidates]), 200
