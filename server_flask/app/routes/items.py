@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from flask import Blueprint, Response, g, jsonify
 
 from app.depends.depend import validize
-from app.models.model import ItemModel, ItemType
+from app.models.model import ItemsModels, ItemType
 
 if TYPE_CHECKING:
     import sqlite3
@@ -25,9 +25,9 @@ def get_item(item: ItemType, person_id: int) -> Response:
 
 @bp.post("/<item>/<int:person_id>")
 @validize()
-def post_item(item: ItemType, person_id: int, json_data: ItemModel) -> Response:
+def post_item(item: ItemType, person_id: int, json_data: ItemsModels) -> Response:
     """Insert a record in the specified table."""
-    data = json_data.dict(exclude=["item"])
+    data = json_data.__root__.dict(exclude={"item"})
     data["person_id"] = person_id
     data["created"] = datetime.now(UTC)
     cur: sqlite3.Cursor = g.db.cursor()
@@ -47,10 +47,10 @@ def patch_item(
     item: ItemType,
     person_id: int,
     item_id: int,
-    json_data: ItemModel,
+    json_data: ItemsModels,
 ) -> Response:
     """Update a record in the specified table."""
-    data = json_data.dict()
+    data = json_data.__root__.dict()
     data["person_id"] = person_id
     data["created"] = datetime.now(UTC)
     cur: sqlite3.Cursor = g.db.cursor()

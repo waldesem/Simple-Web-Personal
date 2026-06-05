@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from datetime import date, datetime  # noqa: TC003
 from enum import Enum
-from typing import Annotated, Literal
+from typing import Literal
 
 from pydantic import BaseModel, Field, validator
 
@@ -59,9 +59,9 @@ class User(BaseModel):
     """Pydantic model for user form."""
 
     fullname: str
-    username: Annotated[str, Field(default_factory=lambda v: v.lower())]
+    username: str
     email: str
-    role: Annotated[Roles | None, Field(Roles.guest.value)]
+    role: Roles = Field(Roles.guest.value)
 
     class Config:
         """Config class."""
@@ -69,6 +69,12 @@ class User(BaseModel):
         use_enum_values = True
         anystr_strip_whitespace = True
         max_anystr_length = 255
+
+    @validator("username")
+    @classmethod
+    def check_username(cls, username: str) -> str:
+        """Check username."""
+        return username.lower()
 
 
 class Action(BaseModel):
@@ -108,16 +114,16 @@ class Candidates(BaseModel):
 class Person(BaseModel):
     """Pydantic model form schema."""
 
-    surname: Annotated[str, Field(max_length=255)]
-    firstname: Annotated[str, Field(max_length=255)]
-    patronymic: Annotated[str | None, Field(default=None, max_length=255)]
+    surname: str = Field(max_length=255)
+    firstname: str = Field(max_length=255)
+    patronymic: str | None = Field(default=None, max_length=255)
     birthday: date
-    birthplace: Annotated[str | None, Field(None, max_length=255)]
-    citizenship: Annotated[str | None, Field(default=None, max_length=255)]
-    dual: Annotated[str | None, Field(default=None, max_length=255)]
+    birthplace: str | None = Field(None, max_length=255)
+    citizenship: str | None = Field(default=None, max_length=255)
+    dual: str | None = Field(default=None, max_length=255)
     snils: str | None = None
     inn: str | None = None
-    marital: Annotated[str | None, Field(default=None, max_length=255)]
+    marital: str | None = Field(default=None, max_length=255)
     addition: str | None = None
     editable: bool = False
 
@@ -159,9 +165,9 @@ class Prev(ItemModel):
     """Previous in schema."""
 
     surname: str = Field(max_length=255)
-    firstname: Annotated[str | None, Field(default=None, max_length=255)]
-    patronymic: Annotated[str | None, Field(default=None, max_length=255)]
-    changed: Annotated[str | None, Field(default=None, max_length=4)]
+    firstname: str | None = Field(default=None, max_length=255)
+    patronymic: str | None = Field(default=None, max_length=255)
+    changed: str | None = Field(default=None, max_length=4)
     reason: str | None = None
     item: Literal["previous"]
 
@@ -169,9 +175,9 @@ class Prev(ItemModel):
 class Education(ItemModel):
     """Education in schema."""
 
-    view: Annotated[str | None, Field(default=None, max_length=255)]
-    institution: Annotated[str, Field(max_length=255)]
-    finished: Annotated[str | None, Field(default=None, max_length=4)]
+    view: str | None = Field(default=None, max_length=255)
+    institution: str = Field(max_length=255)
+    finished: str | None = Field(default=None, max_length=4)
     specialty: str | None = None
     item: Literal["educations"]
 
@@ -179,8 +185,8 @@ class Education(ItemModel):
 class Staff(ItemModel):
     """Staffs schema."""
 
-    position: Annotated[str, Field(max_length=255)]
-    department: Annotated[str | None, Field(default=None, max_length=255)]
+    position: str = Field(max_length=255)
+    department: str | None = Field(default=None, max_length=255)
     item: Literal["staffs"]
 
 
@@ -189,8 +195,8 @@ class Document(ItemModel):
 
     view: str | None = "Паспорт"
     series: str | None = None
-    digits: Annotated[str, Field(max_length=12)]
-    agency: Annotated[str | None, Field(default=None, max_length=255)]
+    digits: str = Field(max_length=12)
+    agency: str | None = Field(default=None, max_length=255)
     issue: date | None = None
     item: Literal["documents"]
 
@@ -198,16 +204,16 @@ class Document(ItemModel):
 class Address(ItemModel):
     """Address in schema."""
 
-    view: Annotated[str, Field(max_length=255)]
-    address: Annotated[str, Field(max_length=255)]
+    view: str = Field(max_length=255)
+    address: str = Field(max_length=255)
     item: Literal["addresses"]
 
 
 class Contact(ItemModel):
     """Contacts in schema."""
 
-    view: Annotated[str, Field(max_length=255)]
-    contact: Annotated[str, Field(max_length=255)]
+    view: str = Field(max_length=255)
+    contact: str = Field(max_length=255)
     item: Literal["contacts"]
 
 
@@ -217,9 +223,9 @@ class Workplace(ItemModel):
     now_work: bool | None
     starts: date | None = None
     finished: date | None | str
-    workplace: Annotated[str, Field(max_length=255)]
-    address: Annotated[str | None, Field(None, max_length=255)]
-    position: Annotated[str, Field(max_length=255)]
+    workplace: str = Field(max_length=255)
+    address: str | None = Field(None, max_length=255)
+    position: str = Field(max_length=255)
     reason: str | None = None
     item: Literal["workplaces"]
 
@@ -227,9 +233,9 @@ class Workplace(ItemModel):
 class Affilation(ItemModel):
     """Affilation in schema."""
 
-    view: Annotated[str, Field(max_length=255)]
-    organization: Annotated[str, Field(max_length=255)]
-    inn: Annotated[str | None, Field(None, max_length=12)]
+    view: str = Field(max_length=255)
+    organization: str = Field(max_length=255)
+    inn: str | None = Field(None, max_length=12)
     activity: str | None = None
     item: Literal["affilations"]
 
@@ -259,7 +265,7 @@ class Check(ItemModel):
 class Poligraf(ItemModel):
     """Poligraf in schema."""
 
-    theme: Annotated[str, Field(max_length=255)]
+    theme: str = Field(max_length=255)
     results: str
     conclusion: Decisions
     item: Literal["poligrafs"]
@@ -268,7 +274,7 @@ class Poligraf(ItemModel):
 class Investigation(ItemModel):
     """Investigations in schema."""
 
-    theme: Annotated[str, Field(max_length=255)]
+    theme: str = Field(max_length=255)
     info: str
     item: Literal["investigations"]
 
@@ -277,28 +283,24 @@ class Inquiry(ItemModel):
     """Inquiries in schema."""
 
     info: str
-    initiator: Annotated[str, Field(max_length=255)]
+    initiator: str = Field(max_length=255)
     item: Literal["inquiries"]
 
 
-ItemType = Annotated[
-    Address
-    | Affilation
-    | Check
-    | Contact
-    | Document
-    | Education
-    | Inquiry
-    | Investigation
-    | Prev
-    | Poligraf
-    | Staff
-    | Workplace,
-    Field(discriminator="item"),
-]
-
-
-class ItemModel(BaseModel):
+class ItemsModels(BaseModel):
     """Validation class."""
 
-    __root__ = ItemType
+    __root__: (
+        Address
+        | Affilation
+        | Check
+        | Contact
+        | Document
+        | Education
+        | Inquiry
+        | Investigation
+        | Prev
+        | Poligraf
+        | Staff
+        | Workplace
+    ) = Field(..., discriminator="item")

@@ -33,7 +33,7 @@ def authorize() -> Callable:
         def wrapper(*args: tuple, **kwargs: dict) -> Callable:
             username = getpass.getuser()
             user = get_user(username)
-            if not user or user.blocked or user.deleted:
+            if not user or user["blocked"] or user["deleted"]:
                 return abort(401)
             g.current_user = user
             return func(*args, **kwargs)
@@ -53,7 +53,7 @@ def validize() -> Callable:
                 type_hints = get_type_hints(func)
                 if model := type_hints.get("json_data"):
                     data = request.get_json()
-                    kwargs["json_data"] = model(**data)
+                    kwargs["json_data"] = model.parse_obj(data)
                 if model := type_hints.get("json_query"):
                     kwargs["json_query"] = model(**request.args)
                 return func(*args, **kwargs)

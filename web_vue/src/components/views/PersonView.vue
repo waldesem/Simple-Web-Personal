@@ -22,10 +22,10 @@ const modal = ref(false); // Объявляем переменную модал�
 // Определяем функцию для отправки данных формы на сервер
 async function submit(form: Person) {
   modal.value = false;
-  const { status } = await ky.post("/api/persons/" + props.person.id, {
+  const { status } = await ky.patch("/api/persons/" + props.person.id, {
     json: form,
   });
-  if (status !== 201) alert("Невозможно выполнить действие!");
+  if (status !== 200) alert("Невозможно выполнить действие!");
   emit("update");
 }
 </script>
