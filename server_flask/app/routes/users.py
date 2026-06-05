@@ -31,30 +31,20 @@ def get_users() -> Response:
 def post_user(json_data: User) -> Response:
     """Create a new user."""
     cur: sqlite3.Cursor = g.db.cursor()
-    if cur.execute(
-        "SELECT * FROM users WHERE username = ? OR email = ?",
-        (json_data.username, json_data.email),
-    ).fetchone():
-        return "", 200
+    stmt = "SELECT * FROM users WHERE username = ? OR email = ?"
+    if cur.execute(stmt, (json_data.username, json_data.email)).fetchone():
+        return "", 204
 
     cur.execute(
-        """INSERT INTO users
-        (fullname, username, email, role, created, passhash,
-        pswd_create, change_pswd, blocked, deleted, attempt)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?)
-        """,
+        "INSERT INTO users\
+        (fullname, username, email, role, created, passhash,\
+        pswd_create, change_pswd, blocked, deleted, attempt)\
+        VALUES (?,?,?,?,?,?,?,1,0,0,0)",
         (
-            json_data.fullname,
-            json_data.username,
-            json_data.email,
-            json_data.role,
+            *json_data.dict().values(),
             datetime.now(UTC),
             generate_password_hash("88888888"),
             datetime.now(UTC),
-            True,
-            False,
-            False,
-            0,
         ),
     )
     g.db.commit()
@@ -78,14 +68,11 @@ def edit_user(user_id: int, json_data: Action) -> Response:
     stmt = "UPDATE users SET "
     params = []
     if json_data.action == "reset":
-        # Сбросить пароль пользователя и обнулить попытки входа
         stmt += "passhash = ?, attempt = 0, blocked = 0, change_pswd = 1"
         params.append(generate_password_hash("88888888"))
     elif json_data.action == "block":
-        # Заблокировать или разблокировать пользователя
         stmt += "blocked = NOT blocked"
     elif json_data.action == "delete":
-        # Удалить или восстановить пользователя
         stmt += "SET deleted = NOT deleted"
     cur.execute(stmt + " WHERE id = ?", (*params, user_id))
     g.db.commit()

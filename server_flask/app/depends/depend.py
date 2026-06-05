@@ -5,7 +5,7 @@ from collections.abc import Callable
 from functools import lru_cache, wraps
 from typing import TYPE_CHECKING, get_type_hints
 
-from flask import Response, abort, g, request
+from flask import abort, g, request
 from pydantic import ValidationError
 
 if TYPE_CHECKING:
@@ -30,7 +30,7 @@ def authorize() -> Callable:
 
     def decorator(func: Callable) -> Callable:
         @wraps(func)
-        def wrapper(*args: tuple, **kwargs: dict) -> Response | Callable:
+        def wrapper(*args: tuple, **kwargs: dict) -> Callable:
             username = getpass.getuser()
             user = get_user(username)
             if not user or user.blocked or user.deleted:
@@ -46,7 +46,7 @@ def authorize() -> Callable:
 def validize() -> Callable:
     """Decorate a function for validate data using Pydantic models."""
 
-    def decorator(func: Callable) -> Callable | Response:
+    def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args: tuple, **kwargs: dict) -> Callable:
             try:
@@ -54,6 +54,8 @@ def validize() -> Callable:
                 if model := type_hints.get("json_data"):
                     data = request.get_json()
                     kwargs["json_data"] = model(**data)
+                if model := type_hints.get("json_query"):
+                    kwargs["json_query"] = model(**request.args)
                 return func(*args, **kwargs)
 
             except ValidationError:

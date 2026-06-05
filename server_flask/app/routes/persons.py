@@ -29,7 +29,6 @@ def get_person(person_id: int) -> Response:
 @authorize()
 def post_person(json_data: Person) -> Response:
     """Replace a record in persons table."""
-    # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
     cur: sqlite3.Cursor = g.db.cursor()
     person = cur.execute(
         "SELECT id FROM persons WHERE\
@@ -66,11 +65,8 @@ def post_person(json_data: Person) -> Response:
             ).rstrip(),
         )
         destination.mkdir(parents=True, exist_ok=True)
-
-        cur.execute(
-            "UPDATE persons SET destination = ? WHERE id = ?",
-            (str(destination), cand_id),
-        )
+        stmt = "UPDATE persons SET destination = ? WHERE id = ?"
+        cur.execute(stmt, (str(destination), cand_id))
         g.db.commit()
     return jsonify({"person_id": cand_id}), 201
 
@@ -80,7 +76,6 @@ def post_person(json_data: Person) -> Response:
 @authorize()
 def patch_person(person_id: int, json_data: Person) -> Response:
     """Replace a record in persons table."""
-    # Загружаем резюме, получаем id кандидата, а также был ли он ранее загружен
     cur: sqlite3.Cursor = g.db.cursor()
     data = json_data.dict()
     data["user_id"] = g.current_user["id"]

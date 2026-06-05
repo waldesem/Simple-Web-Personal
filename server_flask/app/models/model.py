@@ -81,6 +81,16 @@ class Session(User):
     """Pydantic model for session."""
 
     id: int
+    blocked: bool
+    deleted: bool
+
+
+class Query(BaseModel):
+    """Query model."""
+
+    search: str | None
+    limit: int = 10
+    page: int
 
 
 class Candidates(BaseModel):

@@ -18,10 +18,8 @@ bp = Blueprint("items", __name__, url_prefix="/items")
 def get_item(item: ItemType, person_id: int) -> Response:
     """Get an item based on the provided item."""
     cur: sqlite3.Cursor = g.db.cursor()
-    items = cur.execute(
-        f"SELECT * FROM {item} WHERE person_id = ?",  # noqa: S608
-        (person_id,),
-    ).fetchall()
+    stmt = f"SELECT * FROM {item} WHERE person_id = ?"  # noqa: S608
+    items = cur.execute(stmt, (person_id,)).fetchall()
     return jsonify([dict(itm) for itm in items]), 200
 
 
@@ -47,8 +45,8 @@ def post_item(item: ItemType, person_id: int, json_data: ItemModel) -> Response:
 @validize()
 def patch_item(
     item: ItemType,
-    item_id: int,
     person_id: int,
+    item_id: int,
     json_data: ItemModel,
 ) -> Response:
     """Update a record in the specified table."""
@@ -69,9 +67,6 @@ def patch_item(
 def delete_item(item: ItemType, item_id: int) -> Response:
     """Delete an item from the database with provided item name and item ID."""
     cur: sqlite3.Cursor = g.db.cursor()
-    cur.execute(
-        f"DELETE FROM {item} WHERE id = ?",  # noqa: S608
-        (item_id,),
-    )
+    cur.execute(f"DELETE FROM {item} WHERE id = ?", (item_id,))  # noqa: S608
     g.db.commit()
     return "", 204
