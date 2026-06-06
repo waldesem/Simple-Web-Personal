@@ -72,7 +72,7 @@ async function submit(form: Person) {
           title="Анкета"
         >
           <NUButton
-            icon="i-lucide-user-plus"
+            icon="i-mi-user-add"
             size="xl"
             title="Добавить анкету"
             variant="ghost"
@@ -90,7 +90,7 @@ async function submit(form: Person) {
     <NUPageBody>
       <NUInput
         id="search"
-        icon="i-lucide-search"
+        icon="i-mi-search"
         v-model.trim="search"
         :loading="isLoading"
         type="search"
@@ -110,7 +110,7 @@ async function submit(form: Person) {
 
       <NUEmpty
         v-if="!state"
-        icon="i-lucide-octagon-x"
+        icon="i-mi-warning"
         size="sm"
         title="Данные отсутствуют"
         variant="naked"
@@ -118,7 +118,7 @@ async function submit(form: Person) {
 
       <!-- Время последнего обновления -->
       <NUButton
-        icon="i-lucide-refresh-cw"
+        icon="i-mi-refresh"
         label="Обновить"
         :loading="isLoading"
         size="sm"
@@ -135,7 +135,7 @@ async function submit(form: Person) {
         <NUButton
           class="me-2 rounded-full"
           :disabled="!page || isLoading"
-          icon="i-lucide-arrow-left"
+          icon="i-mi-arrow-left"
           title="Вперед"
           @click="page--"
         />
@@ -147,7 +147,7 @@ async function submit(form: Person) {
         <NUButton
           class="ms-2 rounded-full"
           :disabled="!hasNext || isLoading"
-          icon="i-lucide-arrow-right"
+          icon="i-mi-arrow-right"
           title="Назад"
           @click="page++"
         />

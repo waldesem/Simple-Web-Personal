@@ -1,5 +1,10 @@
 import type { Component } from "vue";
-import type { InputProps, SelectProps, TextareaProps } from "@nuxt/ui";
+import type {
+  AccordionItem,
+  InputProps,
+  SelectProps,
+  TextareaProps,
+} from "@nuxt/ui";
 
 export enum Actions {
   delete = "delete",
@@ -57,8 +62,7 @@ export type FormFields<T> = {
   };
 }[keyof FormElementAttrs];
 
-export interface ItemsAccordionTabs {
-  icon: string;
+export interface ItemsAccordionTabs extends AccordionItem {
   label: string;
   slot: keyof Items;
 }

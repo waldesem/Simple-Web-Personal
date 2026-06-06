@@ -9,13 +9,8 @@ export const router = createRouter({
       component: () => import("./components/pages/ErrorPage.vue"),
     },
     {
-      name: "index",
-      path: "/",
-      redirect: "/home",
-    },
-    {
       name: "home",
-      path: "/home",
+      path: "/",
       component: () => import("./components/pages/HomePage.vue"),
     },
     {

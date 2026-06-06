@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import sqlite3
+from typing import TYPE_CHECKING
 
 from flask import Flask, Response, g
 from werkzeug.exceptions import HTTPException
 
 from constants import DATABASE_URI
+
+if TYPE_CHECKING:
+    from werkzeug.wrappers.response import Response as WerkzeugResponse
 
 
 def create_app() -> Flask:
@@ -33,13 +37,13 @@ def create_app() -> Flask:
         g.db = db
 
     @app.teardown_appcontext
-    def _close_connection(_exception: Exception) -> None:
+    def close_connection(_exception: BaseException | None) -> None:
         g.current_user = None
         if db := g.pop("db", None):
             db.close()
 
     @app.errorhandler(404)
-    def handle_404(error: HTTPException) -> Response:  # noqa: ARG001
+    def handle_404(error: HTTPException) -> WerkzeugResponse:  # noqa: ARG001
         return app.redirect("/")
 
     @app.errorhandler(HTTPException)

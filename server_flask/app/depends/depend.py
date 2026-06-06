@@ -5,7 +5,7 @@ from collections.abc import Callable
 from functools import lru_cache, wraps
 from typing import TYPE_CHECKING, get_type_hints
 
-from flask import abort, g, request
+from flask import abort, current_app, g, request
 from pydantic import ValidationError
 
 if TYPE_CHECKING:
@@ -34,6 +34,7 @@ def authorize() -> Callable:
             username = getpass.getuser()
             user = get_user(username)
             if not user or user["blocked"] or user["deleted"]:
+                current_app.logger.warning("User %s is blocked or deleted", username)
                 return abort(401)
             g.current_user = user
             return func(*args, **kwargs)
@@ -58,7 +59,8 @@ def validize() -> Callable:
                     kwargs["json_query"] = model(**request.args)
                 return func(*args, **kwargs)
 
-            except ValidationError:
+            except ValidationError as exc:
+                current_app.logger.warning(exc)
                 return abort(400)
 
         return wrapper

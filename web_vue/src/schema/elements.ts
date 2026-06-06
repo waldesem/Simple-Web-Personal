@@ -32,29 +32,29 @@ export const tableCols: TableColumns<Person>[] = [
 
 export const anketaTab = {
   label: "Анкета",
-  icon: "i-lucide-user",
+  icon: "i-mi-user",
   slot: "person",
 } as ItemsAccordionTabs;
 
 export const itemsTabs = [
   {
     label: "Проверки",
-    icon: "i-lucide-shield-check",
+    icon: "i-mi-document-check",
     slot: "checks",
   },
   {
     label: "Полиграф",
-    icon: "i-lucide-heart-pulse",
+    icon: "i-mi-heart",
     slot: "poligrafs",
   },
   {
     label: "Расследования",
-    icon: "i-lucide-hat-glasses",
+    icon: "i-mi-archive",
     slot: "investigations",
   },
   {
     label: "Запросы",
-    icon: "i-lucide-file-question-mark",
+    icon: "i-mi-comment",
     slot: "inquiries",
   },
 ] as ItemsAccordionTabs[];
@@ -62,42 +62,42 @@ export const itemsTabs = [
 export const itemsAccordion = [
   {
     label: "Должности",
-    icon: "i-lucide-workflow",
+    icon: "i-mi-laptop",
     slot: "staffs",
   },
   {
     label: "Образование",
-    icon: "i-lucide-graduation-cap",
+    icon: "i-mi-document-empty",
     slot: "educations",
   },
   {
     label: "Места работы",
-    icon: "i-lucide-briefcase-business",
+    icon: "i-mi-computer",
     slot: "workplaces",
   },
   {
     label: "Документы",
-    icon: "i-lucide-book-text",
+    icon: "i-mi-document",
     slot: "documents",
   },
   {
     label: "Адреса",
-    icon: "i-lucide-house",
+    icon: "i-mi-home",
     slot: "addresses",
   },
   {
     label: "Контакты",
-    icon: "i-lucide-phone-call",
+    icon: "i-mi-call",
     slot: "contacts",
   },
   {
     label: "Изменения имени",
-    icon: "i-lucide-file-pen-line",
+    icon: "i-mi-edit",
     slot: "previous",
   },
   {
     label: "Аффилированность",
-    icon: "i-lucide-users-round",
+    icon: "i-mi-users",
     slot: "affilations",
   },
 ] as ItemsAccordionTabs[];

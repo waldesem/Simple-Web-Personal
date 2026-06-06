@@ -13,6 +13,11 @@ export default defineConfig({
     ui({
       prefix: "NU",
       ui: {
+        accordion: {
+          slots: {
+            trailingIcon: "i-mi-chevron-down",
+          },
+        },
         colors: {
           primary: "blue",
           neutral: "gray",
@@ -40,6 +45,11 @@ export default defineConfig({
           slots: {
             root: "relative border-none pt-20 pb-4",
             title: "text-2xl sm:text-3xl text-red-800",
+          },
+        },
+        select: {
+          slots: {
+            trailingIcon: "i-mi-chevron-down",
           },
         },
         textarea: {

@@ -1,7 +1,7 @@
 """Routes."""
 
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from flask import Blueprint, Response, g, jsonify
 
@@ -15,7 +15,7 @@ bp = Blueprint("items", __name__, url_prefix="/items")
 
 
 @bp.get("/<item>/<int:person_id>")
-def get_item(item: ItemType, person_id: int) -> Response:
+def get_item(item: ItemType, person_id: int) -> tuple[Response, Literal[200]]:
     """Get an item based on the provided item."""
     cur: sqlite3.Cursor = g.db.cursor()
     stmt = f"SELECT * FROM {item} WHERE person_id = ?"  # noqa: S608
@@ -25,7 +25,11 @@ def get_item(item: ItemType, person_id: int) -> Response:
 
 @bp.post("/<item>/<int:person_id>")
 @validize()
-def post_item(item: ItemType, person_id: int, json_data: ItemsModels) -> Response:
+def post_item(
+    item: ItemType,
+    person_id: int,
+    json_data: ItemsModels,
+) -> tuple[Literal[""], Literal[201]]:
     """Insert a record in the specified table."""
     data = json_data.__root__.dict(exclude={"item"})
     data["person_id"] = person_id
@@ -48,7 +52,7 @@ def patch_item(
     person_id: int,
     item_id: int,
     json_data: ItemsModels,
-) -> Response:
+) -> tuple[Literal[""], Literal[200]]:
     """Update a record in the specified table."""
     data = json_data.__root__.dict()
     data["person_id"] = person_id
@@ -64,7 +68,7 @@ def patch_item(
 
 
 @bp.delete("/<item>/<int:item_id>")
-def delete_item(item: ItemType, item_id: int) -> Response:
+def delete_item(item: ItemType, item_id: int) -> tuple[Literal[""], Literal[204]]:
     """Delete an item from the database with provided item name and item ID."""
     cur: sqlite3.Cursor = g.db.cursor()
     cur.execute(f"DELETE FROM {item} WHERE id = ?", (item_id,))  # noqa: S608

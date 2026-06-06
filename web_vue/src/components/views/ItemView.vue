@@ -39,7 +39,7 @@ async function submitItem(form: typeof item.value) {
     method.value === "POST" ? url : url + "/" + item.value.id,
     {
       method: method.value,
-      json: {item: props.view, ...form},
+      json: { item: props.view, ...form },
     },
   );
   await execute();
@@ -104,7 +104,7 @@ async function deleteItem(itemId: string) {
       block
       class="my-2"
       color="neutral"
-      icon="i-lucide-plus"
+      icon="i-mi-add"
       title="Добавить запись"
       size="sm"
       variant="outline"

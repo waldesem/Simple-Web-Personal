@@ -2,7 +2,7 @@
 
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from flask import Blueprint, Response, g, jsonify
 
@@ -17,7 +17,7 @@ bp = Blueprint("persons", __name__, url_prefix="/persons")
 
 
 @bp.get("/<int:person_id>")
-def get_person(person_id: int) -> Response:
+def get_person(person_id: int) -> tuple[Response, Literal[200]]:
     """Retrieve a person from the database based on the provided ID."""
     cur: sqlite3.Cursor = g.db.cursor()
     person = cur.execute("SELECT * FROM persons WHERE id = ?", (person_id,)).fetchone()
@@ -27,7 +27,7 @@ def get_person(person_id: int) -> Response:
 @bp.post("/")
 @validize()
 @authorize()
-def post_person(json_data: Person) -> Response:
+def post_person(json_data: Person) -> tuple[Response, Literal[201]]:
     """Replace a record in persons table."""
     cur: sqlite3.Cursor = g.db.cursor()
     person = cur.execute(
@@ -74,7 +74,7 @@ def post_person(json_data: Person) -> Response:
 @bp.patch("/<int:person_id>")
 @validize()
 @authorize()
-def patch_person(person_id: int, json_data: Person) -> Response:
+def patch_person(person_id: int, json_data: Person) -> tuple[Literal[""], Literal[200]]:
     """Replace a record in persons table."""
     cur: sqlite3.Cursor = g.db.cursor()
     data = json_data.dict()

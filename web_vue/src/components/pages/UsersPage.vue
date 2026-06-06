@@ -47,7 +47,7 @@ async function submit(form: User) {
       <template #links>
         <NUModal v-model:open="modal" title="Пользователь">
           <NUButton
-            icon="i-lucide-user-plus"
+            icon="i-mi-user-add"
             :disabled="isLoading"
             size="lg"
             title="Добавить пользователя"

@@ -17,7 +17,7 @@ export function timeAgoStr(str: string) {
   // Меньше часа (но больше минуты)
   const diffMin = Math.floor(diffSec / 60);
   if (diffMin < 60) {
-    return diffMin + " минут назад";
+    return "Менее часа назад";
   }
   // Менее суток (но больше часа)
   const diffHours = Math.floor(diffMin / 60);

@@ -24,14 +24,14 @@ const props = defineProps({
       <NUFieldGroup class="absolute right-1" size="sm">
         <NUButton
           color="neutral"
-          icon="i-lucide-pencil"
+          icon="i-mi-edit-alt"
           title="Изменить"
           variant="outline"
           @click="emits('update')"
         />
         <NUButton
           color="neutral"
-          icon="i-lucide-trash"
+          icon="i-mi-delete"
           title="Удалить"
           variant="outline"
           @click="emits('delete')"
