@@ -5,7 +5,7 @@ from __future__ import annotations
 import sqlite3
 from typing import TYPE_CHECKING
 
-from flask import Flask, Response, g
+from flask import Flask, Response, g, request
 from werkzeug.exceptions import HTTPException
 
 from constants import DATABASE_URI
@@ -32,9 +32,10 @@ def create_app() -> Flask:
         if DATABASE_URI is None:
             msg = "DATABASE_URI is not set, check your settings.ini."
             raise RuntimeError(msg)
-        db = sqlite3.connect(DATABASE_URI)
-        db.row_factory = sqlite3.Row
-        g.db = db
+        if request.path.startswith("/api"):
+            db = sqlite3.connect(DATABASE_URI)
+            db.row_factory = sqlite3.Row
+            g.db = db
 
     @app.teardown_appcontext
     def close_connection(_exception: BaseException | None) -> None:

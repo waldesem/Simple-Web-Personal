@@ -8,6 +8,7 @@ from flask import Blueprint, Response, g, jsonify
 
 from app.depends.depend import authorize, validize
 from app.models.model import Person
+from app.utilities.utils import insert_into_db, update_db
 from constants import BASE_PATH
 
 if TYPE_CHECKING:
@@ -39,35 +40,30 @@ def post_person(json_data: Person) -> tuple[Response, Literal[201]]:
             json_data.patronymic,
             json_data.birthday,
         ),
-    )
-    cand_id = person[0] if person.fetchone() else None
+    ).fetchone()
+
+    cand_id = person[0] if person else None
     if not cand_id:
         data_dict = json_data.dict()
         data_dict["user_id"] = g.current_user["id"]
         data_dict["created"] = datetime.now(UTC)
-        cand_id = cur.execute(
-            "INSERT INTO persons ({}) VALUES ({})".format(  # noqa: S608
-                ",".join(data_dict.keys()),
-                ",".join(["?"] * len(data_dict)),
-            ),
-            tuple(data_dict.values()),
-        ).lastrowid
+        cand_id = insert_into_db(cur, "persons", data_dict)
 
-        destination = Path(
-            BASE_PATH,
-            "Главный офис",
-            json_data.surname[0],
-            "{}-{} {} {}".format(
-                cand_id,
-                json_data.surname,
-                json_data.firstname,
-                json_data.patronymic or "",
-            ).rstrip(),
-        )
-        destination.mkdir(parents=True, exist_ok=True)
-        stmt = "UPDATE persons SET destination = ? WHERE id = ?"
-        cur.execute(stmt, (str(destination), cand_id))
-        g.db.commit()
+        if cand_id:
+            destination = Path(
+                BASE_PATH,
+                "Главный офис",
+                json_data.surname[0],
+                "{}-{} {} {}".format(
+                    cand_id,
+                    json_data.surname,
+                    json_data.firstname,
+                    json_data.patronymic or "",
+                ).rstrip(),
+            )
+            destination.mkdir(parents=True, exist_ok=True)
+            update_db(cur, "persons", {"destination": str(destination)}, cand_id)
+            g.db.commit()
     return jsonify({"person_id": cand_id}), 201
 
 
@@ -76,15 +72,10 @@ def post_person(json_data: Person) -> tuple[Response, Literal[201]]:
 @authorize()
 def patch_person(person_id: int, json_data: Person) -> tuple[Literal[""], Literal[200]]:
     """Replace a record in persons table."""
-    cur: sqlite3.Cursor = g.db.cursor()
     data = json_data.dict()
     data["user_id"] = g.current_user["id"]
     data["created"] = datetime.now(UTC)
-    cur.execute(
-        "UPDATE persons SET {} WHERE id = ?".format(  # noqa: S608
-            ",".join(f"{k}=?" for k in data),
-        ),
-        (*data.values(), person_id),
-    )
+    cur: sqlite3.Cursor = g.db.cursor()
+    update_db(cur, "persons", data, person_id)
     g.db.commit()
     return "", 200

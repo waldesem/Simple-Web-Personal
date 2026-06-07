@@ -1,5 +1,26 @@
 """Utils."""
 
+from sqlite3 import Cursor
+
+
+def insert_into_db(cur: Cursor, table: str, data: dict) -> int | None:
+    """Insert data into db."""
+    stmt = "INSERT INTO {} ({}) VALUES ({})".format(  # noqa: S608
+        table,
+        ",".join(data.keys()),
+        ",".join(["?"] * len(data)),
+    )
+    return cur.execute(stmt, tuple(data.values())).lastrowid
+
+
+def update_db(cur: Cursor, table: str, data: dict, item_id: int) -> None:
+    """Update data in db."""
+    stmt = "UPDATE {} SET {} WHERE id = ?".format(  # noqa: S608
+        table,
+        ",".join(f"{k}=?" for k in data),
+    )
+    cur.execute(stmt, (*data.values(), item_id))
+
 
 def validate_inn(inn: str | None) -> str | None:
     """Check inn."""

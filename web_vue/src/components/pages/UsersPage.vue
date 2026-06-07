@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import ky from "ky";
-import { ref } from "vue";
+import { inject, ref } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { formUser } from "@/schema/forms";
 import { userCols, userDivs } from "@/schema/elements";
 import { Actions, type User } from "@/types";
+
+const api = inject("api") as typeof ky;
 
 // Определяем переменные для работы с данными
 const content = ref<"form" | "item">("form");
@@ -13,14 +15,14 @@ const modal = ref(false);
 const user = ref({} as User);
 
 const { execute, isLoading, state } = useAsyncState<User[]>(
-  async () => await ky.get("/api/users/").json(),
+  async () => await api.get("/api/users/").json(),
   [],
 );
 
 // Объявляем функцию для действия с пользователем
 async function edit(action: Actions) {
   if (!confirm("Подтвердить действие?")) return;
-  const resp = await ky.post("/api/users/" + user.value.id, {
+  const resp = await api.post("/api/users/" + user.value.id, {
     json: { actions: action },
   });
   if (resp?.status == 201 || resp?.status == 200) {
@@ -33,7 +35,7 @@ async function submit(form: User) {
   modal.value = false;
   const url =
     "/api/users" + (method.value === "POST" ? "/" : "/" + user.value.id);
-  const resp = await ky(url, { method: method.value, json: form });
+  const resp = await api(url, { method: method.value, json: form });
   if (resp.status === 201) {
     await execute();
     alert("Пользователь успешно добавлен");

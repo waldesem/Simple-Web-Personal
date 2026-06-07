@@ -1,26 +1,18 @@
 <script setup lang="ts">
 import ky from "ky";
+import { inject } from "vue";
 import { useAsyncState } from "@vueuse/core";
-import { useRouter } from "vue-router";
 import { session } from "@/state";
 import type { Session } from "@/types";
 
+const api = inject("api") as typeof ky;
+
 const { state } = useAsyncState<Session>(
-  async () => await ky.get("/api/auth/session").json(),
+  async () => await api.get("/api/auth/session").json(),
   {} as Session,
   {
     onSuccess(data) {
       session.value = data;
-    },
-    onError() {
-      const router = useRouter();
-      router.replace({
-        name: "error",
-        params: {
-          statusCode: 400,
-          statusMessage: "Ошибка авторизации, обратитесь к администратору",
-        },
-      });
     },
   },
 );

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ky from "ky";
-import { ref, watch } from "vue";
+import { inject, ref, watch } from "vue";
 import { refDebounced, useAsyncState } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { personCols } from "@/schema/elements";
@@ -17,9 +17,11 @@ const search = ref(""); // Поисковый запрос
 
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
+const api = inject("api") as typeof ky;
+
 const { execute, isLoading, state } = useAsyncState<Person[]>(
   async () =>
-    await ky
+    await api
       .get("/api/candidates", {
         searchParams: {
           limit: limit.value,
@@ -33,9 +35,6 @@ const { execute, isLoading, state } = useAsyncState<Person[]>(
     onSuccess(data) {
       hasNext.value = data.length > limit.value;
       data = hasNext.value ? data.slice(0, limit.value) : data;
-    },
-    onError(e) {
-      alert(e);
     },
   },
 );
@@ -52,7 +51,7 @@ watch(page, async () => {
 // Обработчик результата загрузки данных
 async function submit(form: Person) {
   modal.value = false;
-  const resp = await ky.post("/api/persons/", { json: form });
+  const resp = await api.post("/api/persons/", { json: form });
   if (resp.status === 201) {
     const { person_id } = (await resp.json()) as { person_id: string | null };
     if (person_id) router.push({ name: "profile", params: { id: person_id } });

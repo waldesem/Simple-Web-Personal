@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ky from "ky";
-import { type PropType, ref } from "vue";
+import { inject, type PropType, ref } from "vue";
 import { useClipboard } from "@vueuse/core";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
@@ -17,12 +17,14 @@ const { copy, copied } = useClipboard();
 
 const emit = defineEmits(["update"]);
 
+const api = inject("api") as typeof ky;
+
 const modal = ref(false); // Объявляем переменную модального окна
 
 // Определяем функцию для отправки данных формы на сервер
 async function submit(form: Person) {
   modal.value = false;
-  const { status } = await ky.patch("/api/persons/" + props.person.id, {
+  const { status } = await api.patch("/api/persons/" + props.person.id, {
     json: form,
   });
   if (status !== 200) alert("Невозможно выполнить действие!");
