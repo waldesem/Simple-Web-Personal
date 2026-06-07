@@ -36,11 +36,11 @@ export const formUser = [
   },
   {
     element: "select",
-    key: "conclusion",
-    label: "Результат",
+    key: "role",
+    label: "Роль",
     props: {
       items: Object.values(Roles),
-      placeholder: "Выберите результат",
+      placeholder: "Выберите роль",
       required: true,
     },
   },

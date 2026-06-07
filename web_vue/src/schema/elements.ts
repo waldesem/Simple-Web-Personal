@@ -1,7 +1,52 @@
 import { localStr, timeAgoStr } from "@/utils";
-import type { ItemsAccordionTabs, Person, TableColumns } from "@/types";
+import type {
+  ItemFields,
+  ItemsAccordionTabs,
+  Person,
+  TableColumns,
+  User,
+} from "@/types";
 
-export const tableCols: TableColumns<Person>[] = [
+export const userCols: TableColumns<User>[] = [
+  { name: "id", header: "#" },
+  { name: "fullname", header: "Пользователь" },
+  { name: "username", header: "Логин" },
+  { name: "role", header: "Роль" },
+  {
+    name: "created",
+    header: "Создан",
+    cell: (row) => localStr(row.created),
+  },
+];
+
+export const userDivs: ItemFields<User>[] = [
+  { key: "fullname", label: "Пользователь" },
+  { key: "username", label: "Логин" },
+  { key: "role", label: "Роль" },
+  {
+    key: "created",
+    label: "Создан",
+    div: (row) => localStr(row.created),
+  },
+  { key: "attempt", label: "Попыток", div: (row) => String(row.attempt) },
+  {
+    key: "blocked",
+    label: "Блокир.",
+    div: (row) => (row.blocked ? "Да" : "Нет"),
+  },
+  {
+    key: "change_pswd",
+    label: "Пароль",
+    div: (row) => (row.change_pswd ? "Да" : "Нет"),
+  },
+  {
+    key: "deleted",
+    label: "Удален",
+    div: (row) => (row.deleted ? "Да" : "Нет"),
+  },
+];
+
+export const personCols: TableColumns<Person>[] = [
   {
     name: "id",
     header: "#",

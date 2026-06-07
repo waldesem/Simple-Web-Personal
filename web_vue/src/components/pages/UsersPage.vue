@@ -3,7 +3,7 @@ import ky from "ky";
 import { ref } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { formUser } from "@/schema/forms";
-import { userCols, userDivs } from "@/schema/users";
+import { userCols, userDivs } from "@/schema/elements";
 import { Actions, type User } from "@/types";
 
 // Определяем переменные для работы с данными

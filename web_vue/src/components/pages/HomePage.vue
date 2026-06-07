@@ -3,7 +3,7 @@ import ky from "ky";
 import { ref, watch } from "vue";
 import { refDebounced, useAsyncState } from "@vueuse/core";
 import { useRouter } from "vue-router";
-import { tableCols } from "@/schema/elements";
+import { personCols } from "@/schema/elements";
 import { itemsForms } from "@/schema/forms";
 import type { Person } from "@/types";
 
@@ -100,7 +100,7 @@ async function submit(form: Person) {
       <!-- Таблица с данными кандидатов -->
       <TableDiv
         :class="{ 'animate-pulse': isLoading }"
-        :cols="tableCols"
+        :cols="personCols"
         :data="state"
         @select="
           (row: Person) =>
