@@ -1,8 +1,7 @@
 export function localStr(str: string): string {
   try {
     return str ? new Date(str).toLocaleDateString() : "";
-  } catch (e) {
-    console.error(e);
+  } catch {
     return "";
   }
 }

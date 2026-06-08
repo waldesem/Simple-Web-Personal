@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ky from "ky";
-import { computed, inject } from "vue";
+import { computed } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { anketaTab, itemsAccordion, itemsTabs } from "@/schema/elements";
 import type { Person } from "@/types";
@@ -13,10 +13,8 @@ const props = defineProps({
   },
 });
 
-const api = inject("api") as typeof ky;
-
 const { execute, state } = useAsyncState<Person>(
-  async () => await api.get("/api/persons/" + props.id).json(),
+  async () => await ky.get("/api/persons/" + props.id).json(),
   {} as Person,
 );
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ky from "ky";
-import { inject, type PropType, ref, shallowRef } from "vue";
+import { type PropType, ref, shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
@@ -22,14 +22,12 @@ const props = defineProps({
   },
 });
 
-const api = inject("api") as typeof ky;
-
 const item = shallowRef({} as Items[keyof Items]);
 const modal = ref(false); // Флаг для открытия модального окна
 const method = ref<"POST" | "PATCH">("POST");
 
 const { execute, isLoading, state } = useAsyncState<Items[keyof Items][]>(
-  async () => await api.get(`/api/items/${props.view}/${props.candId}`).json(),
+  async () => await ky.get(`/api/items/${props.view}/${props.candId}`).json(),
   [],
 );
 
@@ -37,7 +35,7 @@ const { execute, isLoading, state } = useAsyncState<Items[keyof Items][]>(
 async function submitItem(form: typeof item.value) {
   modal.value = false;
   const url = `/api/items/${props.view}/${props.candId}`;
-  const { status } = await api(
+  const { status } = await ky(
     method.value === "POST" ? url : url + "/" + item.value.id,
     {
       method: method.value,
@@ -52,7 +50,7 @@ async function submitItem(form: typeof item.value) {
 // Определяем функцию для удаления данных
 async function deleteItem(itemId: string) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
-  const { status } = await api.delete(`/api/items/${props.view}/${itemId}`);
+  const { status } = await ky.delete(`/api/items/${props.view}/${itemId}`);
   if (status === 204) await execute();
   else alert("Невозможно выполнить действие!");
 }

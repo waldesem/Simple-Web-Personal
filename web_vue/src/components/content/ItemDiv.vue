@@ -41,7 +41,7 @@ const props = defineProps({
 
     <div v-for="field in fields" :key="field.key" class="m-2">
       <div
-        v-if="typeof item[field.key] !== 'object'"
+        v-if="item[field.key] || field.slot"
         class="flex grid grid-cols-12 gap-3 mb-4"
       >
         <div class="col-span-3">

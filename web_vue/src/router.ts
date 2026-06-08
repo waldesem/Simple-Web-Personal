@@ -26,7 +26,7 @@ export const router = createRouter({
     },
     {
       path: "/:catchAll(.*)",
-      redirect: "/error",
+      redirect: "/",
     },
   ],
   history: createWebHistory(),

@@ -39,7 +39,7 @@ class Decisions(Enum):
     denied = "НЕГАТИВ"
 
 
-type ItemType = Literal[
+ItemType = Literal[
     "addresses",
     "affilations",
     "checks",
