@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING, Literal
 from flask import Blueprint, Response, g, jsonify
 
 from app.depends.depend import validize
-from app.models.model import Query
+from app.models.model import Query, tables
+from app.utilities.utils import select_from_db
 
 if TYPE_CHECKING:
     import sqlite3
@@ -36,3 +37,12 @@ def get_candidates(json_query: Query) -> tuple[Response, Literal[200]]:
         (*params, json_query.limit + 1, json_query.page * json_query.limit),
     ).fetchall()
     return jsonify([dict(cand) for cand in candidates]), 200
+
+
+@bp.get("/candidates/<int:person_id>")
+def get_candidate(person_id: int) -> tuple[Response, Literal[200]]:
+    """Retrieve a person from the database."""
+    cur: sqlite3.Cursor = g.db.cursor()
+    person = cur.execute("SELECT * FROM persons WHERE id = ?", (person_id,)).fetchone()
+    items = {table: select_from_db(cur, table, person_id) for table in tables}
+    return jsonify({"person": dict(person)} | items), 200

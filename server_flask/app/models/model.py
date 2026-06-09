@@ -11,6 +11,21 @@ from pydantic import BaseModel, Field, validator
 from app.classes.enums import Conclusions, Decisions, Roles
 from app.utilities.utils import validate_inn, validate_snils
 
+tables = [
+    "addresses",
+    "affilations",
+    "checks",
+    "contacts",
+    "documents",
+    "educations",
+    "inquiries",
+    "investigations",
+    "poligrafs",
+    "previous",
+    "staffs",
+    "workplaces",
+]
+
 ItemType = Literal[
     "addresses",
     "affilations",
