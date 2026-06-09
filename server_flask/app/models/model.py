@@ -3,41 +3,13 @@
 from __future__ import annotations
 
 import re
-from datetime import date, datetime  # noqa: TC003
-from enum import Enum
+from datetime import date  # noqa: TC003
 from typing import Literal
 
 from pydantic import BaseModel, Field, validator
 
+from app.classes.enums import Conclusions, Decisions, Roles
 from app.utilities.utils import validate_inn, validate_snils
-
-
-class Roles(Enum):
-    """Users roles."""
-
-    admin = "admin"
-    api = "api"
-    user = "user"
-    guest = "guest"
-
-
-class Conclusions(Enum):
-    """Checks conclusions."""
-
-    agreed = "СОГЛАСОВАНО"
-    comments = "СОГЛАСОВАНО С КОММЕНТАРИЕМ"
-    denied = "ОТКАЗАНО В СОГЛАСОВАНИИ"
-    cancel = "СНЯТ С ПРОВЕРКИ"
-
-
-class Decisions(Enum):
-    """Poligrafs decisions."""
-
-    agreed = "БЕЗ ЗАМЕЧАНИЙ"
-    comments = "С КОММЕНТАРИЯМИ"
-    cancel = "ОТКАЗ ОТ ПРОВЕРКИ"
-    denied = "НЕГАТИВ"
-
 
 ItemType = Literal[
     "addresses",
@@ -48,11 +20,17 @@ ItemType = Literal[
     "educations",
     "inquiries",
     "investigations",
-    "previous",
     "poligrafs",
+    "previous",
     "staffs",
     "workplaces",
 ]
+
+
+class TableModel(BaseModel):
+    """Pydantic model for tables name."""
+
+    __root__: ItemType
 
 
 class User(BaseModel):
@@ -64,8 +42,6 @@ class User(BaseModel):
     role: Roles = Field(Roles.guest.value)
 
     class Config:
-        """Config class."""
-
         use_enum_values = True
         anystr_strip_whitespace = True
         max_anystr_length = 255
@@ -83,32 +59,12 @@ class Action(BaseModel):
     action: Literal["block", "reset", "delete"]
 
 
-class Session(User):
-    """Pydantic model for session."""
-
-    id: int
-    blocked: bool
-    deleted: bool
-
-
 class Query(BaseModel):
     """Query model."""
 
     search: str | None
     limit: int = 10
     page: int
-
-
-class Candidates(BaseModel):
-    """Pydantic model for candidates."""
-
-    id: int
-    surname: str
-    firstname: str
-    patronymic: str | None
-    birthday: date
-    created: datetime
-    username: str
 
 
 class Person(BaseModel):
@@ -128,8 +84,6 @@ class Person(BaseModel):
     editable: bool = False
 
     class Config:
-        """Config class."""
-
         anystr_strip_whitespace = True
 
     @validator("surname", "firstname", "patronymic")
@@ -151,17 +105,7 @@ class Person(BaseModel):
         return validate_snils(snils)
 
 
-class ItemModel(BaseModel):
-    """Date Id Model schema."""
-
-    class Config:
-        """Config class."""
-
-        use_enum_values = True
-        anystr_strip_whitespace = True
-
-
-class Prev(ItemModel):
+class Prev(BaseModel):
     """Previous in schema."""
 
     surname: str = Field(max_length=255)
@@ -171,8 +115,11 @@ class Prev(ItemModel):
     reason: str | None = None
     item: Literal["previous"]
 
+    class Config:
+        anystr_strip_whitespace = True
 
-class Education(ItemModel):
+
+class Education(BaseModel):
     """Education in schema."""
 
     view: str | None = Field(default=None, max_length=255)
@@ -181,16 +128,23 @@ class Education(ItemModel):
     specialty: str | None = None
     item: Literal["educations"]
 
+    class Config:
+        anystr_strip_whitespace = True
 
-class Staff(ItemModel):
+
+class Staff(BaseModel):
     """Staffs schema."""
 
-    position: str = Field(max_length=255)
-    department: str | None = Field(default=None, max_length=255)
+    position: str
+    department: str | None
     item: Literal["staffs"]
 
+    class Config:
+        anystr_strip_whitespace = True
+        max_anystr_length = 255
 
-class Document(ItemModel):
+
+class Document(BaseModel):
     """Document in schema."""
 
     view: str | None = "Паспорт"
@@ -200,24 +154,35 @@ class Document(ItemModel):
     issue: date | None = None
     item: Literal["documents"]
 
+    class Config:
+        anystr_strip_whitespace = True
 
-class Address(ItemModel):
+
+class Address(BaseModel):
     """Address in schema."""
 
-    view: str = Field(max_length=255)
-    address: str = Field(max_length=255)
+    view: str
+    address: str
     item: Literal["addresses"]
 
+    class Config:
+        anystr_strip_whitespace = True
+        max_anystr_length = 255
 
-class Contact(ItemModel):
+
+class Contact(BaseModel):
     """Contacts in schema."""
 
-    view: str = Field(max_length=255)
-    contact: str = Field(max_length=255)
+    view: str
+    contact: str
     item: Literal["contacts"]
 
+    class Config:
+        anystr_strip_whitespace = True
+        max_anystr_length = 255
 
-class Workplace(ItemModel):
+
+class Workplace(BaseModel):
     """Workplaces in schema."""
 
     now_work: bool | None
@@ -229,8 +194,11 @@ class Workplace(ItemModel):
     reason: str | None = None
     item: Literal["workplaces"]
 
+    class Config:
+        anystr_strip_whitespace = True
 
-class Affilation(ItemModel):
+
+class Affilation(BaseModel):
     """Affilation in schema."""
 
     view: str = Field(max_length=255)
@@ -239,8 +207,11 @@ class Affilation(ItemModel):
     activity: str | None = None
     item: Literal["affilations"]
 
+    class Config:
+        anystr_strip_whitespace = True
 
-class Check(ItemModel):
+
+class Check(BaseModel):
     """Check in schema."""
 
     workplace: str | None = None
@@ -261,8 +232,12 @@ class Check(ItemModel):
     conclusion: Conclusions
     item: Literal["checks"]
 
+    class Config:
+        use_enum_values = True
+        anystr_strip_whitespace = True
 
-class Poligraf(ItemModel):
+
+class Poligraf(BaseModel):
     """Poligraf in schema."""
 
     theme: str = Field(max_length=255)
@@ -270,25 +245,35 @@ class Poligraf(ItemModel):
     conclusion: Decisions
     item: Literal["poligrafs"]
 
+    class Config:
+        use_enum_values = True
+        anystr_strip_whitespace = True
 
-class Investigation(ItemModel):
+
+class Investigation(BaseModel):
     """Investigations in schema."""
 
     theme: str = Field(max_length=255)
     info: str
     item: Literal["investigations"]
 
+    class Config:
+        anystr_strip_whitespace = True
 
-class Inquiry(ItemModel):
+
+class Inquiry(BaseModel):
     """Inquiries in schema."""
 
     info: str
     initiator: str = Field(max_length=255)
     item: Literal["inquiries"]
 
+    class Config:
+        anystr_strip_whitespace = True
+
 
 class ItemsModels(BaseModel):
-    """Validation class."""
+    """Items schemas."""
 
     __root__: (
         Address

@@ -57,6 +57,9 @@ def validize() -> Callable:
                     kwargs["json_data"] = model.parse_obj(data)
                 if model := type_hints.get("json_query"):
                     kwargs["json_query"] = model(**request.args)
+                if model := type_hints.get("table"):
+                    kwargs["table"] = model.parse_obj(kwargs["table"])
+
                 return func(*args, **kwargs)
 
             except ValidationError as exc:

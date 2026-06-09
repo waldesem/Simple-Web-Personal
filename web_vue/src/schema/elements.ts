@@ -112,7 +112,7 @@ export const itemsAccordion = [
   },
   {
     label: "Образование",
-    icon: "i-mi-document-empty",
+    icon: "i-mi-book",
     slot: "educations",
   },
   {
