@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import ky from "ky";
-import { computed } from "vue";
+import { defineAsyncComponent, shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { anketaTab, itemsAccordion, itemsTabs } from "@/schema/elements";
-import type { Anketa, Person } from "@/types";
+import type { Items, Person } from "@/types";
+
+const ViewItem = defineAsyncComponent(
+  () => import("@/components/views/ItemView.vue"),
+);
 
 // Определяем данные которые передаются через router из HomePage.vue
 const props = defineProps({
@@ -13,37 +17,26 @@ const props = defineProps({
   },
 });
 
-const { state, isLoading } = useAsyncState(
-  async () => await ky.get("/api/candidates/" + props.id).json<Anketa>(),
-  {} as Anketa,
-);
+const person = shallowRef({} as Person);
 
-async function getPerson() {
-  isLoading.value = true;
-  state.value.person = await ky.get("/api/persons/" + props.id).json<Person>();
-  isLoading.value = false;
-}
-
-const fullname = computed(
-  () =>
-    `${state.value.person.surname ?? ""} ${state.value.person.firstname ?? ""} ${
-      state.value.person.patronymic ?? ""
-    }`,
+const { state } = useAsyncState(
+  async () => await ky.get("/api/items/tables/" + props.id).json<Items>(),
+  {} as Items,
 );
 </script>
 
 <template>
   <NUContainer>
-    <NUPageHeader :title="fullname" />
+    <NUPageHeader
+      :title="`${person.surname ?? ''} ${person.firstname ?? ''} ${
+        person.patronymic ?? ''
+      }`"
+    />
     <NUPageBody>
       <NUTabs :items="[anketaTab, ...itemsTabs]" :unmount-on-hide="false">
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
-          <PersonView
-            :is-loading="isLoading"
-            :person="state.person"
-            @update="getPerson()"
-          />
+          <PersonView v-model="person" :person-id="props.id" />
           <NUSeparator />
           <!-- Aккордеон с данными staffs, educations и т.д. -->
           <NUAccordion :items="itemsAccordion" :unmount-on-hide="false">
@@ -52,7 +45,7 @@ const fullname = computed(
               #[accord.slot]
               :key="accord.slot"
             >
-              <ItemView
+              <ViewItem
                 :cand-id="props.id"
                 :data="state[accord.slot]"
                 :title="accord.label"
@@ -63,7 +56,7 @@ const fullname = computed(
         </template>
         <!-- Вкладки проверки, полиграф и др. -->
         <template v-for="tab in itemsTabs" #[tab.slot] :key="tab.slot">
-          <ItemView
+          <ViewItem
             :cand-id="props.id"
             :data="state[tab.slot]"
             :title="tab.label"

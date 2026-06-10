@@ -1,7 +1,7 @@
 import { h } from "vue";
 import { localStr } from "@/utils";
 import { Conclusions, Decisions } from "@/types";
-import type { Anketa, ItemFields } from "@/types";
+import type { Items, ItemFields, Person } from "@/types";
 
 export const person = [
   { key: "surname", label: "Фамилия" },
@@ -21,19 +21,19 @@ export const person = [
   { key: "addition", label: "Дополнительная информация" },
   { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
   { key: "destination", label: "Материалы проверок", slot: true },
-] as ItemFields<Anketa["person"]>[];
+] as ItemFields<Person>[];
 
 const addresses = [
   { key: "view", label: "Вид адреса" },
   { key: "address", label: "Адрес" },
-] as ItemFields<Anketa["addresses"][number]>[];
+] as ItemFields<Items["addresses"][number]>[];
 
 const affilations = [
   { key: "view", label: "Вид участия" },
   { key: "organization", label: "Организация" },
   { key: "inn", label: "ИНН" },
   { key: "activity", label: "Деятельность" },
-] as ItemFields<Anketa["affilations"][number]>[];
+] as ItemFields<Items["affilations"][number]>[];
 
 const checks = [
   { key: "workplace", label: "Проверка по местам работы" },
@@ -64,7 +64,7 @@ const checks = [
         "span",
         {
           class: [
-            "flex inline-flex Anketa-center py-1 px-2 rounded-md text-sm text-white",
+            "flex inline-flex Items-center py-1 px-2 rounded-md text-sm text-white",
             color,
           ],
         },
@@ -73,12 +73,12 @@ const checks = [
     },
   },
   { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
-] as ItemFields<Anketa["checks"][number]>[];
+] as ItemFields<Items["checks"][number]>[];
 
 const contacts = [
   { key: "view", label: "Вид контакта" },
   { key: "contact", label: "Контакт" },
-] as ItemFields<Anketa["contacts"][number]>[];
+] as ItemFields<Items["contacts"][number]>[];
 
 const documents = [
   { key: "view", label: "Вид документа" },
@@ -86,26 +86,26 @@ const documents = [
   { key: "digits", label: "Номер документа" },
   { key: "agency", label: "Кем выдан" },
   { key: "issue", label: "Дата выдачи", div: (row) => localStr(row.issue) },
-] as ItemFields<Anketa["documents"][number]>[];
+] as ItemFields<Items["documents"][number]>[];
 
 const educations = [
   { key: "view", label: "Вид образования" },
   { key: "institution", label: "Учебное заведение" },
   { key: "finished", label: "Год окончания" },
   { key: "specialty", label: "Специальность" },
-] as ItemFields<Anketa["educations"][number]>[];
+] as ItemFields<Items["educations"][number]>[];
 
 const inquiries = [
   { key: "info", label: "Информация" },
   { key: "initiator", label: "Инициатор" },
   { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
-] as ItemFields<Anketa["inquiries"][number]>[];
+] as ItemFields<Items["inquiries"][number]>[];
 
 const investigations = [
   { key: "theme", label: "Тема проверки" },
   { key: "info", label: "Информация" },
   { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
-] as ItemFields<Anketa["investigations"][number]>[];
+] as ItemFields<Items["investigations"][number]>[];
 
 const poligrafs = [
   { key: "theme", label: "Тема проверки" },
@@ -126,7 +126,7 @@ const poligrafs = [
         "span",
         {
           class: [
-            "flex inline-flex Anketa-center py-1 px-2 rounded-md text-sm text-white",
+            "flex inline-flex Items-center py-1 px-2 rounded-md text-sm text-white",
             color,
           ],
         },
@@ -135,7 +135,7 @@ const poligrafs = [
     },
   },
   { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
-] as ItemFields<Anketa["poligrafs"][number]>[];
+] as ItemFields<Items["poligrafs"][number]>[];
 
 const previous = [
   { key: "surname", label: "Фамилия" },
@@ -143,12 +143,12 @@ const previous = [
   { key: "patronymic", label: "Отчество" },
   { key: "changed", label: "Год изменения" },
   { key: "reason", label: "Причина" },
-] as ItemFields<Anketa["previous"][number]>[];
+] as ItemFields<Items["previous"][number]>[];
 
 const staffs = [
   { key: "position", label: "Должность" },
   { key: "department", label: "Подразделение" },
-] as ItemFields<Anketa["staffs"][number]>[];
+] as ItemFields<Items["staffs"][number]>[];
 
 const workplaces = [
   { key: "starts", label: "Начало работы", div: (row) => localStr(row.starts) },
@@ -161,7 +161,7 @@ const workplaces = [
   { key: "position", label: "Должность" },
   { key: "address", label: "Адрес организации" },
   { key: "reason", label: "Причина увольнения" },
-] as ItemFields<Anketa["workplaces"][number]>[];
+] as ItemFields<Items["workplaces"][number]>[];
 
 export const itemsFields = {
   addresses,

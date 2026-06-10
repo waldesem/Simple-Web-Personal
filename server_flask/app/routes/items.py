@@ -6,13 +6,22 @@ from typing import TYPE_CHECKING, Literal
 from flask import Blueprint, Response, g, jsonify
 
 from app.depends.depend import validize
-from app.models.model import ItemsModels, TableModel
+from app.models.model import ItemsModels, TableModel, tables
 from app.utilities.queries import insert_into_db, select_from_db, update_db
 
 if TYPE_CHECKING:
     from sqlite3 import Cursor
 
 bp = Blueprint("items", __name__, url_prefix="/items")
+
+
+@bp.get("/tables/<int:person_id>")
+def get_candidate(person_id: int) -> tuple[Response, Literal[200]]:
+    """Retrieve a person from the database."""
+    cur: Cursor = g.db.cursor()
+    return jsonify(
+        {table: select_from_db(cur, table, person_id) for table in tables},
+    ), 200
 
 
 @bp.get("/<table>/<int:person_id>")

@@ -3,7 +3,6 @@ import ky from "ky";
 import { useAsyncState } from "@vueuse/core";
 import { session } from "@/state";
 import type { Session } from "@/types";
-import { useRouter } from "vue-router";
 
 const { state } = useAsyncState<Session>(
   async () => await ky.get("/api/auth/session").json(),
@@ -11,13 +10,6 @@ const { state } = useAsyncState<Session>(
   {
     onSuccess(data) {
       session.value = data;
-    },
-    onError(e) {
-      const router = useRouter();
-      router.replace({name: "error", params: {
-        statusCode: 400,
-        statusMessage: String(e),
-      }})
     },
   },
 );
@@ -38,7 +30,18 @@ const { state } = useAsyncState<Session>(
         </NULink>
       </template>
       <template #right>
-        <NUAvatar :alt="state.fullname ?? '?'" size="md" />
+        <NUAvatar
+          v-if="state.fullname"
+          :alt="state.fullname"
+          :chip="{ inset: true }"
+          size="md"
+        />
+        <NUAvatar
+          v-else
+          icon="i-mi-ban"
+          color="error"
+          size="md"
+        />
       </template>
     </NUHeader>
     <NUMain>

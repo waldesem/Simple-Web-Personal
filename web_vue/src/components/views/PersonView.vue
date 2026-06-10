@@ -1,36 +1,40 @@
 <script setup lang="ts">
 import ky from "ky";
-import { type PropType, ref } from "vue";
-import { useClipboard } from "@vueuse/core";
+import { ref } from "vue";
+import { useAsyncState, useClipboard } from "@vueuse/core";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
 import type { Person } from "@/types";
 
+const person = defineModel<Person>();
+
 const props = defineProps({
-  isLoading: {
-    type: Boolean,
-    default: false
-  },
-  person: {
-    type: Object as PropType<Person>,
+  personId: {
+    type: String,
     required: true,
   },
 });
 
+const modal = ref(false); // Объявляем переменную модального окна
+
 const { copy, copied } = useClipboard();
 
-const emit = defineEmits(["update"]);
-
-const modal = ref(false); // Объявляем переменную модального окна
+const { execute, isLoading } = useAsyncState(
+  async () =>
+    (person.value = await ky
+      .get("/api/persons/" + props.personId)
+      .json<Person>()),
+  {} as Person,
+);
 
 // Определяем функцию для отправки данных формы на сервер
 async function submit(form: Person) {
   modal.value = false;
-  const { status } = await ky.patch("/api/persons/" + props.person.id, {
+  const { status } = await ky.patch("/api/persons/" + props.personId, {
     json: form,
   });
   if (status !== 200) alert("Невозможно выполнить действие!");
-  emit("update");
+  await execute();
 }
 </script>
 
@@ -38,17 +42,18 @@ async function submit(form: Person) {
   <ItemDiv
     :class="{ 'animate-pulse': isLoading }"
     :fields="itemsFields.person"
-    :item="props.person"
+    :item="person"
     @delete="null"
     @update="modal = true"
   >
-    <template v-if="props.person.destination" #destination>
+    <template #destination>
       <NUButton
+        v-if="person?.destination"
         :color="copied ? 'success' : 'info'"
         :label="copied ? 'Скопировано' : 'Копировать'"
         size="sm"
         variant="outline"
-        @click="copy(props.person.destination)"
+        @click="copy(person.destination)"
       />
     </template>
   </ItemDiv>
@@ -62,7 +67,7 @@ async function submit(form: Person) {
     <template #body>
       <FormDiv
         :fields="itemsForms.person"
-        :item="props.person"
+        :item="person"
         @submit="submit"
       />
     </template>
