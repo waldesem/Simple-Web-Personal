@@ -215,18 +215,20 @@ export interface Needs {
   created: string;
 }
 
-export type Items = {
-  addresses: Address;
-  affilations: Affilation;
-  checks: Verification;
-  contacts: Contact;
-  documents: Passport;
-  educations: Education;
-  inquiries: Needs;
-  investigations: Inquisition;
+export interface Anketa {
+  addresses: Address[];
+  affilations: Affilation[];
+  checks: Verification[];
+  contacts: Contact[];
+  documents: Passport[];
+  educations: Education[];
+  inquiries: Needs[];
+  investigations: Inquisition[];
   person: Person;
-  poligrafs: Pfo;
-  previous: Previous;
-  staffs: Staff;
-  workplaces: Work;
+  poligrafs: Pfo[];
+  previous: Previous[];
+  staffs: Staff[];
+  workplaces: Work[];
 };
+
+export type Items = Omit<Anketa, "person">

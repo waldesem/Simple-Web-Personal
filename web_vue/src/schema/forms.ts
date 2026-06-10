@@ -1,5 +1,5 @@
 import { Conclusions, Decisions, Roles } from "@/types";
-import type { Items, FormFields, User } from "@/types";
+import type { Anketa, FormFields, User, Person } from "@/types";
 
 const pattern = "^[А-ЯЁ][А-ЯЁ\\-.,' ]+[А-ЯЁ]$";
 
@@ -39,7 +39,7 @@ export const formUser = [
     key: "role",
     label: "Роль",
     props: {
-      items: Object.values(Roles),
+      Anketa: Object.values(Roles),
       placeholder: "Выберите роль",
       required: true,
     },
@@ -117,7 +117,7 @@ export const person = [
     label: "Дополнительно",
     props: { placeholder: "Дополнительная информация", maxlength: 4096 },
   },
-] as FormFields<Items["person"]>[];
+] as FormFields<Person>[];
 
 const addresses = [
   {
@@ -125,7 +125,7 @@ const addresses = [
     key: "view",
     label: "Вид адреса",
     props: {
-      items: ["Адрес регистрации", "Адрес проживания", "Другое"],
+      Anketa: ["Адрес регистрации", "Адрес проживания", "Другое"],
       placeholder: "Выберите адрес",
       required: true,
     },
@@ -136,7 +136,7 @@ const addresses = [
     label: "Адрес",
     props: { placeholder: "Введите адрес", maxlength: 4096, required: true },
   },
-] as FormFields<Items["addresses"]>[];
+] as FormFields<Anketa["addresses"][number]>[];
 
 const affilations = [
   {
@@ -160,7 +160,7 @@ const affilations = [
     label: "Деятельность",
     props: { placeholder: "Деятельность", maxlength: 4096 },
   },
-] as FormFields<Items["affilations"]>[];
+] as FormFields<Anketa["affilations"][number]>[];
 
 const checks = [
   {
@@ -240,12 +240,12 @@ const checks = [
     key: "conclusion",
     label: "Результат",
     props: {
-      items: Object.values(Conclusions),
+      Anketa: Object.values(Conclusions),
       placeholder: "Выберите результат",
       required: true,
     },
   },
-] as FormFields<Items["checks"]>[];
+] as FormFields<Anketa["checks"][number]>[];
 
 const contacts = [
   {
@@ -253,7 +253,7 @@ const contacts = [
     key: "view",
     label: "Вид контакта",
     props: {
-      items: ["Телефон", "Электронная почта", "Другое"],
+      Anketa: ["Телефон", "Электронная почта", "Другое"],
       placeholder: "Выберите контакт",
       maxlength: 255,
       required: true,
@@ -264,7 +264,7 @@ const contacts = [
     label: "Контакт",
     props: { placeholder: "Контакт", maxlength: 255, required: true },
   },
-] as FormFields<Items["contacts"]>[];
+] as FormFields<Anketa["contacts"][number]>[];
 
 const documents = [
   {
@@ -272,7 +272,7 @@ const documents = [
     key: "view",
     label: "Вид документа",
     props: {
-      items: ["Паспорт", "Иностранный паспорт", "Другое"],
+      Anketa: ["Паспорт", "Иностранный паспорт", "Другое"],
       placeholder: "Выберите документ",
       required: true,
     },
@@ -297,7 +297,7 @@ const documents = [
     label: "Дата выдачи",
     props: { type: "date", required: true },
   },
-] as FormFields<Items["documents"]>[];
+] as FormFields<Anketa["documents"][number]>[];
 
 const educations = [
   {
@@ -305,7 +305,7 @@ const educations = [
     key: "view",
     label: "Вид образования",
     props: {
-      items: [
+      Anketa: [
         "Основное общее",
         "Среднее общее",
         "Среднее профессиональное",
@@ -336,7 +336,7 @@ const educations = [
     label: "Специальность",
     props: { placeholder: "Специальность", maxlength: 255, required: true },
   },
-] as FormFields<Items["educations"]>[];
+] as FormFields<Anketa["educations"][number]>[];
 
 const inquiries = [
   {
@@ -350,7 +350,7 @@ const inquiries = [
     label: "Инициатор",
     props: { placeholder: "Инициатор", maxlength: 255, required: true },
   },
-] as FormFields<Items["inquiries"]>[];
+] as FormFields<Anketa["inquiries"][number]>[];
 
 const investigations = [
   {
@@ -364,7 +364,7 @@ const investigations = [
     label: "Информация",
     props: { placeholder: "Информация", maxlength: 4096, required: true },
   },
-] as FormFields<Items["investigations"]>[];
+] as FormFields<Anketa["investigations"][number]>[];
 
 const poligrafs = [
   {
@@ -372,7 +372,7 @@ const poligrafs = [
     key: "theme",
     label: "Тема проверки",
     props: {
-      items: [
+      Anketa: [
         "Проверка кандидата",
         "Служебная проверка",
         "Служебное расследование",
@@ -393,12 +393,12 @@ const poligrafs = [
     key: "conclusion",
     label: "Результат",
     props: {
-      items: Object.values(Decisions),
+      Anketa: Object.values(Decisions),
       placeholder: "Выберите результат",
       required: true,
     },
   },
-] as FormFields<Items["poligrafs"]>[];
+] as FormFields<Anketa["poligrafs"][number]>[];
 
 const previous = [
   {
@@ -427,7 +427,7 @@ const previous = [
     label: "Причина",
     props: { placeholder: "Причина изменения", maxlength: 4096 },
   },
-] as FormFields<Items["previous"]>[];
+] as FormFields<Anketa["previous"][number]>[];
 
 const staffs = [
   {
@@ -440,7 +440,7 @@ const staffs = [
     label: "Подразделение",
     props: { placeholder: "Подразделение", maxlength: 255 },
   },
-] as FormFields<Items["staffs"]>[];
+] as FormFields<Anketa["staffs"][number]>[];
 
 const workplaces = [
   {
@@ -474,7 +474,7 @@ const workplaces = [
     label: "Причина увольнения",
     props: { placeholder: "Причина увольнения", maxlength: 4096 },
   },
-] as FormFields<Items["workplaces"]>[];
+] as FormFields<Anketa["workplaces"][number]>[];
 
 export const itemsForms = {
   addresses,
@@ -490,4 +490,4 @@ export const itemsForms = {
   previous,
   staffs,
   workplaces,
-} as { [key in keyof Items]: FormFields<Items[keyof Items]>[] };
+};

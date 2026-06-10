@@ -7,7 +7,7 @@ from flask import Blueprint, Response, g, jsonify
 
 from app.depends.depend import validize
 from app.models.model import ItemsModels, TableModel
-from app.utilities.utils import insert_into_db, update_db
+from app.utilities.queries import insert_into_db, select_from_db, update_db
 
 if TYPE_CHECKING:
     from sqlite3 import Cursor
@@ -20,9 +20,7 @@ bp = Blueprint("items", __name__, url_prefix="/items")
 def get_items(table: TableModel, person_id: int) -> tuple[Response, Literal[200]]:
     """Get an item based on the provided tables."""
     cur: Cursor = g.db.cursor()
-    stmt = f"SELECT * FROM {table.__root__} WHERE person_id = ?"  # noqa: S608
-    items = cur.execute(stmt, (person_id,)).fetchall()
-    return jsonify([dict(itm) for itm in items]), 200
+    return jsonify(select_from_db(cur, table.__root__, person_id)), 200
 
 
 @bp.post("/<table>/<int:person_id>")

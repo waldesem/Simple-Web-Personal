@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import ky from "ky";
 import { type PropType, ref, shallowRef } from "vue";
-import { useAsyncState } from "@vueuse/core";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
 import type { Items } from "@/types";
@@ -11,6 +10,10 @@ const props = defineProps({
   candId: {
     type: String,
     required: true,
+  },
+  data: {
+    type: Object as PropType<Items[keyof Items]>,
+    default: []
   },
   title: {
     type: String,
@@ -22,18 +25,20 @@ const props = defineProps({
   },
 });
 
-const item = shallowRef({} as Items[keyof Items]);
+const isLoading = ref(false);
+const items = shallowRef(props.data);
+const item = shallowRef({} as typeof props.data[number]);
 const modal = ref(false); // Флаг для открытия модального окна
 const method = ref<"POST" | "PATCH">("POST");
 
-const { execute, isLoading, state } = useAsyncState<Items[keyof Items][]>(
-  async () => await ky.get(`/api/items/${props.view}/${props.candId}`).json(),
-  [],
-);
+async function getItem() {
+  items.value = await ky.get(`/api/items/${props.view}/${props.candId}`).json();
+}
 
 // Определяем функцию для отправки данных формы на сервер
 async function submitItem(form: typeof item.value) {
   modal.value = false;
+  isLoading.value = true;
   const url = `/api/items/${props.view}/${props.candId}`;
   const { status } = await ky(
     method.value === "POST" ? url : url + "/" + item.value.id,
@@ -42,23 +47,26 @@ async function submitItem(form: typeof item.value) {
       json: { item: props.view, ...form },
     },
   );
-  await execute();
+  await getItem();
   item.value = {} as typeof item.value;
   if (status !== 201 && status !== 200) alert("Невозможно выполнить действие!");
+  isLoading.value = false;
 }
 
 // Определяем функцию для удаления данных
 async function deleteItem(itemId: string) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
+  isLoading.value = true;
   const { status } = await ky.delete(`/api/items/${props.view}/${itemId}`);
-  if (status === 204) await execute();
+  if (status === 204) await getItem();
   else alert("Невозможно выполнить действие!");
+  isLoading.value = false;
 }
 </script>
 
 <template>
   <!-- Выводим сообщение если данные отсутствуют -->
-  <NUEmpty v-if="!state.length" size="sm" title="Нет данных" variant="naked">
+  <NUEmpty v-if="!items.length" size="sm" title="Нет данных" variant="naked">
     <template #body>
       <NUButton
         label="Добавить запись"
@@ -73,7 +81,7 @@ async function deleteItem(itemId: string) {
   </NUEmpty>
 
   <div
-    v-for="(content, index) in state"
+    v-for="(content, index) in items"
     :key="index"
     :class="{ 'animate-pulse': isLoading }"
   >
@@ -88,7 +96,7 @@ async function deleteItem(itemId: string) {
         method = 'PATCH';
       "
     />
-    <NUSeparator v-if="index + 1 < state.length" />
+    <NUSeparator v-if="index + 1 < items.length" />
   </div>
 
   <!-- Модальное окно для редактирования данных -->
@@ -100,7 +108,7 @@ async function deleteItem(itemId: string) {
     :title="props.title"
   >
     <NUButton
-      v-if="state.length"
+      v-if="items.length"
       block
       class="my-2"
       color="neutral"

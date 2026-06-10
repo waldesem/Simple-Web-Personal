@@ -79,7 +79,7 @@ export const anketaTab = {
   label: "Анкета",
   icon: "i-mi-user",
   slot: "person",
-} as ItemsAccordionTabs;
+};
 
 export const itemsTabs = [
   {

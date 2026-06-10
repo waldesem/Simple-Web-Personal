@@ -7,6 +7,10 @@ import { itemsForms } from "@/schema/forms";
 import type { Person } from "@/types";
 
 const props = defineProps({
+  isLoading: {
+    type: Boolean,
+    default: false
+  },
   person: {
     type: Object as PropType<Person>,
     required: true,
@@ -32,10 +36,11 @@ async function submit(form: Person) {
 
 <template>
   <ItemDiv
+    :class="{ 'animate-pulse': isLoading }"
     :fields="itemsFields.person"
     :item="props.person"
-    @update="modal = true"
     @delete="null"
+    @update="modal = true"
   >
     <template v-if="props.person.destination" #destination>
       <NUButton

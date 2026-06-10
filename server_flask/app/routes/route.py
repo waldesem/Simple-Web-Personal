@@ -6,7 +6,7 @@ from flask import Blueprint, Response, g, jsonify
 
 from app.depends.depend import validize
 from app.models.model import Query, tables
-from app.utilities.utils import select_from_db
+from app.utilities.queries import select_from_db
 
 if TYPE_CHECKING:
     import sqlite3

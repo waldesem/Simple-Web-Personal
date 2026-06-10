@@ -8,7 +8,7 @@ from flask import Blueprint, Response, g, jsonify
 
 from app.depends.depend import authorize, validize
 from app.models.model import Person
-from app.utilities.utils import insert_into_db, update_db
+from app.utilities.queries import insert_into_db, update_db
 from constants import BASE_PATH
 
 if TYPE_CHECKING:

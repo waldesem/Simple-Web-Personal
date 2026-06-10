@@ -3,7 +3,7 @@ import ky from "ky";
 import { computed } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { anketaTab, itemsAccordion, itemsTabs } from "@/schema/elements";
-import type { Person } from "@/types";
+import type { Anketa, Person } from "@/types";
 
 // Определяем данные которые передаются через router из HomePage.vue
 const props = defineProps({
@@ -13,15 +13,21 @@ const props = defineProps({
   },
 });
 
-const { execute, state } = useAsyncState<Person>(
-  async () => await ky.get("/api/persons/" + props.id).json(),
-  {} as Person,
+const { state, isLoading } = useAsyncState(
+  async () => await ky.get("/api/candidates/" + props.id).json<Anketa>(),
+  {} as Anketa,
 );
+
+async function getPerson() {
+  isLoading.value = true;
+  state.value.person = await ky.get("/api/persons/" + props.id).json<Person>();
+  isLoading.value = false;
+}
 
 const fullname = computed(
   () =>
-    `${state.value?.surname ?? ""} ${state.value?.firstname ?? ""} ${
-      state.value?.patronymic ?? ""
+    `${state.value.person.surname ?? ""} ${state.value.person.firstname ?? ""} ${
+      state.value.person.patronymic ?? ""
     }`,
 );
 </script>
@@ -33,7 +39,11 @@ const fullname = computed(
       <NUTabs :items="[anketaTab, ...itemsTabs]" :unmount-on-hide="false">
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
-          <PersonView :person="state" @update="execute" />
+          <PersonView
+            :is-loading="isLoading"
+            :person="state.person"
+            @update="getPerson()"
+          />
           <NUSeparator />
           <!-- Aккордеон с данными staffs, educations и т.д. -->
           <NUAccordion :items="itemsAccordion" :unmount-on-hide="false">
@@ -44,6 +54,7 @@ const fullname = computed(
             >
               <ItemView
                 :cand-id="props.id"
+                :data="state[accord.slot]"
                 :title="accord.label"
                 :view="accord.slot"
               />
@@ -52,7 +63,12 @@ const fullname = computed(
         </template>
         <!-- Вкладки проверки, полиграф и др. -->
         <template v-for="tab in itemsTabs" #[tab.slot] :key="tab.slot">
-          <ItemView :cand-id="props.id" :title="tab.label" :view="tab.slot" />
+          <ItemView
+            :cand-id="props.id"
+            :data="state[tab.slot]"
+            :title="tab.label"
+            :view="tab.slot"
+          />
         </template>
       </NUTabs>
     </NUPageBody>
