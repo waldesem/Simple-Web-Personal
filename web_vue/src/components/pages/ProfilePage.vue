@@ -3,7 +3,7 @@ import ky from "ky";
 import { defineAsyncComponent, shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { anketaTab, itemsAccordion, itemsTabs } from "@/schema/elements";
-import type { Items, Person } from "@/types";
+import type { Items } from "@/types";
 
 const ViewItem = defineAsyncComponent(
   () => import("@/components/views/ItemView.vue"),
@@ -17,7 +17,7 @@ const props = defineProps({
   },
 });
 
-const person = shallowRef({} as Person);
+const fullname = shallowRef("");
 
 const { state } = useAsyncState(
   async () => await ky.get("/api/items/tables/" + props.id).json<Items>(),
@@ -27,16 +27,15 @@ const { state } = useAsyncState(
 
 <template>
   <NUContainer>
-    <NUPageHeader
-      :title="`${person.surname ?? ''} ${person.firstname ?? ''} ${
-        person.patronymic ?? ''
-      }`"
-    />
+    <NUPageHeader :title="fullname" />
     <NUPageBody>
       <NUTabs :items="[anketaTab, ...itemsTabs]" :unmount-on-hide="false">
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
-          <PersonView v-model="person" :person-id="props.id" />
+          <PersonView
+            :person-id="props.id"
+            @listnames="(value: string[]) => (fullname = value.join(' '))"
+          />
           <NUSeparator />
           <!-- Aккордеон с данными staffs, educations и т.д. -->
           <NUAccordion :items="itemsAccordion" :unmount-on-hide="false">

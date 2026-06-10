@@ -6,7 +6,7 @@ import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
 import type { Person } from "@/types";
 
-const person = defineModel<Person>();
+const emit = defineEmits(["listnames"]);
 
 const props = defineProps({
   personId: {
@@ -19,12 +19,14 @@ const modal = ref(false); // Объявляем переменную модал�
 
 const { copy, copied } = useClipboard();
 
-const { execute, isLoading } = useAsyncState(
-  async () =>
-    (person.value = await ky
-      .get("/api/persons/" + props.personId)
-      .json<Person>()),
+const { execute, state, isLoading } = useAsyncState(
+  async () => await ky.get("/api/persons/" + props.personId).json<Person>(),
   {} as Person,
+  {
+    onSuccess(data) {
+      emit("listnames", [data.surname, data.firstname, data.patronymic ?? '']);
+    },
+  },
 );
 
 // Определяем функцию для отправки данных формы на сервер
@@ -42,18 +44,18 @@ async function submit(form: Person) {
   <ItemDiv
     :class="{ 'animate-pulse': isLoading }"
     :fields="itemsFields.person"
-    :item="person"
+    :item="state"
     @delete="null"
     @update="modal = true"
   >
     <template #destination>
       <NUButton
-        v-if="person?.destination"
+        v-if="state?.destination"
         :color="copied ? 'success' : 'info'"
         :label="copied ? 'Скопировано' : 'Копировать'"
         size="sm"
         variant="outline"
-        @click="copy(person.destination)"
+        @click="copy(state.destination)"
       />
     </template>
   </ItemDiv>
@@ -65,11 +67,7 @@ async function submit(form: Person) {
     description="Редактирование анкетные данные"
   >
     <template #body>
-      <FormDiv
-        :fields="itemsForms.person"
-        :item="person"
-        @submit="submit"
-      />
+      <FormDiv :fields="itemsForms.person" :item="state" @submit="submit" />
     </template>
   </NUModal>
 </template>
