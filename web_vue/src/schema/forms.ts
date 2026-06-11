@@ -136,7 +136,7 @@ const addresses = [
     label: "Адрес",
     props: { placeholder: "Введите адрес", maxlength: 4096, required: true },
   },
-] as FormFields<Items["addresses"][number]>[];
+] as FormFields<Items["addresses"]>[];
 
 const affilations = [
   {
@@ -160,7 +160,7 @@ const affilations = [
     label: "Деятельность",
     props: { placeholder: "Деятельность", maxlength: 4096 },
   },
-] as FormFields<Items["affilations"][number]>[];
+] as FormFields<Items["affilations"]>[];
 
 const checks = [
   {
@@ -245,7 +245,7 @@ const checks = [
       required: true,
     },
   },
-] as FormFields<Items["checks"][number]>[];
+] as FormFields<Items["checks"]>[];
 
 const contacts = [
   {
@@ -264,7 +264,7 @@ const contacts = [
     label: "Контакт",
     props: { placeholder: "Контакт", maxlength: 255, required: true },
   },
-] as FormFields<Items["contacts"][number]>[];
+] as FormFields<Items["contacts"]>[];
 
 const documents = [
   {
@@ -297,7 +297,7 @@ const documents = [
     label: "Дата выдачи",
     props: { type: "date", required: true },
   },
-] as FormFields<Items["documents"][number]>[];
+] as FormFields<Items["documents"]>[];
 
 const educations = [
   {
@@ -336,7 +336,7 @@ const educations = [
     label: "Специальность",
     props: { placeholder: "Специальность", maxlength: 255, required: true },
   },
-] as FormFields<Items["educations"][number]>[];
+] as FormFields<Items["educations"]>[];
 
 const inquiries = [
   {
@@ -350,7 +350,7 @@ const inquiries = [
     label: "Инициатор",
     props: { placeholder: "Инициатор", maxlength: 255, required: true },
   },
-] as FormFields<Items["inquiries"][number]>[];
+] as FormFields<Items["inquiries"]>[];
 
 const investigations = [
   {
@@ -364,7 +364,7 @@ const investigations = [
     label: "Информация",
     props: { placeholder: "Информация", maxlength: 4096, required: true },
   },
-] as FormFields<Items["investigations"][number]>[];
+] as FormFields<Items["investigations"]>[];
 
 const poligrafs = [
   {
@@ -398,7 +398,7 @@ const poligrafs = [
       required: true,
     },
   },
-] as FormFields<Items["poligrafs"][number]>[];
+] as FormFields<Items["poligrafs"]>[];
 
 const previous = [
   {
@@ -427,7 +427,7 @@ const previous = [
     label: "Причина",
     props: { placeholder: "Причина изменения", maxlength: 4096 },
   },
-] as FormFields<Items["previous"][number]>[];
+] as FormFields<Items["previous"]>[];
 
 const staffs = [
   {
@@ -440,7 +440,7 @@ const staffs = [
     label: "Подразделение",
     props: { placeholder: "Подразделение", maxlength: 255 },
   },
-] as FormFields<Items["staffs"][number]>[];
+] as FormFields<Items["staffs"]>[];
 
 const workplaces = [
   {
@@ -474,7 +474,7 @@ const workplaces = [
     label: "Причина увольнения",
     props: { placeholder: "Причина увольнения", maxlength: 4096 },
   },
-] as FormFields<Items["workplaces"][number]>[];
+] as FormFields<Items["workplaces"]>[];
 
 export const itemsForms = {
   addresses,

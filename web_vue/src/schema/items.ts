@@ -26,14 +26,14 @@ export const person = [
 const addresses = [
   { key: "view", label: "Вид адреса" },
   { key: "address", label: "Адрес" },
-] as ItemFields<Items["addresses"][number]>[];
+] as ItemFields<Items["addresses"]>[];
 
 const affilations = [
   { key: "view", label: "Вид участия" },
   { key: "organization", label: "Организация" },
   { key: "inn", label: "ИНН" },
   { key: "activity", label: "Деятельность" },
-] as ItemFields<Items["affilations"][number]>[];
+] as ItemFields<Items["affilations"]>[];
 
 const checks = [
   { key: "workplace", label: "Проверка по местам работы" },
@@ -73,12 +73,12 @@ const checks = [
     },
   },
   { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
-] as ItemFields<Items["checks"][number]>[];
+] as ItemFields<Items["checks"]>[];
 
 const contacts = [
   { key: "view", label: "Вид контакта" },
   { key: "contact", label: "Контакт" },
-] as ItemFields<Items["contacts"][number]>[];
+] as ItemFields<Items["contacts"]>[];
 
 const documents = [
   { key: "view", label: "Вид документа" },
@@ -86,26 +86,26 @@ const documents = [
   { key: "digits", label: "Номер документа" },
   { key: "agency", label: "Кем выдан" },
   { key: "issue", label: "Дата выдачи", div: (row) => localStr(row.issue) },
-] as ItemFields<Items["documents"][number]>[];
+] as ItemFields<Items["documents"]>[];
 
 const educations = [
   { key: "view", label: "Вид образования" },
   { key: "institution", label: "Учебное заведение" },
   { key: "finished", label: "Год окончания" },
   { key: "specialty", label: "Специальность" },
-] as ItemFields<Items["educations"][number]>[];
+] as ItemFields<Items["educations"]>[];
 
 const inquiries = [
   { key: "info", label: "Информация" },
   { key: "initiator", label: "Инициатор" },
   { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
-] as ItemFields<Items["inquiries"][number]>[];
+] as ItemFields<Items["inquiries"]>[];
 
 const investigations = [
   { key: "theme", label: "Тема проверки" },
   { key: "info", label: "Информация" },
   { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
-] as ItemFields<Items["investigations"][number]>[];
+] as ItemFields<Items["investigations"]>[];
 
 const poligrafs = [
   { key: "theme", label: "Тема проверки" },
@@ -135,7 +135,7 @@ const poligrafs = [
     },
   },
   { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
-] as ItemFields<Items["poligrafs"][number]>[];
+] as ItemFields<Items["poligrafs"]>[];
 
 const previous = [
   { key: "surname", label: "Фамилия" },
@@ -143,12 +143,12 @@ const previous = [
   { key: "patronymic", label: "Отчество" },
   { key: "changed", label: "Год изменения" },
   { key: "reason", label: "Причина" },
-] as ItemFields<Items["previous"][number]>[];
+] as ItemFields<Items["previous"]>[];
 
 const staffs = [
   { key: "position", label: "Должность" },
   { key: "department", label: "Подразделение" },
-] as ItemFields<Items["staffs"][number]>[];
+] as ItemFields<Items["staffs"]>[];
 
 const workplaces = [
   { key: "starts", label: "Начало работы", div: (row) => localStr(row.starts) },
@@ -161,7 +161,7 @@ const workplaces = [
   { key: "position", label: "Должность" },
   { key: "address", label: "Адрес организации" },
   { key: "reason", label: "Причина увольнения" },
-] as ItemFields<Items["workplaces"][number]>[];
+] as ItemFields<Items["workplaces"]>[];
 
 export const itemsFields = {
   addresses,

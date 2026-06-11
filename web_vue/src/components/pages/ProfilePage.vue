@@ -1,13 +1,6 @@
 <script setup lang="ts">
-import ky from "ky";
-import { defineAsyncComponent, shallowRef } from "vue";
-import { useAsyncState } from "@vueuse/core";
+import { shallowRef } from "vue";
 import { anketaTab, itemsAccordion, itemsTabs } from "@/schema/elements";
-import type { Items } from "@/types";
-
-const ViewItem = defineAsyncComponent(
-  () => import("@/components/views/ItemView.vue"),
-);
 
 // Определяем данные которые передаются через router из HomePage.vue
 const props = defineProps({
@@ -18,11 +11,6 @@ const props = defineProps({
 });
 
 const fullname = shallowRef("");
-
-const { state } = useAsyncState(
-  async () => await ky.get("/api/items/tables/" + props.id).json<Items>(),
-  {} as Items,
-);
 </script>
 
 <template>
@@ -38,15 +26,14 @@ const { state } = useAsyncState(
           />
           <NUSeparator />
           <!-- Aккордеон с данными staffs, educations и т.д. -->
-          <NUAccordion :items="itemsAccordion" :unmount-on-hide="false">
+          <NUAccordion :items="itemsAccordion">
             <template
               v-for="accord in itemsAccordion"
               #[accord.slot]
               :key="accord.slot"
             >
-              <ViewItem
+              <ItemView
                 :cand-id="props.id"
-                :data="state[accord.slot]"
                 :title="accord.label"
                 :view="accord.slot"
               />
@@ -55,12 +42,7 @@ const { state } = useAsyncState(
         </template>
         <!-- Вкладки проверки, полиграф и др. -->
         <template v-for="tab in itemsTabs" #[tab.slot] :key="tab.slot">
-          <ViewItem
-            :cand-id="props.id"
-            :data="state[tab.slot]"
-            :title="tab.label"
-            :view="tab.slot"
-          />
+          <ItemView :cand-id="props.id" :title="tab.label" :view="tab.slot" />
         </template>
       </NUTabs>
     </NUPageBody>

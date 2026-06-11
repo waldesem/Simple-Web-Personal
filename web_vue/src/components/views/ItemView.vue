@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ky from "ky";
 import { type PropType, ref, shallowRef } from "vue";
+import { useAsyncState } from "@vueuse/core";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
 import type { Items } from "@/types";
@@ -10,10 +11,6 @@ const props = defineProps({
   candId: {
     type: String,
     required: true,
-  },
-  data: {
-    type: Object as PropType<Items[keyof Items]>,
-    default: []
   },
   title: {
     type: String,
@@ -25,15 +22,17 @@ const props = defineProps({
   },
 });
 
-const isLoading = ref(false);
-const items = shallowRef(props.data);
-const item = shallowRef({} as typeof props.data[number]);
+const { execute, state, isLoading } = useAsyncState(
+  async () =>
+    await ky
+      .get(`/api/items/${props.view}/${props.candId}`)
+      .json<Items[keyof Items][]>(),
+  [] as Items[keyof Items][],
+);
+
+const item = shallowRef({} as Items[keyof Items]);
 const modal = ref(false); // Флаг для открытия модального окна
 const method = ref<"POST" | "PATCH">("POST");
-
-async function getItem() {
-  items.value = await ky.get(`/api/items/${props.view}/${props.candId}`).json();
-}
 
 // Определяем функцию для отправки данных формы на сервер
 async function submitItem(form: typeof item.value) {
@@ -47,7 +46,7 @@ async function submitItem(form: typeof item.value) {
       json: { item: props.view, ...form },
     },
   );
-  await getItem();
+  await execute();
   item.value = {} as typeof item.value;
   if (status !== 201 && status !== 200) alert("Невозможно выполнить действие!");
   isLoading.value = false;
@@ -58,7 +57,7 @@ async function deleteItem(itemId: string) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
   isLoading.value = true;
   const { status } = await ky.delete(`/api/items/${props.view}/${itemId}`);
-  if (status === 204) await getItem();
+  if (status === 204) await execute();
   else alert("Невозможно выполнить действие!");
   isLoading.value = false;
 }
@@ -66,7 +65,7 @@ async function deleteItem(itemId: string) {
 
 <template>
   <!-- Выводим сообщение если данные отсутствуют -->
-  <NUEmpty v-if="!items.length" size="sm" title="Нет данных" variant="naked">
+  <NUEmpty v-if="!state.length" size="sm" title="Нет данных" variant="naked">
     <template #body>
       <NUButton
         label="Добавить запись"
@@ -81,7 +80,7 @@ async function deleteItem(itemId: string) {
   </NUEmpty>
 
   <div
-    v-for="(content, index) in items"
+    v-for="(content, index) in state"
     :key="index"
     :class="{ 'animate-pulse': isLoading }"
   >
@@ -96,7 +95,7 @@ async function deleteItem(itemId: string) {
         method = 'PATCH';
       "
     />
-    <NUSeparator v-if="index + 1 < items.length" />
+    <NUSeparator v-if="index + 1 < state.length" />
   </div>
 
   <!-- Модальное окно для редактирования данных -->
@@ -108,7 +107,7 @@ async function deleteItem(itemId: string) {
     :title="props.title"
   >
     <NUButton
-      v-if="items.length"
+      v-if="state.length"
       block
       class="my-2"
       color="neutral"
