@@ -42,7 +42,7 @@ export default defineConfig({
           eyeOff: "i-mi-eye-off",
           file: "i-mi-document-empty",
           folder: "i-mi-folder",
-          folderOpen: "i-mi-folder-add",
+          folderOpen: "i-mi-folder-check",
           hash: "i-mi-comment",
           info: "i-mi-circle-information",
           light: "i-mi-sun",

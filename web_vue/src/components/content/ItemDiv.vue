@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, type PropType } from "vue";
+import { shallowRef, type PropType } from "vue";
 import type { ItemFields } from "@/types";
 
 const emits = defineEmits(["update", "delete"]);
 
-const visible = ref(false);
+const visible = shallowRef(false);
 
 const props = defineProps({
   fields: {

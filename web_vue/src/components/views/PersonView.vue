@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ky from "ky";
-import { ref } from "vue";
+import { shallowRef } from "vue";
 import { useAsyncState, useClipboard } from "@vueuse/core";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
@@ -15,16 +15,16 @@ const props = defineProps({
   },
 });
 
-const modal = ref(false); // Объявляем переменную модального окна
+const modal = shallowRef(false); // Объявляем переменную модального окна
 
 const { copy, copied } = useClipboard();
 
-const { execute, state, isLoading } = useAsyncState(
-  async () => await ky.get("/api/persons/" + props.personId).json<Person>(),
+const { execute, state, isLoading } = useAsyncState<Person>(
+  async () => await ky.get("/api/persons/" + props.personId).json(),
   {} as Person,
   {
     onSuccess(data) {
-      emit("listnames", [data.surname, data.firstname, data.patronymic ?? '']);
+      emit("listnames", [data.surname, data.firstname, data.patronymic ?? ""]);
     },
   },
 );

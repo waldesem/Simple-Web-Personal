@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ky from "ky";
-import { ref, watch } from "vue";
+import { shallowRef, watch } from "vue";
 import { refDebounced, useAsyncState } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { personCols } from "@/schema/elements";
@@ -9,11 +9,11 @@ import type { Person } from "@/types";
 
 const router = useRouter();
 
-const hasNext = ref(false); // Состояние наличия следующей страницы
-const limit = ref(10); // Количество записей на странице
-const modal = ref(false); // Состояние модального окна
-const page = ref(0); // Страница таблицы
-const search = ref(""); // Поисковый запрос
+const hasNext = shallowRef(false); // Состояние наличия следующей страницы
+const limit = shallowRef(10); // Количество записей на странице
+const modal = shallowRef(false); // Состояние модального окна
+const page = shallowRef(0); // Страница таблицы
+const search = shallowRef(""); // Поисковый запрос
 
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
 

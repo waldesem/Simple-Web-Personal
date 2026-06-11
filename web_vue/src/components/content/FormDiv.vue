@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type PropType, resolveComponent, toRef } from "vue";
+import { type PropType, resolveComponent, ref } from "vue";
 import type { FormElementAttrs, FormFields } from "@/types";
 
 const emit = defineEmits(["submit"]);
@@ -15,7 +15,7 @@ const props = defineProps({
   },
 });
 
-const form = toRef(props.item);
+const form = ref(props.item);
 
 const resolveFormElement = (element: keyof FormElementAttrs = "input") => {
   const resolved = {

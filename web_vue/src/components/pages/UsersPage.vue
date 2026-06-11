@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import ky from "ky";
-import { ref } from "vue";
+import { shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { formUser } from "@/schema/forms";
 import { userCols, userDivs } from "@/schema/elements";
 import { Actions, type User } from "@/types";
 
 // Определяем переменные для работы с данными
-const content = ref<"form" | "item">("form");
-const method = ref<"POST" | "PATCH">("POST");
-const modal = ref(false);
-const user = ref({} as User);
+const content = shallowRef<"form" | "item">("form");
+const method = shallowRef<"POST" | "PATCH">("POST");
+const modal = shallowRef(false);
+const user = shallowRef({} as User);
 
 const { execute, isLoading, state } = useAsyncState<User[]>(
   async () => await ky.get("/api/users/").json(),
@@ -106,8 +106,8 @@ async function submit(form: User) {
         @select="
           (row: User) => {
             content = 'item';
-            modal = true;
             user = row;
+            modal = true;
           }
         "
       />

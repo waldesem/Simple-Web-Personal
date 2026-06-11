@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ky from "ky";
-import { type PropType, ref, shallowRef } from "vue";
+import { type PropType, shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
@@ -22,17 +22,14 @@ const props = defineProps({
   },
 });
 
-const { execute, state, isLoading } = useAsyncState(
-  async () =>
-    await ky
-      .get(`/api/items/${props.view}/${props.candId}`)
-      .json<Items[keyof Items][]>(),
-  [] as Items[keyof Items][],
+const { execute, state, isLoading } = useAsyncState<Items[keyof Items][]>(
+  async () => await ky.get(`/api/items/${props.view}/${props.candId}`).json(),
+  [],
 );
 
 const item = shallowRef({} as Items[keyof Items]);
-const modal = ref(false); // Флаг для открытия модального окна
-const method = ref<"POST" | "PATCH">("POST");
+const modal = shallowRef(false); // Флаг для открытия модального окна
+const method = shallowRef<"POST" | "PATCH">("POST");
 
 // Определяем функцию для отправки данных формы на сервер
 async function submitItem(form: typeof item.value) {
