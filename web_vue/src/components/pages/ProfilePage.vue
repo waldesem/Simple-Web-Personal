@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { shallowRef } from "vue";
-import { anketaTab, itemsAccordion, itemsTabs } from "@/schema/elements";
+import { anketaTab, itemsAccordion, itemsTabs } from "@/schema/elems";
 
 // Определяем данные которые передаются через router из HomePage.vue
 const props = defineProps({
@@ -14,19 +14,19 @@ const fullname = shallowRef("");
 </script>
 
 <template>
-  <NUContainer>
-    <NUPageHeader :title="fullname" />
-    <NUPageBody>
-      <NUTabs :items="[anketaTab, ...itemsTabs]" :unmount-on-hide="false">
+  <UContainer>
+    <UPageHeader :title="fullname" />
+    <UPageBody>
+      <UTabs :items="[anketaTab, ...itemsTabs]" :unmount-on-hide="false">
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
           <PersonView
             :person-id="props.id"
             @listnames="(value: string[]) => (fullname = value.join(' '))"
           />
-          <NUSeparator />
+          <USeparator />
           <!-- Aккордеон с данными staffs, educations и т.д. -->
-          <NUAccordion :items="itemsAccordion">
+          <UAccordion :items="itemsAccordion">
             <template
               v-for="accord in itemsAccordion"
               #[accord.slot]
@@ -38,13 +38,13 @@ const fullname = shallowRef("");
                 :view="accord.slot"
               />
             </template>
-          </NUAccordion>
+          </UAccordion>
         </template>
         <!-- Вкладки проверки, полиграф и др. -->
         <template v-for="tab in itemsTabs" #[tab.slot] :key="tab.slot">
           <ItemView :cand-id="props.id" :title="tab.label" :view="tab.slot" />
         </template>
-      </NUTabs>
-    </NUPageBody>
-  </NUContainer>
+      </UTabs>
+    </UPageBody>
+  </UContainer>
 </template>

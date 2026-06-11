@@ -16,8 +16,8 @@ const { state } = useAsyncState<Session>(
 </script>
 
 <template>
-  <NUPage>
-    <NUHeader to="/">
+  <UPage>
+    <UHeader to="/">
       <template #title>
         <div class="inline-flex items-center text-xl font-bold space-x-1">
           <div class="text-blue-600">КАДРОВАЯ</div>
@@ -25,28 +25,28 @@ const { state } = useAsyncState<Session>(
         </div>
       </template>
       <template #default>
-        <NULink to="/users" :replace="false" class="font-bold">
+        <ULink to="/users" :replace="false" class="font-bold">
           Пользователи
-        </NULink>
+        </ULink>
       </template>
       <template #right>
-        <NUAvatar
+        <UAvatar
           v-if="state.fullname"
           :alt="state.fullname"
           :chip="{ inset: true }"
           size="md"
         />
-        <NUAvatar
+        <UAvatar
           v-else
           icon="i-mi-ban"
           color="error"
           size="md"
         />
       </template>
-    </NUHeader>
-    <NUMain>
+    </UHeader>
+    <UMain>
       <slot />
-    </NUMain>
-    <NUFooter v-once />
-  </NUPage>
+    </UMain>
+    <UFooter v-once />
+  </UPage>
 </template>

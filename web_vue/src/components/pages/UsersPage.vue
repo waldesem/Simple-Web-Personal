@@ -2,8 +2,9 @@
 import ky from "ky";
 import { shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
+import { user as userItem } from "@/schema/items"
 import { formUser } from "@/schema/forms";
-import { userCols, userDivs } from "@/schema/elements";
+import { userCols } from "@/schema/elems";
 import { Actions, type User } from "@/types";
 
 // Определяем переменные для работы с данными
@@ -42,11 +43,11 @@ async function submit(form: User) {
 </script>
 
 <template>
-  <NUContainer>
-    <NUPageHeader title="ПОЛЬЗОВАТЕЛИ" :ui="{ title: 'text-gray-600' }">
+  <UContainer>
+    <UPageHeader title="ПОЛЬЗОВАТЕЛИ" :ui="{ title: 'text-gray-600' }">
       <template #links>
-        <NUModal v-model:open="modal" title="Пользователь">
-          <NUButton
+        <UModal v-model:open="modal" title="Пользователь">
+          <UButton
             icon="i-mi-user-add"
             :disabled="isLoading"
             size="lg"
@@ -69,23 +70,23 @@ async function submit(form: User) {
             <ItemDiv
               v-else
               :item="user"
-              :fields="userDivs"
+              :fields="userItem"
               @update="method = 'PATCH'"
             >
               <div class="flex flex-wrap gap-2">
-                <NUButton
+                <UButton
                   color="error"
                   variant="outline"
                   :label="user.deleted ? 'Восстановить' : 'Удалить'"
                   @click="edit(Actions.delete)"
                 />
-                <NUButton
+                <UButton
                   color="neutral"
                   variant="outline"
                   :label="user.blocked ? 'Разблокировать' : 'Заблокировать'"
                   @click="edit(Actions.block)"
                 />
-                <NUButton
+                <UButton
                   color="warning"
                   variant="outline"
                   label="Сбросить пароль"
@@ -94,11 +95,11 @@ async function submit(form: User) {
               </div>
             </ItemDiv>
           </template>
-        </NUModal>
+        </UModal>
       </template>
-    </NUPageHeader>
+    </UPageHeader>
 
-    <NUPageBody>
+    <UPageBody>
       <TableDiv
         :class="{ 'animate-pulse': isLoading }"
         :cols="userCols"
@@ -111,6 +112,6 @@ async function submit(form: User) {
           }
         "
       />
-    </NUPageBody>
-  </NUContainer>
+    </UPageBody>
+  </UContainer>
 </template>

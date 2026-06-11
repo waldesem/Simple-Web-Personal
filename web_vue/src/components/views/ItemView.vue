@@ -62,9 +62,9 @@ async function deleteItem(itemId: string) {
 
 <template>
   <!-- Выводим сообщение если данные отсутствуют -->
-  <NUEmpty v-if="!state.length" size="sm" title="Нет данных" variant="naked">
+  <UEmpty v-if="!state.length" size="sm" title="Нет данных" variant="naked">
     <template #body>
-      <NUButton
+      <UButton
         label="Добавить запись"
         size="sm"
         variant="outline"
@@ -74,7 +74,7 @@ async function deleteItem(itemId: string) {
         "
       />
     </template>
-  </NUEmpty>
+  </UEmpty>
 
   <div
     v-for="(content, index) in state"
@@ -92,18 +92,18 @@ async function deleteItem(itemId: string) {
         method = 'PATCH';
       "
     />
-    <NUSeparator v-if="index + 1 < state.length" />
+    <USeparator v-if="index + 1 < state.length" />
   </div>
 
   <!-- Модальное окно для редактирования данных -->
-  <NUModal
+  <UModal
     v-model:open="modal"
     :description="
       method === 'POST' ? 'Добавить данные' : 'Редактировать данные'
     "
     :title="props.title"
   >
-    <NUButton
+    <UButton
       v-if="state.length"
       block
       class="my-2"
@@ -117,5 +117,5 @@ async function deleteItem(itemId: string) {
     <template #body>
       <FormDiv :item="item" :fields="itemsForms[view]" @submit="submitItem" />
     </template>
-  </NUModal>
+  </UModal>
 </template>

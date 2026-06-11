@@ -33,7 +33,7 @@ export enum Decisions {
   denied = "НЕГАТИВ",
 }
 
-export type TableColumns<T> = {
+export type TableCols<T> = {
   name: keyof T;
   header: string;
   cell?: (row: T) => string;
@@ -47,22 +47,22 @@ export type ItemFields<T> = {
   component?: (row: T) => Component;
 };
 
-export type FormElementAttrs = {
+export type FormElemAttrs = {
   input: InputProps;
   select: SelectProps;
   textarea: TextareaProps;
 };
 
 export type FormFields<T> = {
-  [K in keyof FormElementAttrs]: {
+  [K in keyof FormElemAttrs]: {
     element?: K;
     key: keyof T;
     label: string;
-    props: Omit<FormElementAttrs[K], "modelValue" | "defaultValue">;
+    props: Omit<FormElemAttrs[K], "modelValue" | "defaultValue">;
   };
-}[keyof FormElementAttrs];
+}[keyof FormElemAttrs];
 
-export interface ItemsAccordionTabs extends AccordionItem {
+export interface Navigations extends AccordionItem {
   label: string;
   slot: keyof Items;
 }

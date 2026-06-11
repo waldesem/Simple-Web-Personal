@@ -485,7 +485,6 @@ export const itemsForms = {
   educations,
   inquiries,
   investigations,
-  person,
   poligrafs,
   previous,
   staffs,

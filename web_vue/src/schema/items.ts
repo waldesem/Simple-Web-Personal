@@ -1,7 +1,34 @@
 import { h } from "vue";
 import { localStr } from "@/utils";
 import { Conclusions, Decisions } from "@/types";
-import type { Items, ItemFields, Person } from "@/types";
+import type { Items, ItemFields, Person, User } from "@/types";
+
+export const user: ItemFields<User>[] = [
+  { key: "fullname", label: "Пользователь" },
+  { key: "username", label: "Логин" },
+  { key: "role", label: "Роль" },
+  {
+    key: "created",
+    label: "Создан",
+    div: (row) => localStr(row.created),
+  },
+  { key: "attempt", label: "Попыток", div: (row) => String(row.attempt) },
+  {
+    key: "blocked",
+    label: "Блокир.",
+    div: (row) => (row.blocked ? "Да" : "Нет"),
+  },
+  {
+    key: "change_pswd",
+    label: "Пароль",
+    div: (row) => (row.change_pswd ? "Да" : "Нет"),
+  },
+  {
+    key: "deleted",
+    label: "Удален",
+    div: (row) => (row.deleted ? "Да" : "Нет"),
+  },
+];
 
 export const person = [
   { key: "surname", label: "Фамилия" },
@@ -172,7 +199,6 @@ export const itemsFields = {
   educations,
   inquiries,
   investigations,
-  person,
   poligrafs,
   previous,
   staffs,

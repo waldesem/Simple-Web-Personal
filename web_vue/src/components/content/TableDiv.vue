@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { PropType } from "vue";
-import type { TableColumns } from "@/types";
+import type { TableCols } from "@/types";
 
 const emit = defineEmits(["select"]);
 
 const props = defineProps({
   cols: {
-    type: Array as PropType<TableColumns<any>[]>,
+    type: Array as PropType<TableCols<any>[]>,
     required: true,
   },
   data: {

@@ -2,8 +2,8 @@
 import ky from "ky";
 import { shallowRef } from "vue";
 import { useAsyncState, useClipboard } from "@vueuse/core";
-import { itemsFields } from "@/schema/items";
-import { itemsForms } from "@/schema/forms";
+import { person as PersonItem } from "@/schema/items";
+import { person as PersonForm } from "@/schema/forms";
 import type { Person } from "@/types";
 
 const emit = defineEmits(["listnames"]);
@@ -43,13 +43,13 @@ async function submit(form: Person) {
 <template>
   <ItemDiv
     :class="{ 'animate-pulse': isLoading }"
-    :fields="itemsFields.person"
+    :fields="PersonItem"
     :item="state"
     @delete="null"
     @update="modal = true"
   >
     <template #destination>
-      <NUButton
+      <UButton
         v-if="state?.destination"
         :color="copied ? 'success' : 'info'"
         :label="copied ? 'Скопировано' : 'Копировать'"
@@ -61,13 +61,13 @@ async function submit(form: Person) {
   </ItemDiv>
 
   <!-- Выводим модальное окно для редактирования данных -->
-  <NUModal
+  <UModal
     v-model:open="modal"
     title="Aнкета"
     description="Редактирование анкетные данные"
   >
     <template #body>
-      <FormDiv :fields="itemsForms.person" :item="state" @submit="submit" />
+      <FormDiv :fields="PersonForm" :item="state" @submit="submit" />
     </template>
-  </NUModal>
+  </UModal>
 </template>

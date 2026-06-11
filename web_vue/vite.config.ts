@@ -11,7 +11,6 @@ export default defineConfig({
   plugins: [
     vue(),
     ui({
-      prefix: "NU",
       ui: {
         colors: {
           primary: "blue",

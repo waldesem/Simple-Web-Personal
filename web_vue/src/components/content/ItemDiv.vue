@@ -21,22 +21,22 @@ const props = defineProps({
 <template>
   <div @mouseover="visible = true" @mouseleave="visible = false">
     <div v-show="visible" class="relative">
-      <NUFieldGroup class="absolute right-1" size="sm">
-        <NUButton
+      <UFieldGroup class="absolute right-1" size="sm">
+        <UButton
           color="neutral"
           icon="i-mi-edit-alt"
           title="Изменить"
           variant="outline"
           @click="emits('update')"
         />
-        <NUButton
+        <UButton
           color="neutral"
           icon="i-mi-delete"
           title="Удалить"
           variant="outline"
           @click="emits('delete')"
         />
-      </NUFieldGroup>
+      </UFieldGroup>
     </div>
 
     <div v-for="field in fields" :key="field.key" class="m-2">

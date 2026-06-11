@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type PropType, resolveComponent, ref } from "vue";
-import type { FormElementAttrs, FormFields } from "@/types";
+import type { FormElemAttrs, FormFields } from "@/types";
 
 const emit = defineEmits(["submit"]);
 
@@ -17,19 +17,19 @@ const props = defineProps({
 
 const form = ref(props.item);
 
-const resolveFormElement = (element: keyof FormElementAttrs = "input") => {
+const resolveFormElement = (element: keyof FormElemAttrs = "input") => {
   const resolved = {
-    input: resolveComponent("NUInput"),
-    select: resolveComponent("NUSelect"),
-    textarea: resolveComponent("NUTextarea"),
+    input: resolveComponent("UInput"),
+    select: resolveComponent("USelect"),
+    textarea: resolveComponent("UTextarea"),
   };
   return resolved[element];
 };
 </script>
 
 <template>
-  <NUForm :state="form" @submit.prevent="emit('submit', form)">
-    <NUFormField
+  <UForm :state="form" @submit.prevent="emit('submit', form)">
+    <UFormField
       v-for="field in fields"
       :key="field.key"
       :label="field.label"
@@ -41,7 +41,7 @@ const resolveFormElement = (element: keyof FormElementAttrs = "input") => {
         v-model.lazy.trim="form[field.key]"
         v-bind="field.props"
       />
-    </NUFormField>
-    <NUButton label="Принять" color="success" variant="outline" type="submit" />
-  </NUForm>
+    </UFormField>
+    <UButton label="Принять" color="success" variant="outline" type="submit" />
+  </UForm>
 </template>

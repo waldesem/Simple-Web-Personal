@@ -5,6 +5,7 @@ StaffSec is a desktop webapp for managing local database.
 ## The technology stack used in this project
 
 - Flask;
+- Pydantic(legacy);
 - Sqlite;
 - Vue3;
 - NuxtUi;
@@ -32,14 +33,6 @@ path=
 Where path is a destination for files share.
 
 DEFAULT_PASSWORD for created user is `88888888`.
-
-## Cli
-
-Use this command for help.
-
-```bash
-python3 command.py --help
-```
 
 ## Build frontend (Optional)
 

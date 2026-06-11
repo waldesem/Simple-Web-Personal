@@ -3,8 +3,8 @@ import ky from "ky";
 import { shallowRef, watch } from "vue";
 import { refDebounced, useAsyncState } from "@vueuse/core";
 import { useRouter } from "vue-router";
-import { personCols } from "@/schema/elements";
-import { itemsForms } from "@/schema/forms";
+import { personCols } from "@/schema/elems";
+import { person as PersonForm } from "@/schema/forms";
 import type { Person } from "@/types";
 
 const router = useRouter();
@@ -59,16 +59,16 @@ async function submit(form: Person) {
 </script>
 
 <template>
-  <NUContainer>
-    <NUPageHeader title="КАНДИДАТЫ">
+  <UContainer>
+    <UPageHeader title="КАНДИДАТЫ">
       <template #links>
         <!-- Модальное окно для добавления анкеты -->
-        <NUModal
+        <UModal
           v-model:open="modal"
           description="Введите анкетные данные"
           title="Анкета"
         >
-          <NUButton
+          <UButton
             icon="i-mi-user-add"
             size="xl"
             title="Добавить анкету"
@@ -77,15 +77,15 @@ async function submit(form: Person) {
             @click="modal = true"
           />
           <template #body>
-            <FormDiv :fields="itemsForms.person" @submit="submit" />
+            <FormDiv :fields="PersonForm" @submit="submit" />
           </template>
-        </NUModal>
+        </UModal>
       </template>
-    </NUPageHeader>
+    </UPageHeader>
 
     <!-- Строка поиска -->
-    <NUPageBody>
-      <NUInput
+    <UPageBody>
+      <UInput
         id="search"
         icon="i-mi-search"
         v-model.trim="search"
@@ -105,7 +105,7 @@ async function submit(form: Person) {
         "
       />
 
-      <NUEmpty
+      <UEmpty
         v-if="!state"
         icon="i-mi-warning"
         size="sm"
@@ -114,7 +114,7 @@ async function submit(form: Person) {
       />
 
       <!-- Время последнего обновления -->
-      <NUButton
+      <UButton
         icon="i-mi-refresh"
         label="Обновить"
         :loading="isLoading"
@@ -129,19 +129,19 @@ async function submit(form: Person) {
         v-show="state"
         class="flex justify-center border-t border-default pt-8 pb-2"
       >
-        <NUButton
+        <UButton
           class="me-2 rounded-full"
           :disabled="!page || isLoading"
           icon="i-mi-arrow-left"
           title="Вперед"
           @click="page--"
         />
-        <NUSelect
+        <USelect
           v-model="limit"
           :items="[10, 50, 100]"
           title="Количество записей"
         />
-        <NUButton
+        <UButton
           class="ms-2 rounded-full"
           :disabled="!hasNext || isLoading"
           icon="i-mi-arrow-right"
@@ -149,6 +149,6 @@ async function submit(form: Person) {
           @click="page++"
         />
       </div>
-    </NUPageBody>
-  </NUContainer>
+    </UPageBody>
+  </UContainer>
 </template>
