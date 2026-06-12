@@ -52,7 +52,7 @@ async function submit(form: User) {
         <UModal v-model:open="modal" title="Пользователь">
           <UButton
             icon="i-mi-user-add"
-            :disabled="isLoading"
+            :loading="isLoading"
             size="lg"
             title="Добавить пользователя"
             variant="ghost"
@@ -104,7 +104,6 @@ async function submit(form: User) {
 
     <UPageBody>
       <TableDiv
-        :class="{ 'animate-pulse': isLoading }"
         :cols="userCols"
         :data="state"
         @select="

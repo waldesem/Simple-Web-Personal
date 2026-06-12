@@ -8,10 +8,7 @@ import type { Items } from "@/types";
 
 // Определяем данные которые передаются из родительского компонента
 const props = defineProps({
-  candId: {
-    type: String,
-    required: true,
-  },
+  candId: { type: String, required: true },
   title: {
     type: String,
     required: true,
@@ -28,8 +25,9 @@ const { execute, state, isLoading } = useAsyncState<Items[keyof Items][]>(
 );
 
 const item = shallowRef({} as Items[keyof Items]);
-const modal = shallowRef(false); // Флаг для открытия модального окна
 const method = shallowRef<"POST" | "PATCH">("POST");
+const modal = shallowRef(false); // Флаг для открытия модального окна
+const visible = shallowRef(false);
 
 // Определяем функцию для отправки данных формы на сервер
 async function submitItem(form: typeof item.value) {
@@ -46,17 +44,17 @@ async function submitItem(form: typeof item.value) {
   await execute();
   item.value = {} as typeof item.value;
   if (status !== 201 && status !== 200) alert("Невозможно выполнить действие!");
-  isLoading.value = false;
+  else if (method.value === "POST") {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 }
 
 // Определяем функцию для удаления данных
-async function deleteItem(itemId: string) {
+async function deleteItem(itemId: string, index: number) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
-  isLoading.value = true;
   const { status } = await ky.delete(`/api/items/${props.view}/${itemId}`);
-  if (status === 204) await execute();
+  if (status === 204) state.value.splice(index, 1);
   else alert("Невозможно выполнить действие!");
-  isLoading.value = false;
 }
 </script>
 
@@ -76,46 +74,50 @@ async function deleteItem(itemId: string) {
     </template>
   </UEmpty>
 
-  <div
-    v-for="(content, index) in state"
-    :key="index"
-    :class="{ 'animate-pulse': isLoading }"
-  >
-    <!-- Выводим элемент данных -->
-    <ItemDiv
-      :item="content"
-      :fields="itemsFields[view]"
-      @delete="deleteItem(content.id)"
-      @update="
-        item = content;
-        modal = true;
-        method = 'PATCH';
-      "
-    />
-    <USeparator v-if="index + 1 < state.length" />
-  </div>
+  <div @mouseover="visible = true" @mouseleave="visible = false">
+    <div
+      v-for="(content, index) in state"
+      :key="index"
+      :class="{ 'animate-pulse': isLoading }"
+    >
+      <!-- Выводим элемент данных -->
+      <ItemDiv
+        :item="content"
+        :fields="itemsFields[view]"
+        @delete="deleteItem(content.id, index)"
+        @update="
+          item = content;
+          modal = true;
+          method = 'PATCH';
+        "
+      />
+      <USeparator v-if="index + 1 < state.length" />
+    </div>
 
-  <!-- Модальное окно для редактирования данных -->
-  <UModal
-    v-model:open="modal"
-    :description="
-      method === 'POST' ? 'Добавить данные' : 'Редактировать данные'
-    "
-    :title="props.title"
-  >
-    <UButton
-      v-if="state.length"
-      block
-      class="my-2"
-      color="neutral"
-      icon="i-mi-add"
-      title="Добавить запись"
-      size="sm"
-      variant="outline"
-      @click="method = 'POST'"
-    />
-    <template #body>
-      <FormDiv :item="item" :fields="itemsForms[view]" @submit="submitItem" />
-    </template>
-  </UModal>
+    <!-- Модальное окно для редактирования данных -->
+    <UModal
+      v-model:open="modal"
+      :description="
+        method === 'POST' ? 'Добавить данные' : 'Редактировать данные'
+      "
+      :title="props.title"
+    >
+      <Transition name="fade">
+        <UButton
+          v-if="state.length && visible"
+          block
+          class="my-2"
+          color="neutral"
+          icon="i-mi-add"
+          title="Добавить запись"
+          size="sm"
+          variant="outline"
+          @click="method = 'POST'"
+        />
+      </Transition>
+      <template #body>
+        <FormDiv :item="item" :fields="itemsForms[view]" @submit="submitItem" />
+      </template>
+    </UModal>
+  </div>
 </template>

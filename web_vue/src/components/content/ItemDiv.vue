@@ -20,24 +20,26 @@ const props = defineProps({
 
 <template>
   <div @mouseover="visible = true" @mouseleave="visible = false">
-    <div v-show="visible" class="relative">
-      <UFieldGroup class="absolute right-1" size="sm">
-        <UButton
-          color="neutral"
-          icon="i-mi-edit-alt"
-          title="Изменить"
-          variant="outline"
-          @click="emits('update')"
-        />
-        <UButton
-          color="neutral"
-          icon="i-mi-delete"
-          title="Удалить"
-          variant="outline"
-          @click="emits('delete')"
-        />
-      </UFieldGroup>
-    </div>
+    <Transition name="fade">
+      <div v-show="visible" class="relative">
+        <UFieldGroup class="absolute right-1" size="sm">
+          <UButton
+            color="neutral"
+            icon="i-mi-edit-alt"
+            title="Изменить"
+            variant="outline"
+            @click="emits('update')"
+          />
+          <UButton
+            color="neutral"
+            icon="i-mi-delete"
+            title="Удалить"
+            variant="outline"
+            @click="emits('delete')"
+          />
+        </UFieldGroup>
+      </div>
+    </Transition>
 
     <div v-for="field in fields" :key="field.key" class="m-2">
       <div

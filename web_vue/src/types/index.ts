@@ -67,19 +67,6 @@ export interface Navigations extends AccordionItem {
   slot: keyof Items;
 }
 
-export interface Auth {
-  message: string;
-  access_token: string;
-  refresh_token: string;
-}
-
-export interface Login {
-  username: string;
-  password: string;
-  new_pswd: string;
-  conf_pswd: string;
-}
-
 export interface Session {
   id: string;
   fullname: string;
@@ -114,7 +101,7 @@ export interface Person {
   created: string;
 }
 
-export interface Previous {
+interface Previous {
   id: string;
   surname: string;
   firstname?: string;
@@ -122,7 +109,7 @@ export interface Previous {
   changed?: string;
   reason?: string;
 }
-export interface Education {
+interface Education {
   id: string;
   view?: string;
   institution: string;
@@ -130,13 +117,13 @@ export interface Education {
   specialty: string;
 }
 
-export interface Staff {
+interface Staff {
   id: string;
   position: string;
   department?: string;
 }
 
-export interface Passport {
+interface Passport {
   id: string;
   view: string;
   series?: string;
@@ -145,19 +132,19 @@ export interface Passport {
   issue: string;
 }
 
-export interface Address {
+interface Address {
   id: string;
   view: string;
   address: string;
 }
 
-export interface Contact {
+interface Contact {
   id: string;
   view: string;
   contact: string;
 }
 
-export interface Work {
+interface Work {
   id: string;
   starts: string;
   finished: string;
@@ -167,7 +154,7 @@ export interface Work {
   position: string;
 }
 
-export interface Affilation {
+interface Affilation {
   id: string;
   view: string;
   organization: string;
@@ -175,7 +162,7 @@ export interface Affilation {
   activity?: string;
 }
 
-export interface Verification {
+interface Verification {
   id: string;
   workplace?: string;
   document?: string;
@@ -193,7 +180,7 @@ export interface Verification {
   created: string;
 }
 
-export interface Pfo {
+interface Pfo {
   id: string;
   theme: string;
   results: string;
@@ -201,14 +188,14 @@ export interface Pfo {
   created: string;
 }
 
-export interface Inquisition {
+interface Inquisition {
   id: string;
   theme: string;
   info: string;
   created: string;
 }
 
-export interface Needs {
+interface Needs {
   id: string;
   info: string;
   initiator: string;

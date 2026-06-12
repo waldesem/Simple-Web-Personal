@@ -11,7 +11,7 @@ export function timeAgoStr(str: string) {
   const diffSec = Math.floor(diff / 1000);
   // Меньше минуты
   if (diffSec < 60) {
-    return "менее минуты назад";
+    return "Менее минуты назад";
   }
   // Меньше часа (но больше минуты)
   const diffMin = Math.floor(diffSec / 60);

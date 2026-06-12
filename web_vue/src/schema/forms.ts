@@ -1,8 +1,6 @@
 import { Conclusions, Decisions, Roles } from "@/types";
 import type { Items, FormFields, User, Person } from "@/types";
 
-const pattern = "^[А-ЯЁ][А-ЯЁ\\-.,' ]+[А-ЯЁ]$";
-
 export const formUser = [
   {
     key: "fullname",
@@ -39,7 +37,7 @@ export const formUser = [
     key: "role",
     label: "Роль",
     props: {
-      Items: Object.values(Roles),
+      items: Object.values(Roles),
       placeholder: "Выберите роль",
       required: true,
     },
@@ -51,7 +49,7 @@ export const person = [
     key: "surname",
     label: "Фамилия",
     props: {
-      pattern: pattern,
+      pattern: "^[А-ЯЁ][А-ЯЁ\\-.,' ]+[А-ЯЁ]$",
       placeholder: "Фамилия (заглавными буквами)",
       maxlength: 255,
       required: true,
@@ -61,7 +59,7 @@ export const person = [
     key: "firstname",
     label: "Имя",
     props: {
-      pattern: pattern,
+      pattern: "^[А-ЯЁ][А-ЯЁ\\-.,' ]+[А-ЯЁ]$",
       placeholder: "Имя (заглавными буквами)",
       maxlength: 255,
       required: true,
@@ -71,7 +69,7 @@ export const person = [
     key: "patronymic",
     label: "Отчество",
     props: {
-      pattern: pattern,
+      pattern: "^[А-ЯЁ][А-ЯЁ\\-.,' ]+[А-ЯЁ]$",
       placeholder: "Отчество (заглавными буквами)",
       maxlength: 255,
     },
@@ -125,7 +123,7 @@ const addresses = [
     key: "view",
     label: "Вид адреса",
     props: {
-      Items: ["Адрес регистрации", "Адрес проживания", "Другое"],
+      items: ["Адрес регистрации", "Адрес проживания", "Другое"],
       placeholder: "Выберите адрес",
       required: true,
     },
@@ -240,7 +238,7 @@ const checks = [
     key: "conclusion",
     label: "Результат",
     props: {
-      Items: Object.values(Conclusions),
+      items: Object.values(Conclusions),
       placeholder: "Выберите результат",
       required: true,
     },
@@ -253,7 +251,7 @@ const contacts = [
     key: "view",
     label: "Вид контакта",
     props: {
-      Items: ["Телефон", "Электронная почта", "Другое"],
+      items: ["Телефон", "Электронная почта", "Другое"],
       placeholder: "Выберите контакт",
       maxlength: 255,
       required: true,
@@ -272,7 +270,7 @@ const documents = [
     key: "view",
     label: "Вид документа",
     props: {
-      Items: ["Паспорт", "Иностранный паспорт", "Другое"],
+      items: ["Паспорт", "Иностранный паспорт", "Другое"],
       placeholder: "Выберите документ",
       required: true,
     },
@@ -305,7 +303,7 @@ const educations = [
     key: "view",
     label: "Вид образования",
     props: {
-      Items: [
+      items: [
         "Основное общее",
         "Среднее общее",
         "Среднее профессиональное",
@@ -372,7 +370,7 @@ const poligrafs = [
     key: "theme",
     label: "Тема проверки",
     props: {
-      Items: [
+      items: [
         "Проверка кандидата",
         "Служебная проверка",
         "Служебное расследование",
@@ -393,7 +391,7 @@ const poligrafs = [
     key: "conclusion",
     label: "Результат",
     props: {
-      Items: Object.values(Decisions),
+      items: Object.values(Decisions),
       placeholder: "Выберите результат",
       required: true,
     },

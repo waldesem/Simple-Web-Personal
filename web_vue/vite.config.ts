@@ -72,7 +72,7 @@ export default defineConfig({
         },
         modal: {
           slots: {
-            content: "sm:max-w-xl",
+            content: "md:max-w-2xl",
           },
         },
         pageBody: {
@@ -82,6 +82,11 @@ export default defineConfig({
           slots: {
             root: "relative border-none pt-20 pb-4",
             title: "text-2xl sm:text-3xl text-red-800",
+          },
+        },
+        select: {
+          slots: {
+            base: "w-full",
           },
         },
         textarea: {

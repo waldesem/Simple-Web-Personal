@@ -53,7 +53,7 @@ def patch(
     json_data: ItemsModels,
 ) -> tuple[Literal[""], Literal[200]]:
     """Update a record in the specified table."""
-    data = json_data.__root__.dict()
+    data = json_data.__root__.dict(exclude={"item"})
     data["person_id"] = person_id
     data["created"] = datetime.now(UTC)
     cur: Cursor = g.db.cursor()

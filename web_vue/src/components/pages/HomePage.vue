@@ -144,6 +144,9 @@ async function submit(form: Person) {
           v-model="limit"
           :items="[10, 50, 100]"
           title="Количество записей"
+          :ui="{
+            base: 'w-auto',
+          }"
         />
         <UButton
           class="ms-2 rounded-full"
