@@ -95,18 +95,21 @@ async function submit(form: Person) {
       />
 
       <!-- Таблица с данными кандидатов -->
-      <TableDiv
-        :class="{ 'animate-pulse': isLoading }"
-        :cols="personCols"
-        :data="state"
-        @select="
-          (row: Person) =>
-            router.push({ name: 'profile', params: { id: row.id } })
-        "
-      />
+      <Transition name="fade">
+        <TableDiv
+          v-if="state.length"
+          :cols="personCols"
+          :data="state"
+          @select="
+            (row: Person) =>
+              router.push({ name: 'profile', params: { id: row.id } })
+          "
+        >
+        </TableDiv>
+      </Transition>
 
       <UEmpty
-        v-if="!state"
+        v-if="!isLoading && !state.length"
         icon="i-mi-warning"
         size="sm"
         title="Данные отсутствуют"
@@ -115,6 +118,7 @@ async function submit(form: Person) {
 
       <!-- Время последнего обновления -->
       <UButton
+        v-show="state.length"
         icon="i-mi-refresh"
         label="Обновить"
         :loading="isLoading"
@@ -126,7 +130,7 @@ async function submit(form: Person) {
 
       <!-- Пагинация -->
       <div
-        v-show="state"
+        v-show="state.length"
         class="flex justify-center border-t border-default pt-8 pb-2"
       >
         <UButton

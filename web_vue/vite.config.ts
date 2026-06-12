@@ -72,7 +72,6 @@ export default defineConfig({
         },
         modal: {
           slots: {
-            header: "p-3",
             content: "sm:max-w-xl",
           },
         },

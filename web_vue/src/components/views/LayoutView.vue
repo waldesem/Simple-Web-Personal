@@ -33,7 +33,7 @@ const { state } = useAsyncState<Session>(
         <UAvatar
           v-if="state.fullname"
           :alt="state.fullname"
-          :chip="{ inset: true }"
+          :chip="{ inset: true, color: 'success' }"
           size="md"
         />
         <UAvatar

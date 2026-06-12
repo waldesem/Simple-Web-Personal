@@ -9,7 +9,7 @@ const props = defineProps({
     required: true,
   },
 });
-
+// Определяем переменную для UPageHeader
 const fullname = shallowRef("");
 </script>
 

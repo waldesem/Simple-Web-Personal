@@ -18,7 +18,7 @@ const props = defineProps({
 
 <template>
   <div class="relative overflow-auto">
-    <table class="table-fixed min-w-full overflow-clip">
+    <table class="table-fixed min-w-full overflow-clip"> 
       <thead class="relative">
         <tr>
           <th
@@ -30,7 +30,6 @@ const props = defineProps({
           </th>
         </tr>
       </thead>
-      
       <tbody class="isolate divide-y divide-default">
         <tr
           v-for="(item, index) in props.data"

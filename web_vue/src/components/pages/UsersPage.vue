@@ -2,7 +2,7 @@
 import ky from "ky";
 import { shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
-import { user as userItem } from "@/schema/items"
+import { user as userItem } from "@/schema/items";
 import { formUser } from "@/schema/forms";
 import { userCols } from "@/schema/elems";
 import { Actions, type User } from "@/types";
@@ -44,7 +44,10 @@ async function submit(form: User) {
 
 <template>
   <UContainer>
-    <UPageHeader title="ПОЛЬЗОВАТЕЛИ" :ui="{ title: 'text-gray-600' }">
+    <UPageHeader
+      title="ПОЛЬЗОВАТЕЛИ"
+      :ui="{ title: 'text-2xl sm:text-3xl text-gray-600' }"
+    >
       <template #links>
         <UModal v-model:open="modal" title="Пользователь">
           <UButton
