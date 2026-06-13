@@ -3,7 +3,14 @@
     "target": "ES2022",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "types": [
+      "vite/client"
+    ],
     "skipLibCheck": true,
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -19,15 +26,26 @@
     "noFallthroughCasesInSwitch": true,
     /* Paths */
     "paths": {
-      "@/*": ["./src/*"],
-      "#build/ui/*": ["./node_modules/.nuxt-ui/ui/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "#build/ui/*": [
+        "./node_modules/.nuxt-ui/ui/*"
+      ]
     }
+  },
+  "vueCompilerOptions": {
+    "plugins": [
+      "vue-router/volar/sfc-route-blocks",
+      "vue-router/volar/sfc-typed-router",
+    ],
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
     "auto-imports.d.ts",
-    "components.d.ts"
+    "components.d.ts",
+    "./typed-router.d.ts"
   ]
 }

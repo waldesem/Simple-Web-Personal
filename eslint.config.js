@@ -25,5 +25,10 @@ export default typescriptEslint.config(
       // your rules
     },
   },
+  {
+    globals: {
+      definePage: "readonly",
+    },
+  },
   eslintConfigPrettier,
 );

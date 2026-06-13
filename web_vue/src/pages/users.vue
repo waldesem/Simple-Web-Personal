@@ -7,6 +7,8 @@ import { formUser } from "@/schema/forms";
 import { userCols } from "@/schema/elems";
 import { Actions, type User } from "@/types";
 
+definePage({ meta: { layout: "AdminLayout" } });
+
 // Определяем переменные для работы с данными
 const content = shallowRef<"form" | "item">("form");
 const method = shallowRef<"POST" | "PATCH">("POST");

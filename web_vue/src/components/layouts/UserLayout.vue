@@ -36,12 +36,7 @@ const { state } = useAsyncState<Session>(
           :chip="{ inset: true, color: 'success' }"
           size="md"
         />
-        <UAvatar
-          v-else
-          icon="i-mi-ban"
-          color="error"
-          size="md"
-        />
+        <UAvatar v-else icon="i-mi-ban" color="error" size="md" />
       </template>
     </UHeader>
     <UMain>

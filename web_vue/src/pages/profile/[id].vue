@@ -7,6 +7,8 @@ import { person as PersonItem } from "@/schema/items";
 import { person as PersonForm } from "@/schema/forms";
 import type { Person } from "@/types";
 
+definePage({ meta: { layout: "UserLayout" }, props: true });
+
 const props = defineProps({
   id: { type: String, required: true }, // ID кандидата из HomePage.vue
 });

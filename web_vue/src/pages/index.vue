@@ -7,6 +7,8 @@ import { personCols } from "@/schema/elems";
 import { person as PersonForm } from "@/schema/forms";
 import type { Person } from "@/types";
 
+definePage({ meta: { layout: "UserLayout" } });
+
 const router = useRouter();
 
 const hasNext = shallowRef(false); // Состояние наличия следующей страницы
@@ -52,7 +54,7 @@ async function submit(form: Person) {
   const resp = await ky.post("/api/persons/", { json: form });
   if (resp.status === 201) {
     const { person_id } = (await resp.json()) as { person_id: string | null };
-    if (person_id) router.push({ name: "profile", params: { id: person_id } });
+    if (person_id) router.push("profile/" + person_id);
     else alert("Анкета уже существует!");
   } else alert("Невозможно выполнить действие!");
 }
@@ -100,10 +102,7 @@ async function submit(form: Person) {
           v-if="state.length"
           :cols="personCols"
           :data="state"
-          @select="
-            (row: Person) =>
-              router.push({ name: 'profile', params: { id: row.id } })
-          "
+          @select="(row: Person) => router.push('/profile/' + row.id)"
         >
         </TableDiv>
       </Transition>

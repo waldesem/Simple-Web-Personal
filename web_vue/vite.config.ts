@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import VueRouter from "vue-router/vite";
 import ui from "@nuxt/ui/vite";
 import path from "path";
 
@@ -9,6 +10,7 @@ export default defineConfig({
     outDir: "../server_flask/app/static",
   },
   plugins: [
+    VueRouter(),
     vue(),
     ui({
       ui: {

@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { shallowRef, watch, markRaw } from "vue";
 import { useRoute } from "vue-router";
-import EmptyView from "@/components/layouts/EmptyView.vue";
+import DefaultLayout from "@/components/layouts/DefaultLayout.vue";
 
 const route = useRoute();
 
-const layout = shallowRef(EmptyView);
+const layout = shallowRef(DefaultLayout);
 
 watch(
   () => route.meta.layout,
   async (metaLayout) => {
     if (!metaLayout) {
-      layout.value = EmptyView;
+      layout.value = DefaultLayout;
     } else {
       const component = await import(`@/components/layouts/${metaLayout}.vue`);
-      layout.value = markRaw(component.default || EmptyView);
+      layout.value = markRaw(component.default || DefaultLayout);
     }
   },
   { immediate: true },
