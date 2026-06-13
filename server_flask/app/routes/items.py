@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Literal
 
 from flask import Blueprint, Response, g, jsonify
 
-from app.depends.depend import validize
+from app.depends.depend import authorize, validize
 from app.models.model import ItemsModels, TableModel
 from app.utilities.queries import insert_into_db, update_db
 
@@ -29,13 +29,14 @@ def get_items(table: TableModel, person_id: int) -> tuple[Response, Literal[200]
 
 @bp.post("/<table>/<int:person_id>")
 @validize()
+@authorize()
 def post(
     table: TableModel,
     person_id: int,
     json_data: ItemsModels,
 ) -> tuple[Literal[""], Literal[201]]:
     """Insert a record in the specified table."""
-    data = json_data.__root__.dict(exclude={"item"})
+    data = json_data.__root__.dict(exclude={"comparator"})
     data["person_id"] = person_id
     data["created"] = datetime.now(UTC)
     cur: Cursor = g.db.cursor()
@@ -46,6 +47,7 @@ def post(
 
 @bp.patch("/<table>/<int:person_id>/<int:item_id>")
 @validize()
+@authorize()
 def patch(
     table: TableModel,
     person_id: int,
@@ -53,7 +55,7 @@ def patch(
     json_data: ItemsModels,
 ) -> tuple[Literal[""], Literal[200]]:
     """Update a record in the specified table."""
-    data = json_data.__root__.dict(exclude={"item"})
+    data = json_data.__root__.dict(exclude={"comparator"})
     data["person_id"] = person_id
     data["created"] = datetime.now(UTC)
     cur: Cursor = g.db.cursor()
@@ -64,6 +66,7 @@ def patch(
 
 @bp.delete("/<table>/<int:item_id>")
 @validize()
+@authorize()
 def delete(table: TableModel, item_id: int) -> tuple[Literal[""], Literal[204]]:
     """Delete an item from the database with provided table name and item ID."""
     cur: Cursor = g.db.cursor()

@@ -15,8 +15,13 @@ export default defineConfig({
     ui({
       ui: {
         colors: {
+          error: "red",
+          info: "purple",
+          neutral: "neutral",
           primary: "blue",
-          neutral: "gray",
+          secondary: "gray",
+          success: "green",
+          warning: "amber",
         },
         icons: {
           arrowDown: "i-mi-arrow-down",

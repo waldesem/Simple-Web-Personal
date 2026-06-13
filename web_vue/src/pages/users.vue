@@ -53,8 +53,9 @@ async function submit(form: User) {
       <template #links>
         <UModal v-model:open="modal" title="Пользователь">
           <UButton
-            icon="i-mi-user-add"
             :loading="isLoading"
+            color="neutral"
+            icon="i-mi-user-add"
             size="lg"
             title="Добавить пользователя"
             variant="ghost"

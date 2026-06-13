@@ -4,12 +4,11 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal
 
-from flask import Blueprint, Response, g, jsonify
+from flask import Blueprint, Response, current_app, g, jsonify
 
 from app.depends.depend import authorize, validize
 from app.models.model import Person
 from app.utilities.queries import insert_into_db, update_db
-from constants import BASE_PATH
 
 if TYPE_CHECKING:
     import sqlite3
@@ -51,7 +50,7 @@ def post_person(json_data: Person) -> tuple[Response, Literal[201]]:
 
         if cand_id:
             destination = Path(
-                BASE_PATH,
+                current_app.config["BASE_PATH"],
                 "Главный офис",
                 json_data.surname[0],
                 "{}-{} {} {}".format(

@@ -8,17 +8,19 @@ from typing import TYPE_CHECKING
 from flask import Flask, Response, g, request
 from werkzeug.exceptions import HTTPException
 
-from constants import DATABASE_URI
+from config import Config
 
 if TYPE_CHECKING:
     from werkzeug.wrappers.response import Response as WerkzeugResponse
 
 
-def create_app() -> Flask:
+def create_app(config: type[Config] = Config) -> Flask:
     """Create and configure the Flask application."""
     app = Flask(__name__)
 
     from app.routes import bp
+
+    app.config.from_object(config)
 
     app.register_blueprint(bp)  # Register the routes
 
@@ -29,11 +31,11 @@ def create_app() -> Flask:
 
     @app.before_request
     def _load_connection() -> None | Response:
-        if DATABASE_URI is None:
+        if config.DATABASE_URI is None:
             msg = "DATABASE_URI is not set, check your settings.ini."
             raise RuntimeError(msg)
         if request.path.startswith("/api"):
-            db = sqlite3.connect(DATABASE_URI)
+            db = sqlite3.connect(config.DATABASE_URI)
             db.row_factory = sqlite3.Row
             g.db = db
 

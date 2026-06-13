@@ -25,7 +25,12 @@ const { state } = useAsyncState<Session>(
         </div>
       </template>
       <template #default>
-        <ULink to="/users" :replace="false" class="font-bold">
+        <ULink
+          v-if="state.username"
+          to="/users"
+          :replace="false"
+          class="font-bold"
+        >
           Пользователи
         </ULink>
       </template>

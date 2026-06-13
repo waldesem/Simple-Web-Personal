@@ -38,7 +38,7 @@ async function submitItem(form: typeof item.value) {
     method.value === "POST" ? url : url + "/" + item.value.id,
     {
       method: method.value,
-      json: { item: props.view, ...form },
+      json: { comparator: props.view, ...form },
     },
   );
   await execute();
