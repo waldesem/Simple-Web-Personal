@@ -51,7 +51,7 @@ def post_user(json_data: User) -> tuple[Literal[""], Literal[201, 204]]:
     return "", 201
 
 
-@bp.post("/<int:user_id>")
+@bp.patch("/<int:user_id>")
 def update_user(user_id: int, json_data: User) -> tuple[Literal[""], Literal[201]]:
     """Change a user's role."""
     cur: sqlite3.Cursor = g.db.cursor()
@@ -61,7 +61,7 @@ def update_user(user_id: int, json_data: User) -> tuple[Literal[""], Literal[201
     return "", 201
 
 
-@bp.patch("/<int:user_id>")
+@bp.post("/<int:user_id>")
 def edit_user(user_id: int, json_data: Action) -> tuple[Literal[""], Literal[200]]:
     """Change a user's information."""
     cur: sqlite3.Cursor = g.db.cursor()

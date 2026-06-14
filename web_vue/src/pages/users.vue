@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import ky from "ky";
-import { h, ref, resolveComponent } from "vue";
-import { shallowRef } from "vue";
+import { h, ref, resolveComponent, shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { TableColumn } from "@nuxt/ui";
 import { localStr } from "@/utils";
-import { user as userItem } from "@/schema/items";
 import { user as formUser } from "@/schema/forms";
+import type { Row } from "@tanstack/vue-table";
 import { Actions, type User } from "@/types";
 
 definePage({ meta: { layout: "AdminLayout" } });
@@ -18,25 +17,10 @@ const modal = shallowRef(false);
 const user = shallowRef({} as User);
 
 const Button = resolveComponent("UButton");
+const DropdownMenu = resolveComponent("UDropdownMenu");
 
+// Определяем колонки таблицы
 const columns: TableColumn<User>[] = [
-  {
-    id: "expand",
-    cell: ({ row }) =>
-      h(Button, {
-        color: "neutral",
-        variant: "ghost",
-        icon: "i-mi-chevron-down",
-        square: true,
-        ui: {
-          leadingIcon: [
-            "transition-transform",
-            row.getIsExpanded() ? "duration-200 rotate-180" : "",
-          ],
-        },
-        onClick: () => row.toggleExpanded(),
-      }),
-  },
   { accessorKey: "id", header: "#" },
   { accessorKey: "fullname", header: "Пользователь" },
   { accessorKey: "username", header: "Логин" },
@@ -46,7 +30,76 @@ const columns: TableColumn<User>[] = [
     header: "Создан",
     cell: ({ row }) => localStr(row.original.created),
   },
+  {
+    accessorKey: "attempt",
+    header: "Попыток",
+    cell: ({ row }) => String(row.original.attempt),
+  },
+  {
+    accessorKey: "blocked",
+    header: "Блокир.",
+    cell: ({ row }) => (row.original.blocked ? "Да" : "Нет"),
+  },
+  {
+    accessorKey: "change_pswd",
+    header: "Изм.пароль",
+    cell: ({ row }) => (row.original.change_pswd ? "Да" : "Нет"),
+  },
+  {
+    accessorKey: "deleted",
+    header: "Удален",
+    cell: ({ row }) => (row.original.deleted ? "Да" : "Нет"),
+  },
+  {
+    id: "actions",
+    meta: {
+      class: {
+        td: "text-right",
+      },
+    },
+    cell: ({ row }) => {
+      return h(
+        DropdownMenu,
+        {
+          content: {
+            align: "end",
+          },
+          items: getRowItems(row),
+        },
+        () =>
+          h(Button, {
+            icon: "i-mi-options-vertical",
+            color: "neutral",
+            variant: "ghost",
+          }),
+      );
+    },
+  },
 ];
+
+// Определяем функцию для получения элементов меню
+function getRowItems(row: Row<User>) {
+  return [
+    {
+      label: row.original.deleted ? "Восстановить" : "Удалить",
+      onSelect() {
+        edit(Actions.delete, row.original.id);
+      },
+    },
+    {
+      label: row.original.blocked ? "Разблокировать" : "Заблокировать",
+      onSelect() {
+        edit(Actions.block, row.original.id);
+      },
+    },
+    {
+      label: "Сбросить пароль",
+      onSelect() {
+        edit(Actions.reset, row.original.id);
+      },
+    },
+  ];
+}
 
 const { execute, isLoading, state } = useAsyncState<User[]>(
   async () => await ky.get("/api/users/").json(),
@@ -54,9 +107,9 @@ const { execute, isLoading, state } = useAsyncState<User[]>(
 );
 
 // Объявляем функцию для действия с пользователем
-async function edit(action: Actions) {
+async function edit(action: Actions, id: string) {
   if (!confirm("Подтвердить действие?")) return;
-  const resp = await ky.post("/api/users/" + user.value.id, {
+  const resp = await ky.post("/api/users/" + id, {
     json: { actions: action },
   });
   if (resp?.status == 201 || resp?.status == 200) {
@@ -114,44 +167,7 @@ async function submit(form: User) {
         :columns="columns"
         :loading="isLoading"
         loading-animation="swing"
-      >
-        <template #expanded="{ row }">
-          <UCard>
-            <ItemDiv
-              :item="row.original"
-              :fields="userItem"
-              @update="
-                user = row.original;
-                modal = true;
-                method = 'PATCH';
-              "
-            >
-              <UFieldGroup>
-                <UButton
-                  color="error"
-                  variant="outline"
-                  :label="row.original.deleted ? 'Восстановить' : 'Удалить'"
-                  @click="edit(Actions.delete)"
-                />
-                <UButton
-                  color="neutral"
-                  variant="outline"
-                  :label="
-                    row.original.blocked ? 'Разблокировать' : 'Заблокировать'
-                  "
-                  @click="edit(Actions.block)"
-                />
-                <UButton
-                  color="warning"
-                  variant="outline"
-                  label="Сбросить пароль"
-                  @click="edit(Actions.reset)"
-                />
-              </UFieldGroup>
-            </ItemDiv>
-          </UCard>
-        </template>
-      </UTable>
+      />
     </UPageBody>
   </UContainer>
 </template>
