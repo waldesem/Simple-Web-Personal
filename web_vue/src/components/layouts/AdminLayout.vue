@@ -1,20 +1,3 @@
-<script setup lang="ts">
-import ky from "ky";
-import { useAsyncState } from "@vueuse/core";
-import { session } from "@/state";
-import type { Session } from "@/types";
-
-const { state } = useAsyncState<Session>(
-  async () => await ky.get("/api/auth/session").json(),
-  {} as Session,
-  {
-    onSuccess(data) {
-      session.value = data;
-    },
-  },
-);
-</script>
-
 <template>
   <UPage>
     <UHeader v-once to="/users">
@@ -25,14 +8,18 @@ const { state } = useAsyncState<Session>(
         </div>
       </template>
       <template #default>
-        <ULink to="/" :replace="false" class="font-bold">Кандидаты</ULink>
+        <UButton
+          active-class="font-bold"
+          inactive-class="text-muted"
+          color="neutral"
+          icon="i-mi-users"
+          label="Кандидаты"
+          to="/"
+          variant="link"
+        />
       </template>
       <template #right>
-        <UAvatar
-          :alt="state.fullname"
-          :chip="{ inset: true, color: 'warning' }"
-          size="md"
-        />
+        <UAvatar text="A" :chip="{ inset: true, color: 'primary' }" />
       </template>
     </UHeader>
     <UMain>

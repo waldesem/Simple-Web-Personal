@@ -23,7 +23,7 @@ export const user = [
     },
   },
   {
-    key: "Email",
+    key: "email",
     label: "email",
     props: {
       placeholder: "Email",
@@ -49,8 +49,8 @@ export const person = [
     key: "surname",
     label: "Фамилия",
     props: {
-      pattern: "^[А-ЯЁ][А-ЯЁ\\-.,' ]+[А-ЯЁ]$",
-      placeholder: "Фамилия (заглавными буквами)",
+      pattern: "^[А-ЯЁ][А-ЯЁа-яё\\-.,' ]+[А-ЯЁа-яё]$",
+      placeholder: "Фамилия",
       maxlength: 255,
       required: true,
     },
@@ -59,8 +59,8 @@ export const person = [
     key: "firstname",
     label: "Имя",
     props: {
-      pattern: "^[А-ЯЁ][А-ЯЁ\\-.,' ]+[А-ЯЁ]$",
-      placeholder: "Имя (заглавными буквами)",
+      pattern: "^[А-ЯЁ][А-ЯЁа-яё\\-.,' ]+[А-ЯЁа-яё]$",
+      placeholder: "Имя",
       maxlength: 255,
       required: true,
     },
@@ -69,8 +69,8 @@ export const person = [
     key: "patronymic",
     label: "Отчество",
     props: {
-      pattern: "^[А-ЯЁ][А-ЯЁ\\-.,' ]+[А-ЯЁ]$",
-      placeholder: "Отчество (заглавными буквами)",
+      pattern: "^[А-ЯЁ][А-ЯЁа-яё\\-.,' ]+[А-ЯЁа-яё]$",
+      placeholder: "Отчество",
       maxlength: 255,
     },
   },

@@ -25,23 +25,24 @@ const { state } = useAsyncState<Session>(
         </div>
       </template>
       <template #default>
-        <ULink
-          v-if="state.username"
+        <UButton
+          v-if="state"
+          active-class="font-bold"
+          inactive-class="text-muted"
+          color="neutral"
+          icon="i-mi-users"
+          label="Пользователи"
           to="/users"
-          :replace="false"
-          class="font-bold"
-        >
-          Пользователи
-        </ULink>
+          variant="link"
+        />
       </template>
       <template #right>
         <UAvatar
           v-if="state.fullname"
           :alt="state.fullname"
           :chip="{ inset: true, color: 'success' }"
-          size="md"
         />
-        <UAvatar v-else icon="i-mi-ban" color="error" size="md" />
+        <UAvatar v-else icon="i-mi-ban" color="error" />
       </template>
     </UHeader>
     <UMain>
