@@ -63,6 +63,7 @@ async function deleteItem(itemId: string, index: number) {
   <UEmpty v-if="!state.length" size="sm" title="Нет данных" variant="naked">
     <template #body>
       <UButton
+        :leading="isLoading"
         label="Добавить запись"
         size="sm"
         variant="outline"

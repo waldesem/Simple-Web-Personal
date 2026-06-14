@@ -1,7 +1,7 @@
 import { Conclusions, Decisions, Roles } from "@/types";
 import type { Items, FormFields, User, Person } from "@/types";
 
-export const formUser = [
+export const user = [
   {
     key: "fullname",
     label: "Имя пользователя",

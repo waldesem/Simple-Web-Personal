@@ -2,10 +2,9 @@
 import ky from "ky";
 import { shallowRef } from "vue";
 import { useAsyncState, useClipboard } from "@vueuse/core";
-import { anketaTab, itemsAccordion, itemsTabs } from "@/schema/elems";
 import { person as PersonItem } from "@/schema/items";
 import { person as PersonForm } from "@/schema/forms";
-import type { Person } from "@/types";
+import type { Navigations, Person } from "@/types";
 
 definePage({ meta: { layout: "UserLayout" }, props: true });
 
@@ -16,6 +15,78 @@ const props = defineProps({
 const { copy, copied } = useClipboard();
 
 const modal = shallowRef(false); // Объявляем переменную модального окна
+
+const anketa = {
+  label: "Анкета",
+  icon: "i-mi-user",
+  slot: "person",
+};
+
+const tabs = [
+  {
+    label: "Проверки",
+    icon: "i-mi-document-check",
+    slot: "checks",
+  },
+  {
+    label: "Полиграф",
+    icon: "i-mi-heart",
+    slot: "poligrafs",
+  },
+  {
+    label: "Расследования",
+    icon: "i-mi-archive",
+    slot: "investigations",
+  },
+  {
+    label: "Запросы",
+    icon: "i-mi-comment",
+    slot: "inquiries",
+  },
+] as Navigations[];
+
+const accordion = [
+  {
+    label: "Должности",
+    icon: "i-mi-laptop",
+    slot: "staffs",
+  },
+  {
+    label: "Образование",
+    icon: "i-mi-book",
+    slot: "educations",
+  },
+  {
+    label: "Места работы",
+    icon: "i-mi-computer",
+    slot: "workplaces",
+  },
+  {
+    label: "Документы",
+    icon: "i-mi-document",
+    slot: "documents",
+  },
+  {
+    label: "Адреса",
+    icon: "i-mi-home",
+    slot: "addresses",
+  },
+  {
+    label: "Контакты",
+    icon: "i-mi-call",
+    slot: "contacts",
+  },
+  {
+    label: "Изменения имени",
+    icon: "i-mi-edit",
+    slot: "previous",
+  },
+  {
+    label: "Аффилированность",
+    icon: "i-mi-users",
+    slot: "affilations",
+  },
+] as Navigations[];
 
 const { execute, state, isLoading } = useAsyncState<Person>(
   async () => await ky.get("/api/persons/" + props.id).json(),
@@ -40,7 +111,7 @@ async function submit(form: Person) {
       :title="`${state.surname} ${state.firstname} ${state.patronymic ?? ''}`"
     />
     <UPageBody>
-      <UTabs :items="[anketaTab, ...itemsTabs]" :unmount-on-hide="false">
+      <UTabs :items="[anketa, ...tabs]" :unmount-on-hide="false">
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
           <ItemDiv
@@ -76,9 +147,9 @@ async function submit(form: Person) {
           <USeparator />
 
           <!-- Aккордеон с данными staffs, educations и т.д. -->
-          <UAccordion :items="itemsAccordion">
+          <UAccordion :items="accordion">
             <template
-              v-for="accord in itemsAccordion"
+              v-for="accord in accordion"
               #[accord.slot]
               :key="accord.slot"
             >
@@ -92,7 +163,7 @@ async function submit(form: Person) {
         </template>
 
         <!-- Вкладки проверки, полиграф и др. -->
-        <template v-for="tab in itemsTabs" #[tab.slot] :key="tab.slot">
+        <template v-for="tab in tabs" #[tab.slot] :key="tab.slot">
           <ItemView :cand-id="props.id" :title="tab.label" :view="tab.slot" />
         </template>
       </UTabs>

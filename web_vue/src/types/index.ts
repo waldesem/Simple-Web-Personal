@@ -33,12 +33,6 @@ export enum Decisions {
   denied = "НЕГАТИВ",
 }
 
-export type TableCols<T> = {
-  name: keyof T;
-  header: string;
-  cell?: (row: T) => string;
-};
-
 export type ItemFields<T> = {
   key: keyof T;
   label: string;
@@ -215,4 +209,4 @@ export interface Items {
   previous: Previous;
   staffs: Staff;
   workplaces: Work;
-};
+}

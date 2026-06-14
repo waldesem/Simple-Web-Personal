@@ -3,7 +3,8 @@ import ky from "ky";
 import { shallowRef, watch } from "vue";
 import { refDebounced, useAsyncState } from "@vueuse/core";
 import { useRouter } from "vue-router";
-import { personCols } from "@/schema/elems";
+import { TableColumn, TableRow } from "@nuxt/ui";
+import { localStr, timeAgoStr } from "@/utils";
 import { person as PersonForm } from "@/schema/forms";
 import type { Person } from "@/types";
 
@@ -18,6 +19,35 @@ const page = shallowRef(0); // Страница таблицы
 const search = shallowRef(""); // Поисковый запрос
 
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
+
+const columns: TableColumn<Person>[] = [
+  {
+    accessorKey: "id",
+    header: "#",
+  },
+  {
+    accessorKey: "surname",
+    header: "Фамилия",
+  },
+  {
+    accessorKey: "firstname",
+    header: "Имя",
+  },
+  {
+    accessorKey: "patronymic",
+    header: "Отчество",
+  },
+  {
+    accessorKey: "birthday",
+    header: "Дата рождения",
+    cell: ({ row }) => localStr(row.original.birthday),
+  },
+  {
+    accessorKey: "created",
+    header: "Обновлено",
+    cell: ({ row }) => timeAgoStr(row.original.created),
+  },
+];
 
 const { execute, isLoading, state } = useAsyncState<Person[]>(
   async () =>
@@ -97,22 +127,16 @@ async function submit(form: Person) {
       />
 
       <!-- Таблица с данными кандидатов -->
-      <Transition name="fade">
-        <TableDiv
-          v-if="state.length"
-          :cols="personCols"
-          :data="state"
-          @select="(row: Person) => router.push('/profile/' + row.id)"
-        >
-        </TableDiv>
-      </Transition>
-
-      <UEmpty
-        v-if="!isLoading && !state.length"
-        icon="i-mi-warning"
-        size="sm"
-        title="Данные отсутствуют"
-        variant="naked"
+      <UTable
+        class="flex-1"
+        :data="state"
+        :columns="columns"
+        :loading="isLoading"
+        loading-animation="swing"
+        @select="
+          (_: Event, row: TableRow<Person>) =>
+            router.push('/profile/' + row.original.id)
+        "
       />
 
       <!-- Время последнего обновления -->

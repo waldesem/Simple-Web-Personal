@@ -1,19 +1,52 @@
 <script setup lang="ts">
 import ky from "ky";
+import { h, ref, resolveComponent } from "vue";
 import { shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
+import { TableColumn } from "@nuxt/ui";
+import { localStr } from "@/utils";
 import { user as userItem } from "@/schema/items";
-import { formUser } from "@/schema/forms";
-import { userCols } from "@/schema/elems";
+import { user as formUser } from "@/schema/forms";
 import { Actions, type User } from "@/types";
 
 definePage({ meta: { layout: "AdminLayout" } });
 
 // Определяем переменные для работы с данными
-const content = shallowRef<"form" | "item">("form");
+const expanded = ref({ 1: false });
 const method = shallowRef<"POST" | "PATCH">("POST");
 const modal = shallowRef(false);
 const user = shallowRef({} as User);
+
+const Button = resolveComponent("UButton");
+
+const columns: TableColumn<User>[] = [
+  {
+    id: "expand",
+    cell: ({ row }) =>
+      h(Button, {
+        color: "neutral",
+        variant: "ghost",
+        icon: "i-mi-chevron-down",
+        square: true,
+        ui: {
+          leadingIcon: [
+            "transition-transform",
+            row.getIsExpanded() ? "duration-200 rotate-180" : "",
+          ],
+        },
+        onClick: () => row.toggleExpanded(),
+      }),
+  },
+  { accessorKey: "id", header: "#" },
+  { accessorKey: "fullname", header: "Пользователь" },
+  { accessorKey: "username", header: "Логин" },
+  { accessorKey: "role", header: "Роль" },
+  {
+    accessorKey: "created",
+    header: "Создан",
+    cell: ({ row }) => localStr(row.original.created),
+  },
+];
 
 const { execute, isLoading, state } = useAsyncState<User[]>(
   async () => await ky.get("/api/users/").json(),
@@ -60,36 +93,52 @@ async function submit(form: User) {
             title="Добавить пользователя"
             variant="ghost"
             @click="
-              content = 'form';
               method = 'POST';
               modal = true;
               user = {} as User;
             "
           />
           <template #body>
-            <FormDiv
-              v-if="content === 'form'"
-              :fields="formUser"
-              :item="user"
-              @submit="submit"
-            />
+            <FormDiv :fields="formUser" :item="user" @submit="submit" />
+          </template>
+        </UModal>
+      </template>
+    </UPageHeader>
+
+    <UPageBody>
+      <UTable
+        v-model:expanded="expanded"
+        class="flex-1"
+        sticky
+        :data="state"
+        :columns="columns"
+        :loading="isLoading"
+        loading-animation="swing"
+      >
+        <template #expanded="{ row }">
+          <UCard>
             <ItemDiv
-              v-else
-              :item="user"
+              :item="row.original"
               :fields="userItem"
-              @update="method = 'PATCH'"
+              @update="
+                user = row.original;
+                modal = true;
+                method = 'PATCH';
+              "
             >
-              <div class="flex flex-wrap gap-2">
+              <UFieldGroup>
                 <UButton
                   color="error"
                   variant="outline"
-                  :label="user.deleted ? 'Восстановить' : 'Удалить'"
+                  :label="row.original.deleted ? 'Восстановить' : 'Удалить'"
                   @click="edit(Actions.delete)"
                 />
                 <UButton
                   color="neutral"
                   variant="outline"
-                  :label="user.blocked ? 'Разблокировать' : 'Заблокировать'"
+                  :label="
+                    row.original.blocked ? 'Разблокировать' : 'Заблокировать'
+                  "
                   @click="edit(Actions.block)"
                 />
                 <UButton
@@ -98,25 +147,11 @@ async function submit(form: User) {
                   label="Сбросить пароль"
                   @click="edit(Actions.reset)"
                 />
-              </div>
+              </UFieldGroup>
             </ItemDiv>
-          </template>
-        </UModal>
-      </template>
-    </UPageHeader>
-
-    <UPageBody>
-      <TableDiv
-        :cols="userCols"
-        :data="state"
-        @select="
-          (row: User) => {
-            content = 'item';
-            user = row;
-            modal = true;
-          }
-        "
-      />
+          </UCard>
+        </template>
+      </UTable>
     </UPageBody>
   </UContainer>
 </template>

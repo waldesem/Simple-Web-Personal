@@ -20,7 +20,7 @@ export const user: ItemFields<User>[] = [
   },
   {
     key: "change_pswd",
-    label: "Пароль",
+    label: "Изм.пароль",
     div: (row) => (row.change_pswd ? "Да" : "Нет"),
   },
   {

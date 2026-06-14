@@ -1,0 +1,1 @@
+function e(e){return e?e[0].toUpperCase()+e.slice(1):``}export{e as t};

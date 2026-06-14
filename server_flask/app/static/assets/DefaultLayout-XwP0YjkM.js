@@ -1,0 +1,1 @@
+import{$t as e,Rt as t,Vt as n,bt as r,ht as i}from"./tv-mHDCkyM4.js";import{n as a,t as o}from"./Main-BI16kDLh.js";var s=(e,t)=>{let n=e.__vccOpts||e;for(let[e,r]of t)n[e]=r;return n},c={};function l(s,c){let l=o,u=a;return t(),i(u,null,{default:e(()=>[r(l,null,{default:e(()=>[n(s.$slots,`default`)]),_:3})]),_:3})}var u=s(c,[[`render`,l]]);export{u as t};
