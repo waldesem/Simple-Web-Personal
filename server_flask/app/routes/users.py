@@ -26,6 +26,25 @@ def get_users() -> tuple[Response, Literal[200]]:
     return jsonify([dict(user) for user in users]), 200
 
 
+@bp.get("/<int:user_id>")
+@validize()
+def edit_user(user_id: int, json_query: Action) -> tuple[Literal[""], Literal[200]]:
+    """Change a user's information."""
+    cur: sqlite3.Cursor = g.db.cursor()
+    stmt = "UPDATE users SET "
+    params = []
+    if json_query.action == "reset":
+        stmt += "passhash = ?, attempt = 0, blocked = 0, change_pswd = 1"
+        params.append(generate_password_hash("88888888"))
+    elif json_query.action == "block":
+        stmt += "blocked = NOT blocked"
+    elif json_query.action == "delete":
+        stmt += "deleted = NOT deleted"
+    cur.execute(stmt + " WHERE id = ?", (*params, user_id))
+    g.db.commit()
+    return "", 200
+
+
 @bp.post("/")
 @validize()
 def post_user(json_data: User) -> tuple[Literal[""], Literal[201, 204]]:
@@ -52,6 +71,7 @@ def post_user(json_data: User) -> tuple[Literal[""], Literal[201, 204]]:
 
 
 @bp.patch("/<int:user_id>")
+@validize()
 def update_user(user_id: int, json_data: User) -> tuple[Literal[""], Literal[201]]:
     """Change a user's role."""
     cur: sqlite3.Cursor = g.db.cursor()
@@ -59,21 +79,3 @@ def update_user(user_id: int, json_data: User) -> tuple[Literal[""], Literal[201
     cur.execute(stmt, (json_data.role, user_id))
     g.db.commit()
     return "", 201
-
-
-@bp.post("/<int:user_id>")
-def edit_user(user_id: int, json_data: Action) -> tuple[Literal[""], Literal[200]]:
-    """Change a user's information."""
-    cur: sqlite3.Cursor = g.db.cursor()
-    stmt = "UPDATE users SET "
-    params = []
-    if json_data.action == "reset":
-        stmt += "passhash = ?, attempt = 0, blocked = 0, change_pswd = 1"
-        params.append(generate_password_hash("88888888"))
-    elif json_data.action == "block":
-        stmt += "blocked = NOT blocked"
-    elif json_data.action == "delete":
-        stmt += "SET deleted = NOT deleted"
-    cur.execute(stmt + " WHERE id = ?", (*params, user_id))
-    g.db.commit()
-    return "", 200

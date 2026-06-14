@@ -129,10 +129,12 @@ async function submit(form: Person) {
       <!-- Таблица с данными кандидатов -->
       <UTable
         class="flex-1"
+        empty="Нет данных"
         :data="state"
         :columns="columns"
         :loading="isLoading"
         loading-animation="swing"
+        loading-color="error"
         @select="
           (_: Event, row: TableRow<Person>) =>
             router.push('/profile/' + row.original.id)
