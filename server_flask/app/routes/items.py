@@ -7,7 +7,6 @@ from flask import Blueprint, Response, g, jsonify
 
 from app.depends.depend import authorize, validize
 from app.models.model import ItemsModels, TableModel
-from app.utilities.queries import insert_into_db, update_db
 
 if TYPE_CHECKING:
     from sqlite3 import Cursor
@@ -40,7 +39,12 @@ def post(
     data["person_id"] = person_id
     data["created"] = datetime.now(UTC)
     cur: Cursor = g.db.cursor()
-    insert_into_db(cur, table.__root__, data)
+    stmt = "INSERT INTO {} ({}) VALUES ({})".format(  # noqa: S608
+        table.__root__,
+        ",".join(data.keys()),
+        ",".join(["?"] * len(data)),
+    )
+    cur.execute(stmt, tuple(data.values()))
     g.db.commit()
     return "", 201
 
@@ -59,7 +63,11 @@ def patch(
     data["person_id"] = person_id
     data["created"] = datetime.now(UTC)
     cur: Cursor = g.db.cursor()
-    update_db(cur, table.__root__, data, item_id)
+    stmt = "UPDATE {} SET {} WHERE id = ?".format(  # noqa: S608
+        table.__root__,
+        ",".join(f"{k}=?" for k in data),
+    )
+    cur.execute(stmt, (*data.values(), item_id))
     g.db.commit()
     return "", 200
 

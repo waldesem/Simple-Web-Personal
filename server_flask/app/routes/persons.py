@@ -8,7 +8,6 @@ from flask import Blueprint, Response, current_app, g, jsonify
 
 from app.depends.depend import authorize, validize
 from app.models.model import Person
-from app.utilities.queries import insert_into_db, update_db
 
 if TYPE_CHECKING:
     import sqlite3
@@ -46,7 +45,11 @@ def post_person(json_data: Person) -> tuple[Response, Literal[201]]:
         data_dict = json_data.dict()
         data_dict["user_id"] = g.current_user["id"]
         data_dict["created"] = datetime.now(UTC)
-        cand_id = insert_into_db(cur, "persons", data_dict)
+        stmt = "INSERT INTO persons ({}) VALUES ({})".format(  # noqa: S608
+            ",".join(data_dict.keys()),
+            ",".join(["?"] * len(data_dict)),
+        )
+        cand_id = cur.execute(stmt, tuple(data_dict.values())).lastrowid
 
         if cand_id:
             destination = Path(
@@ -61,7 +64,10 @@ def post_person(json_data: Person) -> tuple[Response, Literal[201]]:
                 ).rstrip(),
             )
             destination.mkdir(parents=True, exist_ok=True)
-            update_db(cur, "persons", {"destination": str(destination)}, cand_id)
+            stmt = "UPDATE persons SET {} WHERE id = ?".format(  # noqa: S608
+                ",".join(f"{k}=?" for k in data_dict),
+            )
+            cur.execute(stmt, (*data_dict.values(), cand_id))
             g.db.commit()
     return jsonify({"person_id": cand_id}), 201
 
@@ -75,6 +81,9 @@ def patch_person(person_id: int, json_data: Person) -> tuple[Literal[""], Litera
     data["user_id"] = g.current_user["id"]
     data["created"] = datetime.now(UTC)
     cur: sqlite3.Cursor = g.db.cursor()
-    update_db(cur, "persons", data, person_id)
+    stmt = "UPDATE persons SET {} WHERE id = ?".format(  # noqa: S608
+        ",".join(f"{k}=?" for k in data),
+    )
+    cur.execute(stmt, (*data.values(), person_id))
     g.db.commit()
     return "", 200
