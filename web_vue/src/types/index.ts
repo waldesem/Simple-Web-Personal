@@ -37,7 +37,7 @@ export type ItemFields<T> = {
   key: keyof T;
   label: string;
   slot?: boolean;
-  div?: (row: T) => string;
+  foo?: (row: T) => string;
   component?: (row: T) => Component;
 };
 

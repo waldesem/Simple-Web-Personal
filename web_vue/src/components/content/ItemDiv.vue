@@ -53,7 +53,7 @@ const props = defineProps({
           <component v-if="field.component" :is="field.component(item)" />
           <slot v-else-if="field.slot" :name="field.key" />
           <span v-else>
-            {{ field.div ? field.div(item) : item[field.key] }}
+            {{ field.foo ? field.foo(item) : item[field.key] }}
           </span>
         </div>
       </div>

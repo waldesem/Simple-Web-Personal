@@ -10,7 +10,7 @@ export const person = [
   {
     key: "birthday",
     label: "Дата рождения",
-    div: (row) => localStr(row.birthday),
+    foo: (row) => localStr(row.birthday),
   },
   { key: "birthplace", label: "Место рождения" },
   { key: "citizenship", label: "Гражданство" },
@@ -19,7 +19,7 @@ export const person = [
   { key: "inn", label: "ИНН" },
   { key: "marital", label: "Семейное положение" },
   { key: "addition", label: "Дополнительная информация" },
-  { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
+  { key: "created", label: "Дата записи", foo: (row) => localStr(row.created) },
   { key: "destination", label: "Материалы проверок", slot: true },
 ] as ItemFields<Person>[];
 
@@ -72,7 +72,7 @@ const checks = [
       );
     },
   },
-  { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
+  { key: "created", label: "Дата записи", foo: (row) => localStr(row.created) },
 ] as ItemFields<Items["checks"]>[];
 
 const contacts = [
@@ -85,7 +85,7 @@ const documents = [
   { key: "series", label: "Серия документа" },
   { key: "digits", label: "Номер документа" },
   { key: "agency", label: "Кем выдан" },
-  { key: "issue", label: "Дата выдачи", div: (row) => localStr(row.issue) },
+  { key: "issue", label: "Дата выдачи", foo: (row) => localStr(row.issue) },
 ] as ItemFields<Items["documents"]>[];
 
 const educations = [
@@ -98,13 +98,13 @@ const educations = [
 const inquiries = [
   { key: "info", label: "Информация" },
   { key: "initiator", label: "Инициатор" },
-  { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
+  { key: "created", label: "Дата записи", foo: (row) => localStr(row.created) },
 ] as ItemFields<Items["inquiries"]>[];
 
 const investigations = [
   { key: "theme", label: "Тема проверки" },
   { key: "info", label: "Информация" },
-  { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
+  { key: "created", label: "Дата записи", foo: (row) => localStr(row.created) },
 ] as ItemFields<Items["investigations"]>[];
 
 const poligrafs = [
@@ -134,7 +134,7 @@ const poligrafs = [
       );
     },
   },
-  { key: "created", label: "Дата записи", div: (row) => localStr(row.created) },
+  { key: "created", label: "Дата записи", foo: (row) => localStr(row.created) },
 ] as ItemFields<Items["poligrafs"]>[];
 
 const previous = [
@@ -151,11 +151,11 @@ const staffs = [
 ] as ItemFields<Items["staffs"]>[];
 
 const workplaces = [
-  { key: "starts", label: "Начало работы", div: (row) => localStr(row.starts) },
+  { key: "starts", label: "Начало работы", foo: (row) => localStr(row.starts) },
   {
     key: "finished",
     label: "Окончание работы",
-    div: (row) => localStr(row.finished),
+    foo: (row) => localStr(row.finished),
   },
   { key: "workplace", label: "Место работы" },
   { key: "position", label: "Должность" },
