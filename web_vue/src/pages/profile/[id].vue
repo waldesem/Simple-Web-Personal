@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ky from "ky";
-import { shallowRef } from "vue";
+import { ref } from "vue";
 import { useAsyncState, useClipboard } from "@vueuse/core";
 import { person as PersonItem } from "@/schema/items";
 import { person as PersonForm } from "@/schema/forms";
@@ -9,83 +9,31 @@ import type { Navigations, Person } from "@/types";
 definePage({ meta: { layout: "UserLayout" }, props: true });
 
 const props = defineProps({
-  id: { type: String, required: true }, // ID кандидата из HomePage.vue
+  id: { type: String, required: true }, // ID кандидата из index.vue
 });
 
 const { copy, copied } = useClipboard();
 
-const modal = shallowRef(false); // Объявляем переменную модального окна
+const modal = ref(false); // Объявляем переменную модального окна
 
-const anketa = {
-  label: "Анкета",
-  icon: "i-mi-user",
-  slot: "person",
-};
+const anketa = { label: "Анкета", icon: "i-mi-user", slot: "person" };
 
 const tabs = [
-  {
-    label: "Проверки",
-    icon: "i-mi-document-check",
-    slot: "checks",
-  },
-  {
-    label: "Полиграф",
-    icon: "i-mi-heart",
-    slot: "poligrafs",
-  },
-  {
-    label: "Расследования",
-    icon: "i-mi-archive",
-    slot: "investigations",
-  },
-  {
-    label: "Запросы",
-    icon: "i-mi-comment",
-    slot: "inquiries",
-  },
+  { label: "Проверки", icon: "i-mi-document-check", slot: "checks" },
+  { label: "Полиграф", icon: "i-mi-heart", slot: "poligrafs" },
+  { label: "Расследования", icon: "i-mi-archive", slot: "investigations" },
+  { label: "Запросы", icon: "i-mi-comment", slot: "inquiries" },
 ] as Navigations[];
 
 const accordion = [
-  {
-    label: "Должности",
-    icon: "i-mi-laptop",
-    slot: "staffs",
-  },
-  {
-    label: "Образование",
-    icon: "i-mi-book",
-    slot: "educations",
-  },
-  {
-    label: "Места работы",
-    icon: "i-mi-computer",
-    slot: "workplaces",
-  },
-  {
-    label: "Документы",
-    icon: "i-mi-document",
-    slot: "documents",
-  },
-  {
-    label: "Адреса",
-    icon: "i-mi-home",
-    slot: "addresses",
-  },
-  {
-    label: "Контакты",
-    icon: "i-mi-call",
-    slot: "contacts",
-  },
-  {
-    label: "Изменения имени",
-    icon: "i-mi-edit",
-    slot: "previous",
-  },
-  {
-    label: "Аффилированность",
-    icon: "i-mi-users",
-    slot: "affilations",
-  },
+  { label: "Должности", icon: "i-mi-laptop", slot: "staffs" },
+  { label: "Образование", icon: "i-mi-book", slot: "educations" },
+  { label: "Места работы", icon: "i-mi-computer", slot: "workplaces" },
+  { label: "Документы", icon: "i-mi-document", slot: "documents" },
+  { label: "Адреса", icon: "i-mi-home", slot: "addresses" },
+  { label: "Контакты", icon: "i-mi-call", slot: "contacts" },
+  { label: "Изменения имени", icon: "i-mi-edit", slot: "previous" },
+  { label: "Аффилированность", icon: "i-mi-users", slot: "affilations" },
 ] as Navigations[];
 
 const { execute, state, isLoading } = useAsyncState<Person>(

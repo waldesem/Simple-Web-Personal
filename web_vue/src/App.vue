@@ -10,9 +10,7 @@ const layout = shallowRef(DefaultLayout);
 watch(
   () => route.meta.layout,
   async (metaLayout) => {
-    if (!metaLayout) {
-      layout.value = DefaultLayout;
-    } else {
+    if (metaLayout) {
       const component = await import(`@/components/layouts/${metaLayout}.vue`);
       layout.value = markRaw(component.default || DefaultLayout);
     }

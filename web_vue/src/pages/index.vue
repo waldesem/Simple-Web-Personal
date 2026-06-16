@@ -21,22 +21,10 @@ const search = shallowRef(""); // Поисковый запрос
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
 const columns: TableColumn<Person>[] = [
-  {
-    accessorKey: "id",
-    header: "#",
-  },
-  {
-    accessorKey: "surname",
-    header: "Фамилия",
-  },
-  {
-    accessorKey: "firstname",
-    header: "Имя",
-  },
-  {
-    accessorKey: "patronymic",
-    header: "Отчество",
-  },
+  { accessorKey: "id", header: "#" },
+  { accessorKey: "surname", header: "Фамилия" },
+  { accessorKey: "firstname", header: "Имя" },
+  { accessorKey: "patronymic", header: "Отчество" },
   {
     accessorKey: "birthday",
     header: "Дата рождения",
@@ -74,9 +62,7 @@ watch([debounced, limit], async () => {
   else page.value = 0;
 });
 
-watch(page, async () => {
-  await execute();
-});
+watch(page, async () => await execute());
 
 // Обработчик результата загрузки данных
 async function submit(form: Person) {
