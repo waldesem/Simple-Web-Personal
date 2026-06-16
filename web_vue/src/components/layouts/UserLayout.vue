@@ -26,7 +26,7 @@ const { state } = useAsyncState<Session>(
       </template>
       <template #default>
         <UButton
-          v-if="state"
+          v-if="state.id"
           active-class="font-bold"
           inactive-class="text-muted"
           color="neutral"
