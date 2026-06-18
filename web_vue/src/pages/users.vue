@@ -69,7 +69,6 @@ const columns: TableColumn<User>[] = [
         () =>
           h(Button, {
             icon: "i-mi-options-vertical",
-            color: "neutral",
             variant: "ghost",
           }),
       );
@@ -145,7 +144,6 @@ async function edit(action: Actions, id: string) {
         <UModal v-model:open="modal" title="Пользователь">
           <UButton
             :loading="isLoading"
-            color="neutral"
             icon="i-mi-user-add"
             size="xl"
             title="Добавить пользователя"
@@ -179,7 +177,7 @@ async function edit(action: Actions, id: string) {
         v-model:global-filter="globalFilter"
         :loading="isLoading"
         loading-animation="swing"
-        loading-color="info"
+        loading-color="secondary"
       />
     </UPageBody>
   </UContainer>

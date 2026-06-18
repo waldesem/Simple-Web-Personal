@@ -16,7 +16,7 @@ export default defineConfig({
       ui: {
         colors: {
           error: "red",
-          info: "purple",
+          info: "blue",
           neutral: "neutral",
           primary: "blue",
           secondary: "gray",
