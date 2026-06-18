@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { shallowRef, type PropType } from "vue";
+import { ref, type PropType } from "vue";
 import type { ItemFields } from "@/types";
 
 const emits = defineEmits(["update", "delete"]);
 
-const visible = shallowRef(false);
+const visible = ref(false);
 
 const props = defineProps({
   fields: {
@@ -16,6 +16,11 @@ const props = defineProps({
     default: () => ({}),
   },
 });
+
+const buttons = [
+  { icon: "i-mi-edit-alt", title: "Изменить", emit: "update" },
+  { icon: "i-mi-delete", title: "Удалить", emit: "delete" },
+] as { icon: string; title: string; emit: Parameters<typeof emits>[0] }[];
 </script>
 
 <template>
@@ -24,18 +29,13 @@ const props = defineProps({
       <div v-show="visible" class="relative">
         <UFieldGroup class="absolute right-1" size="sm">
           <UButton
+            v-for="(button, index) in buttons"
+            :key="index"
+            :icon="button.icon"
+            :title="button.title"
             color="neutral"
-            icon="i-mi-edit-alt"
-            title="Изменить"
             variant="outline"
-            @click="emits('update')"
-          />
-          <UButton
-            color="neutral"
-            icon="i-mi-delete"
-            title="Удалить"
-            variant="outline"
-            @click="emits('delete')"
+            @click="emits(button.emit)"
           />
         </UFieldGroup>
       </div>

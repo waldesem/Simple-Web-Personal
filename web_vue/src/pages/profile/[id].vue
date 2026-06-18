@@ -48,8 +48,8 @@ async function submit(form: Person) {
   const { status } = await ky.patch("/api/persons/" + props.id, {
     json: form,
   });
-  if (status !== 200) alert("Невозможно выполнить действие!");
   await execute();
+  if (status !== 200) alert("Невозможно выполнить действие!");
 }
 </script>
 
