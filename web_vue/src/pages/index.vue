@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ky from "ky";
 import { ref, watch } from "vue";
-import { refDebounced, useAsyncState } from "@vueuse/core";
+import { refDebounced, useAsyncState, useFileDialog } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { TableColumn, TableRow } from "@nuxt/ui";
 import { localStr, timeAgoStr } from "@/utils";
@@ -19,6 +19,11 @@ const page = ref(0); // Страница таблицы
 const search = ref(""); // Поисковый запрос
 
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
+
+const { open, onChange } = useFileDialog({
+  accept: "*.json",
+  multiple: false,
+});
 
 const columns: TableColumn<Person>[] = [
   { accessorKey: "id", header: "#" },
@@ -74,12 +79,32 @@ async function submit(form: Person) {
     else alert("Анкета уже существует!");
   } else alert("Невозможно выполнить действие!");
 }
+
+onChange(async (files) => {
+  if (files) {
+    const str = (await files?.[0].text()) as string;
+    const resp = await ky.post("/api/json", { json: JSON.parse(str) });
+    if (resp.status === 201) {
+      const { person_id } = (await resp.json()) as { person_id: string | null };
+      if (person_id) router.push("profile/" + person_id);
+      else alert("Анкета уже существует!");
+    } else alert("Невозможно выполнить действие!");
+  }
+});
 </script>
 
 <template>
   <UContainer>
     <UPageHeader title="КАНДИДАТЫ">
       <template #links>
+        <UButton
+          icon="i-mi-upload"
+          size="xl"
+          title="Загрузить файл"
+          variant="ghost"
+          :loading="isLoading"
+          @click="open()"
+        />
         <!-- Модальное окно для добавления анкеты -->
         <UModal
           v-model:open="modal"

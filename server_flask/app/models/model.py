@@ -289,3 +289,71 @@ class ItemsModels(BaseModel):
         | Staff
         | Workplace
     ) = Field(..., discriminator="comparator")
+
+
+class EducationJson(BaseModel):
+    """Education json model."""
+
+    view: str = Field(alias="educationType")
+    institution: str = Field(alias="institutionName")
+    finished: str | None = Field(default=None, alias="endYear")
+    specialty: str | None = Field(None, alias="educationType")
+
+
+class PrevJson(BaseModel):
+    """Previous in schema."""
+
+    surname: str | None = None
+    firstname: str | None = None
+    patronymic: str | None = None
+    changed: str | None = None
+    reason: str | None = None
+
+
+class WorkplaceJson(BaseModel):
+    """Workplaces json model."""
+
+    now_work: bool = Field(default=False, alias="currentJob")
+    starts: date = Field(alias="beginDate")
+    finished: date | None = Field(default=None, alias="endDate")
+    workplace: str = Field(alias="name")
+    address: str | None = Field(None)
+    position: str
+    reason: str | None = Field(default=None, alias="fireReason")
+
+
+class AffilationJson(BaseModel):
+    """Affilation json model."""
+
+    view: str | None = Field(default=None, alias="activity")
+    organization: str = Field(alias="name")
+    inn: str | None = Field(None)
+
+
+class AnketaJson(BaseModel):
+    """Candidate anketa schema."""
+
+    surname: str = Field(alias="lastName")
+    firstname: str = Field(alias="firstName")
+    patronymic: str | None = Field(default=None, alias="midName")
+    birthday: date
+    birthplace: str | None = None
+    citizenship: str | None = Field(default=None, alias="citizen")
+    dual: str | None = Field(default=None, alias="additionalCitizenship")
+    snils: str | None = None
+    inn: str | None = None
+    marital: str | None = Field(default=None, alias="maritalStatus")
+    email: str | None = None
+    department: str | None = None
+    position: str = Field(alias="positionName")
+    series: str | None = Field(default=None, alias="passportSerial")
+    digits: str = Field(alias="passportNumber")
+    issue: date | None = Field(default=None, alias="passportIssueDate")
+    agency: str | None = Field(default=None, alias="passportIssuedBy")
+    valid_address: str | None = Field(None, alias="validAddress")
+    reg_address: str | None = Field(None, alias="regAddress")
+    contact_phone: str | None = Field(None, alias="contactPhone")
+    education: list[EducationJson] = []
+    experience: list[WorkplaceJson] = []
+    name_was_changed: list[PrevJson] = Field(default=[], alias="nameWasChanged")
+    organizations: list[AffilationJson] = []
