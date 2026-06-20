@@ -4,6 +4,7 @@ import { ref, watch } from "vue";
 import { refDebounced, useAsyncState, useFileDialog } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { TableColumn, TableRow } from "@nuxt/ui";
+import { useToasts } from "@/composables";
 import { localStr, timeAgoStr } from "@/utils";
 import { person as PersonForm } from "@/schema/forms";
 import type { Person } from "@/types";
@@ -11,6 +12,9 @@ import type { Person } from "@/types";
 definePage({ meta: { layout: "UserLayout" } });
 
 const router = useRouter();
+
+const toast = useToast();
+const toasts = useToasts(toast);
 
 const hasNext = ref(false); // Состояние наличия следующей страницы
 const limit = ref(10); // Количество записей на странице
@@ -59,6 +63,9 @@ const { execute, isLoading, state } = useAsyncState<Person[]>(
       hasNext.value = data.length > limit.value;
       data = hasNext.value ? data.slice(0, limit.value) : data;
     },
+    onError(error) {
+      toasts.create("error", error as string);
+    },
   },
 );
 
@@ -69,26 +76,31 @@ watch([debounced, limit], async () => {
 
 watch(page, async () => await execute());
 
+function addToast(person_id: string | null) {
+  if (person_id) {
+    toasts.create("success", "Анкета успешно добавлена!");
+    router.push("profile/" + person_id);
+  } else toasts.create("secondary", "Возможно, анкета уже существует!");
+}
+
 // Обработчик результата загрузки данных
 async function submit(form: Person) {
   modal.value = false;
   const resp = await ky.post("/api/persons/", { json: form });
   if (resp.status === 201) {
     const { person_id } = (await resp.json()) as { person_id: string | null };
-    if (person_id) router.push("profile/" + person_id);
-    else alert("Анкета уже существует!");
-  } else alert("Невозможно выполнить действие!");
+    addToast(person_id);
+  } else toasts.create();
 }
 
 onChange(async (files) => {
   if (files) {
     const str = (await files?.[0].text()) as string;
-    const resp = await ky.post("/api/json", { json: JSON.parse(str) });
+    const resp = await ky.post("/api/persons/json", { json: JSON.parse(str) });
     if (resp.status === 201) {
       const { person_id } = (await resp.json()) as { person_id: string | null };
-      if (person_id) router.push("profile/" + person_id);
-      else alert("Анкета уже существует!");
-    } else alert("Невозможно выполнить действие!");
+      addToast(person_id);
+    } else toasts.create();
   }
 });
 </script>
@@ -98,7 +110,7 @@ onChange(async (files) => {
     <UPageHeader title="КАНДИДАТЫ">
       <template #links>
         <UButton
-          icon="i-mi-upload"
+          icon="i-mi-cloud-upload"
           size="xl"
           title="Загрузить файл"
           variant="ghost"

@@ -3,12 +3,16 @@ import ky from "ky";
 import { h, resolveComponent, shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { TableColumn } from "@nuxt/ui";
+import { useToasts } from "@/composables";
 import { localStr } from "@/utils";
 import { user as formUser } from "@/schema/forms";
 import type { Row } from "@tanstack/vue-table";
 import { Actions, type User } from "@/types";
 
 definePage({ meta: { layout: "AdminLayout" } });
+
+const toast = useToast();
+const toasts = useToasts(toast);
 
 // Определяем переменные для работы с данными
 const globalFilter = shallowRef("");
@@ -68,6 +72,7 @@ const columns: TableColumn<User>[] = [
         },
         () =>
           h(Button, {
+            color: "neutral",
             icon: "i-mi-options-vertical",
             variant: "ghost",
           }),
@@ -111,6 +116,11 @@ function getRowItems(row: Row<User>) {
 const { execute, isLoading, state } = useAsyncState<User[]>(
   async () => await ky.get("/api/users/").json(),
   [],
+  {
+    onError(err) {
+      toasts.create("error", err as string);
+    },
+  },
 );
 
 async function submit(form: User) {
@@ -121,8 +131,8 @@ async function submit(form: User) {
   user.value = {} as User;
   if (resp.status === 201) {
     await execute();
-    alert("Пользователь успешно добавлен");
-  } else alert("Невозможно выполнить действие!");
+    toasts.create("success", "Пользователь успешно добавлен!");
+  } else toasts.create();
 }
 
 // Объявляем функцию для действия с пользователем
@@ -133,7 +143,8 @@ async function edit(action: Actions, id: string) {
   });
   if (resp.status === 200) {
     await execute();
-  } else alert("Невозможно выполнить действие!");
+    toasts.create("success", "Действие выполнено!");
+  } else toasts.create();
 }
 </script>
 
@@ -144,6 +155,7 @@ async function edit(action: Actions, id: string) {
         <UModal v-model:open="modal" title="Пользователь">
           <UButton
             :loading="isLoading"
+            color="neutral"
             icon="i-mi-user-add"
             size="xl"
             title="Добавить пользователя"

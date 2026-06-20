@@ -2,6 +2,7 @@
 import ky from "ky";
 import { type PropType, shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
+import { useToasts } from "@/composables";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
 import type { Items } from "@/types";
@@ -19,9 +20,17 @@ const props = defineProps({
   },
 });
 
+const toast = useToast();
+const toasts = useToasts(toast);
+
 const { execute, state, isLoading } = useAsyncState<Items[keyof Items][]>(
   async () => await ky.get(`/api/items/${props.view}/${props.candId}`).json(),
   [],
+  {
+    onError(err) {
+      toasts.create("error", err as string);
+    },
+  },
 );
 
 const item = shallowRef({} as Items[keyof Items]);
@@ -43,9 +52,12 @@ async function submitItem(form: typeof item.value) {
   );
   await execute();
   item.value = {} as typeof item.value;
-  if (status !== 201 && status !== 200) alert("Невозможно выполнить действие!");
+  if (status !== 201 && status !== 200) toasts.create();
   else if (method.value === "POST") {
+    toasts.create("success", "Запись успешно добавлена!");
     window.scrollTo({ top: 0, behavior: "smooth" });
+  } else {
+    toasts.create("info", "Запись обновлена!");
   }
 }
 
@@ -53,8 +65,10 @@ async function submitItem(form: typeof item.value) {
 async function deleteItem(itemId: string, index: number) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
   const { status } = await ky.delete(`/api/items/${props.view}/${itemId}`);
-  if (status === 204) state.value.splice(index, 1);
-  else alert("Невозможно выполнить действие!");
+  if (status === 204) {
+    toasts.create("success", "Запись удалена!");
+    state.value.splice(index, 1);
+  } else toasts.create();
 }
 </script>
 

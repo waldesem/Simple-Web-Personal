@@ -2,6 +2,7 @@
 import ky from "ky";
 import { ref } from "vue";
 import { useAsyncState, useClipboard } from "@vueuse/core";
+import { useToasts } from "@/composables";
 import { person as PersonItem } from "@/schema/items";
 import { person as PersonForm } from "@/schema/forms";
 import type { Navigations, Person } from "@/types";
@@ -11,6 +12,9 @@ definePage({ meta: { layout: "UserLayout" }, props: true });
 const props = defineProps({
   id: { type: String, required: true }, // ID кандидата из index.vue
 });
+
+const toast = useToast();
+const toasts = useToasts(toast);
 
 const { copy, copied } = useClipboard();
 
@@ -39,6 +43,11 @@ const accordion = [
 const { execute, state, isLoading } = useAsyncState<Person>(
   async () => await ky.get("/api/persons/" + props.id).json(),
   {} as Person,
+  {
+    onError(err) {
+      toasts.create("error", err as string);
+    },
+  },
 );
 
 // Определяем функцию для отправки данных формы на сервер
@@ -49,7 +58,10 @@ async function submit(form: Person) {
     json: form,
   });
   await execute();
-  if (status !== 200) alert("Невозможно выполнить действие!");
+  if (status !== 200) toasts.create();
+  else {
+    toasts.create("info", "Данные обновлены!");
+  }
 }
 </script>
 

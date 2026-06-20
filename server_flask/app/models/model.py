@@ -330,7 +330,7 @@ class AffilationJson(BaseModel):
     inn: str | None = Field(None)
 
 
-class AnketaJson(BaseModel):
+class Anketa(BaseModel):
     """Candidate anketa schema."""
 
     surname: str = Field(alias="lastName")
