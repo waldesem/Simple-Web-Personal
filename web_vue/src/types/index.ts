@@ -61,6 +61,19 @@ export interface Navigations extends AccordionItem {
   slot: keyof Items;
 }
 
+export interface Auth {
+  message: string;
+  access_token: string;
+  refresh_token: string;
+}
+
+export interface Login {
+  username: string;
+  password: string;
+  new_pswd: string;
+  conf_pswd: string;
+}
+
 export interface Session {
   id: string;
   fullname: string;
