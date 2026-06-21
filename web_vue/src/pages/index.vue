@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ky from "ky";
+import ky, { isKyError } from "ky";
 import { ref, watch } from "vue";
 import { refDebounced, useAsyncState, useFileDialog } from "@vueuse/core";
 import { useRouter } from "vue-router";
@@ -86,11 +86,17 @@ function addToast(person_id: string | null) {
 // Обработчик результата загрузки данных
 async function submit(form: Person) {
   modal.value = false;
-  const resp = await ky.post("/api/persons/", { json: form });
-  if (resp.status === 201) {
-    const { person_id } = (await resp.json()) as { person_id: string | null };
-    addToast(person_id);
-  } else toasts.create();
+  try {
+    const resp = await ky.post("/api/persons/", { json: form });
+    if (resp.status === 201) {
+      const { person_id } = (await resp.json()) as { person_id: string | null };
+      addToast(person_id);
+    } else toasts.create();
+  } catch (error) {
+    if (isKyError(error)) {
+      toasts.create("error", error.message);
+    }
+  }
 }
 
 onChange(async (files) => {
@@ -159,7 +165,7 @@ onChange(async (files) => {
         loading-animation="swing"
         loading-color="error"
         @select="
-          (_: Event, row: TableRow<Person>) =>
+          (_, row: TableRow<Person>) =>
             router.push('/profile/' + row.original.id)
         "
       />
@@ -167,9 +173,9 @@ onChange(async (files) => {
       <!-- Время последнего обновления -->
       <UButton
         v-show="state.length"
+        :loading="isLoading"
         icon="i-mi-refresh"
         label="Обновить"
-        :loading="isLoading"
         size="sm"
         title="Обновить"
         variant="ghost"

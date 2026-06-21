@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ky from "ky";
+import ky, { isKyError } from "ky";
 import { ref } from "vue";
 import { useAsyncState, useClipboard } from "@vueuse/core";
 import { useToasts } from "@/composables";
@@ -54,13 +54,19 @@ const { execute, state, isLoading } = useAsyncState<Person>(
 async function submit(form: Person) {
   modal.value = false;
   isLoading.value = true;
-  const { status } = await ky.patch("/api/persons/" + props.id, {
-    json: form,
-  });
-  await execute();
-  if (status !== 200) toasts.create();
-  else {
-    toasts.create("info", "Данные обновлены!");
+  try {
+    const { status } = await ky.patch("/api/persons/" + props.id, {
+      json: form,
+    });
+    await execute();
+    if (status !== 200) toasts.create();
+    else {
+      toasts.create("info", "Данные обновлены!");
+    }
+  } catch (error) {
+    if (isKyError(error)) {
+      toasts.create("error", error.message);
+    }
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ky from "ky";
+import ky, { isKyError } from "ky";
 import { h, resolveComponent, shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { TableColumn } from "@nuxt/ui";
@@ -125,26 +125,38 @@ const { execute, isLoading, state } = useAsyncState<User[]>(
 
 async function submit(form: User) {
   modal.value = false;
-  const url =
-    "/api/users" + (method.value === "POST" ? "/" : "/" + user.value.id);
-  const resp = await ky(url, { method: method.value, json: form });
-  user.value = {} as User;
-  if (resp.status === 201) {
-    await execute();
-    toasts.create("success", "Пользователь успешно добавлен!");
-  } else toasts.create();
+  try {
+    const url =
+      "/api/users" + (method.value === "POST" ? "/" : "/" + user.value.id);
+    const resp = await ky(url, { method: method.value, json: form });
+    user.value = {} as User;
+    if (resp.status === 201) {
+      await execute();
+      toasts.create("success", "Пользователь успешно добавлен!");
+    } else toasts.create();
+  } catch (error) {
+    if (isKyError(error)) {
+      toasts.create("error", error.message);
+    }
+  }
 }
 
 // Объявляем функцию для действия с пользователем
 async function edit(action: Actions, id: string) {
   if (!confirm("Подтвердить действие?")) return;
-  const resp = await ky.get("/api/users/" + id, {
-    searchParams: { action: action },
-  });
-  if (resp.status === 200) {
-    await execute();
-    toasts.create("success", "Действие выполнено!");
-  } else toasts.create();
+  try {
+    const resp = await ky.get("/api/users/" + id, {
+      searchParams: { action: action },
+    });
+    if (resp.status === 200) {
+      await execute();
+      toasts.create("success", "Действие выполнено!");
+    } else toasts.create();
+  } catch (error) {
+    if (isKyError(error)) {
+      toasts.create("error", error.message);
+    }
+  }
 }
 </script>
 

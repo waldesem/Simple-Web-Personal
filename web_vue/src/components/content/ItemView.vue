@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ky from "ky";
+import ky, { isKyError } from "ky";
 import { type PropType, shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { useToasts } from "@/composables";
@@ -42,33 +42,45 @@ const visible = shallowRef(false);
 async function submitItem(form: typeof item.value) {
   modal.value = false;
   isLoading.value = true;
-  const url = `/api/items/${props.view}/${props.candId}`;
-  const { status } = await ky(
-    method.value === "POST" ? url : url + "/" + item.value.id,
-    {
-      method: method.value,
-      json: { comparator: props.view, ...form },
-    },
-  );
-  await execute();
-  item.value = {} as typeof item.value;
-  if (status !== 201 && status !== 200) toasts.create();
-  else if (method.value === "POST") {
-    toasts.create("success", "Запись успешно добавлена!");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  } else {
-    toasts.create("info", "Запись обновлена!");
+  try {
+    const url = `/api/items/${props.view}/${props.candId}`;
+    const resp = await ky(
+      method.value === "POST" ? url : url + "/" + item.value.id,
+      {
+        method: method.value,
+        json: { comparator: props.view, ...form },
+      },
+    );
+    await execute();
+    item.value = {} as typeof item.value;
+    if (!resp.ok) toasts.create();
+    else if (method.value === "POST") {
+      toasts.create("success", "Запись успешно добавлена!");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      toasts.create("info", "Запись обновлена!");
+    }
+  } catch (error) {
+    if (isKyError(error)) {
+      toasts.create("error", error.message);
+    }
   }
 }
 
 // Определяем функцию для удаления данных
 async function deleteItem(itemId: string, index: number) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
-  const { status } = await ky.delete(`/api/items/${props.view}/${itemId}`);
-  if (status === 204) {
-    toasts.create("success", "Запись удалена!");
-    state.value.splice(index, 1);
-  } else toasts.create();
+  try {
+    const { status } = await ky.delete(`/api/items/${props.view}/${itemId}`);
+    if (status === 204) {
+      toasts.create("success", "Запись удалена!");
+      state.value.splice(index, 1);
+    } else toasts.create();
+  } catch (error) {
+    if (isKyError(error)) {
+      toasts.create("error", error.message);
+    }
+  }
 }
 </script>
 
