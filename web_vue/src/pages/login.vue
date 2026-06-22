@@ -19,16 +19,13 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
   const resp = await ky("/routes/auth/login", {
     method: method.value,
     json: payload.data,
-  }).catch((error) => {
-    if (error.data.status_code === 401) {
-      alerts.create(
-        "error",
-        "Неправильный логин или пароль. Попробуйте еще раз.",
-      );
-    } else console.error(error.data);
-    alerts.create("error", "Ошибка соединения с сервером.");
   });
-  if (resp?.status === 200) {
+  if (resp.status === 401) {
+    alerts.create(
+      "error",
+      "Неправильный логин или пароль. Попробуйте еще раз.",
+    );
+  } else if (resp?.status === 200) {
     method.value = "POST";
     alerts.create(
       "success",
@@ -37,17 +34,12 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
   } else if (resp?.status === 201) {
     const { message } = (await resp.json()) as Auth;
     if (message === "success") {
-      return router.push("/persons");
+      return router.push("/index");
     } else {
       alerts.create("warning", "Пароль просрочен. Измените пароль.");
       method.value = "PATCH";
     }
-  } else {
-    alerts.create(
-      "error",
-      "Неправильный логин или пароль. Попробуйте еще раз.",
-    );
-  }
+  } else alerts.create();
 }
 </script>
 

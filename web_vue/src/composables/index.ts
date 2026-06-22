@@ -35,7 +35,7 @@ export function useAlert() {
 
   function create(
     status: AlertProps["color"] = "error",
-    description: string = "Невозможно выполнить действие!",
+    description: string = "Неизвестная ошибка.",
   ) {
     alert.value = {
       icon: context[status][1],
