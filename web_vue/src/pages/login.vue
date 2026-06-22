@@ -2,9 +2,9 @@
 import ky from "ky";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import type { AuthFormField, FormSubmitEvent } from "@nuxt/ui";
+import type { FormSubmitEvent } from "@nuxt/ui";
 import { useAlert } from "@/composables";
-import { login, register } from "@/schema/forms";
+import { auth, validate } from "@/schema/forms";
 import type { Auth, Login } from "@/types";
 
 const router = useRouter();
@@ -13,44 +13,6 @@ const alerts = useAlert();
 
 // Объявляем переменные для формы и состояния
 const method = ref<"POST" | "PATCH">("POST");
-
-const fieldsLogin: AuthFormField[] = [
-  {
-    name: "username",
-    label: "Имя пользователя",
-    placeholder: "Имя пользователя",
-    icon: "i-lucide-user",
-    type: "text",
-    required: true,
-  },
-  {
-    name: "password",
-    label: "Пароль",
-    placeholder: "Пароль",
-    icon: "i-lucide-lock",
-    type: "password",
-    required: true,
-  },
-];
-
-const fieldsUpdate = fieldsLogin.concat([
-  {
-    name: "new_pswd",
-    label: "Новый пароль",
-    placeholder: "Новый пароль",
-    icon: "i-lucide-lock",
-    type: "password",
-    required: true,
-  },
-  {
-    name: "conf_pswd",
-    label: "Подтверждение пароля",
-    placeholder: "Подтверждение пароля",
-    icon: "i-lucide-lock",
-    type: "password",
-    required: true,
-  },
-]);
 
 // Объявляем функцию для отправки формы
 async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
@@ -93,9 +55,9 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
   <UPageCard class="w-full max-w-md m-auto my-[20vh]">
     <UAuthForm
       description="Доступ в систему кадровой безопасности."
-      icon="i-lucide-user-lock"
-      :validate="method === 'POST' ? login : register"
-      :fields="method == 'POST' ? fieldsLogin : fieldsUpdate"
+      icon="i-mi-lock"
+      :validate="validate[method]"
+      :fields="auth[method]"
       :submit="{
         label: method === 'POST' ? 'Войти' : 'Изменить',
         color: 'success',

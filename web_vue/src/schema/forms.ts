@@ -1,8 +1,47 @@
 import { Conclusions, Decisions, Roles } from "@/types";
 import type { Items, FormFields, User, Person, Login } from "@/types";
-import { FormError } from "@nuxt/ui";
+import { AuthFormField, FormError } from "@nuxt/ui";
 
-export function login(state: Partial<Login>): FormError[] {
+const login: AuthFormField[] = [
+  {
+    name: "username",
+    label: "Имя пользователя",
+    icon: "i-mi-user",
+    type: "text",
+    required: true,
+  },
+  {
+    name: "password",
+    label: "Пароль",
+    icon: "i-mi-lock",
+    type: "password",
+    required: true,
+  },
+];
+
+const register = login.concat([
+  {
+    name: "new_pswd",
+    label: "Новый пароль",
+    icon: "i-mi-lock",
+    type: "password",
+    required: true,
+  },
+  {
+    name: "conf_pswd",
+    label: "Подтверждение пароля",
+    icon: "i-mi-lock",
+    type: "password",
+    required: true,
+  },
+]);
+
+export const auth = {
+  POST: login,
+  PATCH: register,
+};
+
+function validateLog(state: Partial<Login>): FormError[] {
   const errors = [];
   if (!state.username)
     errors.push({ name: "username", message: "Обязательное поле!" });
@@ -11,12 +50,8 @@ export function login(state: Partial<Login>): FormError[] {
   return errors;
 }
 
-export function register(state: Partial<Login>): FormError[] {
-  const errors = [];
-  if (!state.username)
-    errors.push({ name: "username", message: "Обязательное поле!" });
-  if (!state.password)
-    errors.push({ name: "password", message: "Обязательное поле!" });
+function validateReg(state: Partial<Login>): FormError[] {
+  const errors = validateLog(state);
   if (!state.new_pswd)
     errors.push({ name: "new_pswd", message: "Обязательное поле!" });
   if (!state.conf_pswd)
@@ -24,8 +59,7 @@ export function register(state: Partial<Login>): FormError[] {
   if (state.new_pswd?.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,16}$/))
     errors.push({
       name: "new_pswd",
-      message:
-        "От 8 до 16 символов, минимум 1 заглавная и 1 строчная буква и 1 цифра",
+      message: "От 8 до 16 символов: заглавные и строчные буквы, цифры",
     });
   if (state.password === state.new_pswd)
     errors.push({
@@ -39,6 +73,11 @@ export function register(state: Partial<Login>): FormError[] {
     });
   return errors;
 }
+
+export const validate = {
+  POST: validateLog,
+  PATCH: validateReg,
+};
 
 export const user = [
   {
