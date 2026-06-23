@@ -6,6 +6,7 @@ import type { FormSubmitEvent } from "@nuxt/ui";
 import { useAlert } from "@/composables";
 import { auth, validate } from "@/schema/forms";
 import type { Auth, Login } from "@/types";
+import { access, refresh } from "@/state";
 
 const router = useRouter();
 
@@ -32,8 +33,11 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
       "Пароль успешно изменен. Войдите с новым паролем.",
     );
   } else if (resp?.status === 201) {
-    const { message } = (await resp.json()) as Auth;
+    const { message, access_token, refresh_token } =
+      (await resp.json()) as Auth;
     if (message === "success") {
+      access.value = access_token;
+      refresh.value = refresh_token;
       return router.push("/index");
     } else {
       alerts.create("warning", "Пароль просрочен. Измените пароль.");
