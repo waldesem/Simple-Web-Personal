@@ -24,8 +24,8 @@ export const api = ky.extend({
     ],
     afterResponse: [
       async ({ request, response, retryCount }) => {
-        if (response.status === 401) {
-          if (retryCount === 0) {
+        if (!response.ok) {
+          if (response.status === 401 && retryCount === 0) {
             const { access_token } = await ky
               .post<Auth>("/api/auth/refresh", { json: refresh.value })
               .json();
@@ -37,8 +37,9 @@ export const api = ky.extend({
             return ky.retry({
               request: new Request(request, { headers }),
             });
-          } else router.push("login");
-        } else if (!response.ok) router.push("login");
+          }
+          router.push("login");
+        }
       },
     ],
   },

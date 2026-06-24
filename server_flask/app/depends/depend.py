@@ -9,6 +9,7 @@ from flask import abort, current_app, g, request
 from pydantic import ValidationError
 
 from app.classes.enums import Roles
+from app.utilities.utils import decode_token  # noqa: F401
 
 if TYPE_CHECKING:
     import sqlite3
@@ -27,7 +28,7 @@ def get_user(username: str) -> dict | None:
     return dict(user) if user else None
 
 
-def authorize(role: Roles | None = None, *, refresh: bool = False) -> Callable:  # noqa: ARG001
+def authorize(role: Roles | None = None) -> Callable:
     """Decorate a function that checks a user."""
 
     def decorator(func: Callable) -> Callable:
@@ -35,18 +36,11 @@ def authorize(role: Roles | None = None, *, refresh: bool = False) -> Callable: 
         def wrapper(*args: tuple, **kwargs: dict) -> Callable:
             username = getpass.getuser()
             user = get_user(username)
-            # token = (
-            #     request.get_json()["refresh_token"]
-            #     if refresh
-            #     else request.headers["Authorization"]
-            # )
-            # if (decoded := decode_token(token, refresh=refresh)) and (
-            #     user := get_current_user(decoded["id"])
+            # header = request.headers["Authorization"]
+            # if (decoded := decode_token(header[7:])) and (
+            #     user := get_user(decoded["id"])
             # ):
             #     g.user = user
-            # else:
-            # if refresh:
-            #     abort(400)
             # else:
             #     abort(401)
 

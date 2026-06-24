@@ -64,11 +64,11 @@ def create_token(user_id: int, item: str = "ACCESS") -> str:
     )
 
 
-def decode_token(header: str, *, refresh: bool = False) -> dict | None:
+def decode_token(token: str, *, refresh: bool = False) -> dict | None:
     """Decode JWT token and return payload."""
     try:
         return jwt.decode(
-            header[7:],
+            token,
             current_app.config[f"{'REFRESH' if refresh else 'ACCESS'}_SECRET_KEY"],
             algorithms=["HS256"],
             options={"verify_exp": True},

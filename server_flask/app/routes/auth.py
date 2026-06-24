@@ -3,12 +3,12 @@
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Literal
 
-from flask import Blueprint, Response, g, jsonify
+from flask import Blueprint, Response, abort, g, jsonify, request
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.depends.depend import authorize, validize
 from app.models.model import Login, Update
-from app.utilities.utils import create_token
+from app.utilities.utils import create_token, decode_token
 
 if TYPE_CHECKING:
     import sqlite3
@@ -94,15 +94,16 @@ def patch_login(json_data: Update) -> tuple[Response, Literal[200]]:
 
 
 @bp.post("/refresh")
-@authorize(refresh=True)
 def refresh_token() -> tuple[Response, Literal[201]]:
     """Refresh the access token."""
-    return jsonify(
-        {
-            "message": "success",
-            "access_token": create_token(g.current_user.id),
-        },
-    ), 201
+    refresh_token = request.get_json()
+    if decoded := decode_token(refresh_token, refresh=True):
+        return jsonify(
+            {
+                "access_token": create_token(decoded["id"]),
+            },
+        ), 201
+    return abort(400)
 
 
 @bp.get("/session")
