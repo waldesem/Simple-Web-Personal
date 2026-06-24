@@ -24,7 +24,7 @@ export const api = ky.extend({
     ],
     afterResponse: [
       async ({ request, response, retryCount }) => {
-        if (response.status === 400) {
+        if (response.status === 401) {
           if (retryCount === 0) {
             const { access_token } = await ky
               .post<Auth>("/api/auth/refresh", { json: refresh.value })

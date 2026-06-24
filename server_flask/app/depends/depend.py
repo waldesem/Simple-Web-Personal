@@ -45,6 +45,9 @@ def authorize(role: Roles | None = None, *, refresh: bool = False) -> Callable: 
             # ):
             #     g.user = user
             # else:
+            # if refresh:
+            #     abort(400)
+            # else:
             #     abort(401)
 
             if not user or user["blocked"] or user["deleted"]:
