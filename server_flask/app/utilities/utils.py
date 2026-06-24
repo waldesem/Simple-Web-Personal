@@ -1,5 +1,11 @@
 """Utils."""
 
+from datetime import UTC, datetime, timedelta
+
+import jwt
+from flask import current_app
+
+
 def validate_inn(inn: str | None) -> str | None:
     """Check inn."""
     if not inn:
@@ -43,3 +49,29 @@ def validate_snils(snils: str | None) -> str | None:
     if calculated_sum == check_sum:
         return snils
     return "CORRUPTED!"
+
+
+def create_token(user_id: int, item: str = "ACCESS") -> str:
+    """Create token."""
+    return jwt.encode(
+        {
+            "id": user_id,
+            "exp": datetime.now(UTC)
+            + timedelta(minutes=current_app.config[f"{item}_SECRET_KEY_LIVE"]),
+        },
+        current_app.config[f"{item}_SECRET_KEY"],
+        algorithm="HS256",
+    )
+
+
+def decode_token(header: str, *, refresh: bool = False) -> dict | None:
+    """Decode JWT token and return payload."""
+    try:
+        return jwt.decode(
+            header[7:],
+            current_app.config[f"{'REFRESH' if refresh else 'ACCESS'}_SECRET_KEY"],
+            algorithms=["HS256"],
+            options={"verify_exp": True},
+        )
+    except (jwt.exceptions.InvalidTokenError, IndexError, AttributeError):
+        return None

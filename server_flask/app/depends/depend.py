@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, get_type_hints
 from flask import abort, current_app, g, request
 from pydantic import ValidationError
 
+from app.classes.enums import Roles
+
 if TYPE_CHECKING:
     import sqlite3
 
@@ -25,7 +27,7 @@ def get_user(username: str) -> dict | None:
     return dict(user) if user else None
 
 
-def authorize() -> Callable:
+def authorize(role: Roles | None = None, *, refresh: bool = False) -> Callable:  # noqa: ARG001
     """Decorate a function that checks a user."""
 
     def decorator(func: Callable) -> Callable:
@@ -33,10 +35,26 @@ def authorize() -> Callable:
         def wrapper(*args: tuple, **kwargs: dict) -> Callable:
             username = getpass.getuser()
             user = get_user(username)
+            # token = (
+            #     request.get_json()["refresh_token"]
+            #     if refresh
+            #     else request.headers["Authorization"]
+            # )
+            # if (decoded := decode_token(token, refresh=refresh)) and (
+            #     user := get_current_user(decoded["id"])
+            # ):
+            #     g.user = user
+            # else:
+            #     abort(401)
+
             if not user or user["blocked"] or user["deleted"]:
-                current_app.logger.warning("User %s is blocked or deleted", username)
                 return abort(401)
+
+            if role and user["role"] != role:
+                return abort(403)
+
             g.current_user = user
+
             return func(*args, **kwargs)
 
         return wrapper

@@ -21,28 +21,23 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
     method: method.value,
     json: payload.data,
   });
-  if (resp.status === 401) {
-    alerts.create(
-      "error",
-      "Неправильный логин или пароль. Попробуйте еще раз.",
-    );
-  } else if (resp?.status === 200) {
-    method.value = "POST";
-    alerts.create(
-      "success",
-      "Пароль успешно изменен. Войдите с новым паролем.",
-    );
-  } else if (resp?.status === 201) {
+  if (resp.ok) {
     const { message, access_token, refresh_token } =
       (await resp.json()) as Auth;
     if (message === "success") {
       access.value = access_token;
       refresh.value = refresh_token;
       return router.push("/index");
-    } else {
-      alerts.create("warning", "Пароль просрочен. Измените пароль.");
+    } else if (message === "denied") {
+      alerts.create("warning", "Требуется смена пароля.");
       method.value = "PATCH";
-    }
+    } else if (message === "updated") {
+      method.value = "POST";
+      alerts.create(
+        "success",
+        "Пароль успешно изменен. Войдите с новым паролем.",
+      );
+    } else alerts.create("error", "Ошибочный логин или паролью");
   } else alerts.create();
 }
 </script>

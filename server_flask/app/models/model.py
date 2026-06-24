@@ -59,6 +59,20 @@ class Action(BaseModel):
     action: Literal["block", "reset", "delete"]
 
 
+class Login(BaseModel):
+    """Login."""
+
+    username: str
+    password: str
+
+
+class Update(Login):
+    """Update."""
+
+    new_pswd: str
+    conf_pswd: str
+
+
 class Query(BaseModel):
     """Query model."""
 
