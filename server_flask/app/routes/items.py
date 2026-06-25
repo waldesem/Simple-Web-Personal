@@ -16,14 +16,14 @@ bp = Blueprint("items", __name__, url_prefix="/items")
 
 @bp.get("/<table>/<int:person_id>")
 @validize()
-def get_items(table: TableModel, person_id: int) -> tuple[Response, Literal[200]]:
+def get_items(table: TableModel, person_id: int) -> Response:
     """Get an item based on the provided tables."""
     cur: Cursor = g.db.cursor()
     items = cur.execute(
         f"SELECT * FROM {table.__root__} WHERE person_id = ?",  # noqa: S608
         (person_id,),
     ).fetchall()
-    return jsonify([dict(item) for item in items]), 200
+    return jsonify([dict(item) for item in items])
 
 
 @bp.post("/<table>/<int:person_id>")

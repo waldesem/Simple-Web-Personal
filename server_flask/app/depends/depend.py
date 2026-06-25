@@ -1,6 +1,6 @@
 """Get user."""
 
-import getpass
+import getpass  # noqa: F401
 from collections.abc import Callable
 from functools import lru_cache, wraps
 from typing import TYPE_CHECKING, get_type_hints
@@ -9,7 +9,7 @@ from flask import abort, current_app, g, request
 from pydantic import ValidationError
 
 from app.classes.enums import Roles
-from app.utilities.utils import decode_token  # noqa: F401
+from app.utilities.utils import decode_token  # noqa: F401, RUF100
 
 if TYPE_CHECKING:
     import sqlite3
@@ -34,15 +34,15 @@ def authorize(role: Roles | None = None) -> Callable:
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args: tuple, **kwargs: dict) -> Callable:
-            username = getpass.getuser()
-            user = get_user(username)
-            # header = request.headers["Authorization"]
-            # if (decoded := decode_token(header[7:])) and (
-            #     user := get_user(decoded["id"])
-            # ):
-            #     g.user = user
-            # else:
-            #     abort(401)
+            # username = getpass.getuser()
+            # user = get_user(username)
+            header = request.headers["Authorization"]
+            if (decoded := decode_token(header[7:])) and (
+                user := get_user(decoded["id"])
+            ):
+                g.user = user
+            else:
+                abort(401)
 
             if not user or user["blocked"] or user["deleted"]:
                 return abort(401)

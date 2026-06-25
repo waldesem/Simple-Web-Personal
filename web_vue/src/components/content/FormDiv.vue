@@ -18,12 +18,12 @@ const props = defineProps({
 const form = ref(props.item);
 
 const resolveFormElement = (element: keyof FormElemAttrs = "input") => {
-  const resolved = {
+  const html = {
     input: resolveComponent("UInput"),
     select: resolveComponent("USelect"),
     textarea: resolveComponent("UTextarea"),
   };
-  return resolved[element];
+  return html[element];
 };
 </script>
 

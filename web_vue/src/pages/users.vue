@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ky, { isKyError } from "ky";
-import { h, resolveComponent, shallowRef } from "vue";
+import { KyInstance } from "ky";
+import { h, inject, resolveComponent, shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { TableColumn } from "@nuxt/ui";
 import { useToasts } from "@/composables";
@@ -13,6 +13,8 @@ definePage({ meta: { layout: "AdminLayout" } });
 
 const toast = useToast();
 const toasts = useToasts(toast);
+
+const api = inject("api") as KyInstance;
 
 // Определяем переменные для работы с данными
 const globalFilter = shallowRef("");
@@ -114,49 +116,32 @@ function getRowItems(row: Row<User>) {
 }
 
 const { execute, isLoading, state } = useAsyncState<User[]>(
-  async () => await ky.get("/api/users/").json(),
+  async () => await api.get("/api/users/").json(),
   [],
-  {
-    onError(err) {
-      toasts.create("error", err as string);
-    },
-  },
 );
 
 async function submit(form: User) {
   modal.value = false;
-  try {
-    const url =
-      "/api/users" + (method.value === "POST" ? "/" : "/" + user.value.id);
-    const resp = await ky(url, { method: method.value, json: form });
-    user.value = {} as User;
-    if (resp.status === 201) {
-      await execute();
-      toasts.create("success", "Пользователь успешно добавлен!");
-    } else toasts.create();
-  } catch (error) {
-    if (isKyError(error)) {
-      toasts.create("error", error.message);
-    }
-  }
+  const url =
+    "/api/users" + (method.value === "POST" ? "/" : "/" + user.value.id);
+  const { ok } = await api(url, { method: method.value, json: form });
+  user.value = {} as User;
+  if (ok) {
+    await execute();
+    toasts.create("success", "Пользователь успешно добавлен!");
+  } else toasts.create();
 }
 
 // Объявляем функцию для действия с пользователем
 async function edit(action: Actions, id: string) {
   if (!confirm("Подтвердить действие?")) return;
-  try {
-    const resp = await ky.get("/api/users/" + id, {
-      searchParams: { action: action },
-    });
-    if (resp.status === 200) {
-      await execute();
-      toasts.create("success", "Действие выполнено!");
-    } else toasts.create();
-  } catch (error) {
-    if (isKyError(error)) {
-      toasts.create("error", error.message);
-    }
-  }
+  const { ok } = await api.get("/api/users/" + id, {
+    searchParams: { action: action },
+  });
+  if (ok) {
+    await execute();
+    toasts.create("success", "Действие выполнено!");
+  } else toasts.create();
 }
 </script>
 

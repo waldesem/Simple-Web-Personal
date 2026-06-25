@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import ky from "ky";
+import { inject } from "vue";
 import { useAsyncState } from "@vueuse/core";
+import { KyInstance } from "ky";
 import { session } from "@/state";
 import type { Session } from "@/types";
 
+const api = inject("api") as KyInstance;
+
 const { state } = useAsyncState<Session>(
-  async () => await ky.get("/api/auth/session").json(),
+  async () => await api.get("/api/auth/session").json(),
   {} as Session,
   {
     onSuccess(data) {

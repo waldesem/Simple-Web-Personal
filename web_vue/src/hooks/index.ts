@@ -1,4 +1,4 @@
-import ky from "ky";
+import ky, { isHTTPError } from "ky";
 import { useRouter } from "vue-router";
 import { access, refresh } from "@/state";
 import { Auth } from "@/types";
@@ -40,6 +40,20 @@ export const api = ky.extend({
           }
           router.push("login");
         }
+      },
+    ],
+    beforeError: [
+      ({ error }) => {
+        if (isHTTPError(error)) {
+          if (
+            typeof error.data === "object" &&
+            error.data !== null &&
+            "message" in error.data
+          ) {
+            alert(error.data.message);
+          }
+        }
+        return error;
       },
     ],
   },

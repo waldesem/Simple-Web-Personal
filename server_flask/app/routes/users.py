@@ -16,14 +16,14 @@ bp = Blueprint("users", __name__, url_prefix="/users")
 
 
 @bp.get("/")
-def get_users() -> tuple[Response, Literal[200]]:
+def get_users() -> Response:
     """Retrieve a list of users or once user by id."""
     cur: sqlite3.Cursor = g.db.cursor()
     users = cur.execute(
         "SELECT id, fullname, username, email, role, created,\
         pswd_create, change_pswd, blocked, deleted, attempt FROM users",
     ).fetchall()
-    return jsonify([dict(user) for user in users]), 200
+    return jsonify([dict(user) for user in users])
 
 
 @bp.get("/<int:user_id>")

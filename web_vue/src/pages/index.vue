@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ky, { isKyError } from "ky";
-import { ref, watch } from "vue";
+import { KyInstance } from "ky";
+import { inject, ref, watch } from "vue";
 import { refDebounced, useAsyncState, useFileDialog } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { TableColumn, TableRow } from "@nuxt/ui";
@@ -15,6 +15,8 @@ const router = useRouter();
 
 const toast = useToast();
 const toasts = useToasts(toast);
+
+const api = inject("api") as KyInstance;
 
 const hasNext = ref(false); // Состояние наличия следующей страницы
 const limit = ref(10); // Количество записей на странице
@@ -48,7 +50,7 @@ const columns: TableColumn<Person>[] = [
 
 const { execute, isLoading, state } = useAsyncState<Person[]>(
   async () =>
-    await ky
+    await api
       .get("/api/candidates", {
         searchParams: {
           limit: limit.value,
@@ -86,25 +88,23 @@ function addToast(person_id: string | null) {
 // Обработчик результата загрузки данных
 async function submit(form: Person) {
   modal.value = false;
-  try {
-    const resp = await ky.post("/api/persons/", { json: form });
-    if (resp.status === 201) {
-      const { person_id } = (await resp.json()) as { person_id: string | null };
-      addToast(person_id);
-    } else toasts.create();
-  } catch (error) {
-    if (isKyError(error)) {
-      toasts.create("error", error.message);
-    }
-  }
+  const resp = await api.post("/api/persons/", { json: form });
+  if (resp.ok) {
+    const { person_id } = (await resp.json()) as { person_id: string | null };
+    addToast(person_id);
+  } else toasts.create();
 }
 
 onChange(async (files) => {
   if (files) {
     const str = (await files?.[0].text()) as string;
-    const resp = await ky.post("/api/persons/json", { json: JSON.parse(str) });
-    if (resp.status === 201) {
-      const { person_id } = (await resp.json()) as { person_id: string | null };
+    const resp = await api.post("/api/persons/json", {
+      json: JSON.parse(str),
+    });
+    if (resp.ok) {
+      const { person_id } = (await resp.json()) as {
+        person_id: string | null;
+      };
       addToast(person_id);
     } else toasts.create();
   }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ky, { isKyError } from "ky";
-import { type PropType, shallowRef } from "vue";
+import { KyInstance } from "ky";
+import { inject, type PropType, shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { useToasts } from "@/composables";
 import { itemsFields } from "@/schema/items";
@@ -23,14 +23,11 @@ const props = defineProps({
 const toast = useToast();
 const toasts = useToasts(toast);
 
+const api = inject("api") as KyInstance;
+
 const { execute, state, isLoading } = useAsyncState<Items[keyof Items][]>(
-  async () => await ky.get(`/api/items/${props.view}/${props.candId}`).json(),
+  async () => await api.get(`/api/items/${props.view}/${props.candId}`).json(),
   [],
-  {
-    onError(err) {
-      toasts.create("error", err as string);
-    },
-  },
 );
 
 const item = shallowRef({} as Items[keyof Items]);
@@ -42,45 +39,33 @@ const visible = shallowRef(false);
 async function submitItem(form: typeof item.value) {
   modal.value = false;
   isLoading.value = true;
-  try {
-    const url = `/api/items/${props.view}/${props.candId}`;
-    const resp = await ky(
-      method.value === "POST" ? url : url + "/" + item.value.id,
-      {
-        method: method.value,
-        json: { comparator: props.view, ...form },
-      },
-    );
-    await execute();
-    item.value = {} as typeof item.value;
-    if (!resp.ok) toasts.create();
-    else if (method.value === "POST") {
-      toasts.create("success", "Запись успешно добавлена!");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      toasts.create("info", "Запись обновлена!");
-    }
-  } catch (error) {
-    if (isKyError(error)) {
-      toasts.create("error", error.message);
-    }
+  const url = `/api/items/${props.view}/${props.candId}`;
+  const { ok } = await api(
+    method.value === "POST" ? url : url + "/" + item.value.id,
+    {
+      method: method.value,
+      json: { comparator: props.view, ...form },
+    },
+  );
+  await execute();
+  item.value = {} as typeof item.value;
+  if (ok) toasts.create();
+  else if (method.value === "POST") {
+    toasts.create("success", "Запись успешно добавлена!");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } else {
+    toasts.create("info", "Запись обновлена!");
   }
 }
 
 // Определяем функцию для удаления данных
 async function deleteItem(itemId: string, index: number) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
-  try {
-    const { status } = await ky.delete(`/api/items/${props.view}/${itemId}`);
-    if (status === 204) {
-      toasts.create("success", "Запись удалена!");
-      state.value.splice(index, 1);
-    } else toasts.create();
-  } catch (error) {
-    if (isKyError(error)) {
-      toasts.create("error", error.message);
-    }
-  }
+  const { ok } = await api.delete(`/api/items/${props.view}/${itemId}`);
+  if (ok) {
+    toasts.create("success", "Запись удалена!");
+    state.value.splice(index, 1);
+  } else toasts.create();
 }
 </script>
 

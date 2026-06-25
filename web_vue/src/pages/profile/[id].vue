@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ky, { isKyError } from "ky";
-import { ref } from "vue";
+import { KyInstance } from "ky";
+import { inject, ref } from "vue";
 import { useAsyncState, useClipboard } from "@vueuse/core";
 import { useToasts } from "@/composables";
 import { person as PersonItem } from "@/schema/items";
@@ -15,6 +15,8 @@ const props = defineProps({
 
 const toast = useToast();
 const toasts = useToasts(toast);
+
+const api = inject("api") as KyInstance;
 
 const { copy, copied } = useClipboard();
 
@@ -41,32 +43,21 @@ const accordion = [
 ] as Navigations[];
 
 const { execute, state, isLoading } = useAsyncState<Person>(
-  async () => await ky.get("/api/persons/" + props.id).json(),
+  async () => await api.get("/api/persons/" + props.id).json(),
   {} as Person,
-  {
-    onError(err) {
-      toasts.create("error", err as string);
-    },
-  },
 );
 
 // Определяем функцию для отправки данных формы на сервер
 async function submit(form: Person) {
   modal.value = false;
   isLoading.value = true;
-  try {
-    const { status } = await ky.patch("/api/persons/" + props.id, {
-      json: form,
-    });
-    await execute();
-    if (status !== 200) toasts.create();
-    else {
-      toasts.create("info", "Данные обновлены!");
-    }
-  } catch (error) {
-    if (isKyError(error)) {
-      toasts.create("error", error.message);
-    }
+  const { ok } = await api.patch("/api/persons/" + props.id, {
+    json: form,
+  });
+  await execute();
+  if (ok) toasts.create("info", "Данные обновлены!");
+  else {
+    toasts.create();
   }
 }
 </script>

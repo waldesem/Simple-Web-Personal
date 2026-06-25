@@ -3,7 +3,7 @@
 import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 from flask import Blueprint, Response, current_app, g, jsonify
 
@@ -61,35 +61,35 @@ def add_person(cur: sqlite3.Cursor, json_data: Person) -> int | None:
 
 
 @bp.get("/<int:person_id>")
-def get_person(person_id: int) -> tuple[Response, Literal[200]]:
+def get_person(person_id: int) -> Response:
     """Retrieve a person from the database based on the provided ID."""
     cur: sqlite3.Cursor = g.db.cursor()
     person = cur.execute("SELECT * FROM persons WHERE id = ?", (person_id,)).fetchone()
-    return jsonify(dict(person)), 200
+    return jsonify(dict(person))
 
 
 @bp.post("/")
 @validize()
 @authorize()
-def post_person(json_data: Person) -> tuple[Response, Literal[201]]:
+def post_person(json_data: Person) -> Response:
     """Add a record in persons table."""
     cur: sqlite3.Cursor = g.db.cursor()
     cand_id = add_person(cur, json_data)
     g.db.commit()
-    return jsonify({"person_id": cand_id}), 201
+    return jsonify({"person_id": cand_id})
 
 
 @bp.post("/json")
 @validize()
 @authorize()
-def post_json_file(json_data: Anketa) -> tuple[Response, Literal[201]]:
+def post_json_file(json_data: Anketa) -> Response:
     """Create a new person or updates an existing person from json."""
     cur: sqlite3.Cursor = g.db.cursor()
 
     cand_id = add_person(cur, Person.parse_obj(json_data))
     if cand_id:
         # Сохранение дополнительной информации о кандидате в БД
-        items = {
+        items: dict[str, list[dict[str, Any]]] = {
             "documents": [
                 {
                     "digits": json_data.digits,
@@ -158,7 +158,7 @@ def post_json_file(json_data: Anketa) -> tuple[Response, Literal[201]]:
                 cur.execute(stmt, tuple(content.values()))
     g.db.commit()
 
-    return jsonify({"person_id": cand_id}), 201
+    return jsonify({"person_id": cand_id})
 
 
 @bp.patch("/<int:person_id>")

@@ -44,6 +44,5 @@ export function useAlert() {
       description: description,
     };
   }
-
   return { alert, create };
 }

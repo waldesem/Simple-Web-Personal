@@ -31,9 +31,6 @@ def create_app(config: type[Config] = Config) -> Flask:
 
     @app.before_request
     def _load_connection() -> None | Response:
-        if config.DATABASE_URI is None:
-            msg = "DATABASE_URI is not set, check your settings.ini."
-            raise RuntimeError(msg)
         if request.path.startswith("/api"):
             db = sqlite3.connect(config.DATABASE_URI)
             db.row_factory = sqlite3.Row
