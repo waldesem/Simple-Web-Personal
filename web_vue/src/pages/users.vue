@@ -12,7 +12,8 @@ import { Actions, type User } from "@/types";
 definePage({ meta: { layout: "AdminLayout" } });
 
 const toast = useToast();
-const toasts = useToasts(toast);
+
+const { create } = useToasts(toast);
 
 const api = inject("api") as KyInstance;
 
@@ -118,6 +119,11 @@ function getRowItems(row: Row<User>) {
 const { execute, isLoading, state } = useAsyncState<User[]>(
   async () => await api.get("/api/users/").json(),
   [],
+  {
+    onError() {
+      create();
+    },
+  },
 );
 
 async function submit(form: User) {
@@ -128,8 +134,8 @@ async function submit(form: User) {
   user.value = {} as User;
   if (ok) {
     await execute();
-    toasts.create("success", "Пользователь успешно добавлен!");
-  } else toasts.create();
+    create("success", "Пользователь успешно добавлен!");
+  } else create();
 }
 
 // Объявляем функцию для действия с пользователем
@@ -140,8 +146,8 @@ async function edit(action: Actions, id: string) {
   });
   if (ok) {
     await execute();
-    toasts.create("success", "Действие выполнено!");
-  } else toasts.create();
+    create("success", "Действие выполнено!");
+  } else create();
 }
 </script>
 

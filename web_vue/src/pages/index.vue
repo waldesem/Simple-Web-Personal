@@ -11,10 +11,11 @@ import type { Person } from "@/types";
 
 definePage({ meta: { layout: "UserLayout" } });
 
-const router = useRouter();
+const { push } = useRouter();
 
 const toast = useToast();
-const toasts = useToasts(toast);
+
+const { create } = useToasts(toast);
 
 const api = inject("api") as KyInstance;
 
@@ -65,8 +66,8 @@ const { execute, isLoading, state } = useAsyncState<Person[]>(
       hasNext.value = data.length > limit.value;
       data = hasNext.value ? data.slice(0, limit.value) : data;
     },
-    onError(error) {
-      toasts.create("error", error as string);
+    onError() {
+      create();
     },
   },
 );
@@ -80,9 +81,9 @@ watch(page, async () => await execute());
 
 function addToast(person_id: string | null) {
   if (person_id) {
-    toasts.create("success", "Анкета успешно добавлена!");
-    router.push("profile/" + person_id);
-  } else toasts.create("secondary", "Возможно, анкета уже существует!");
+    create("success", "Анкета успешно добавлена!");
+    push("profile/" + person_id);
+  } else create("secondary", "Возможно, анкета уже существует!");
 }
 
 // Обработчик результата загрузки данных
@@ -92,7 +93,7 @@ async function submit(form: Person) {
   if (resp.ok) {
     const { person_id } = (await resp.json()) as { person_id: string | null };
     addToast(person_id);
-  } else toasts.create();
+  } else create();
 }
 
 onChange(async (files) => {
@@ -106,7 +107,7 @@ onChange(async (files) => {
         person_id: string | null;
       };
       addToast(person_id);
-    } else toasts.create();
+    } else create();
   }
 });
 </script>
@@ -164,10 +165,7 @@ onChange(async (files) => {
         :loading="isLoading"
         loading-animation="swing"
         loading-color="error"
-        @select="
-          (_, row: TableRow<Person>) =>
-            router.push('/profile/' + row.original.id)
-        "
+        @select="(_, r: TableRow<Person>) => push(`/profile/${r.original.id}`)"
       />
 
       <!-- Время последнего обновления -->
@@ -177,7 +175,6 @@ onChange(async (files) => {
         icon="i-mi-refresh"
         label="Обновить"
         size="sm"
-        title="Обновить"
         variant="ghost"
         @click="execute()"
       />

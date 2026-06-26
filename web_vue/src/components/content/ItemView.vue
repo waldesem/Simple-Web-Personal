@@ -21,13 +21,19 @@ const props = defineProps({
 });
 
 const toast = useToast();
-const toasts = useToasts(toast);
+
+const { create } = useToasts(toast);
 
 const api = inject("api") as KyInstance;
 
 const { execute, state, isLoading } = useAsyncState<Items[keyof Items][]>(
   async () => await api.get(`/api/items/${props.view}/${props.candId}`).json(),
   [],
+  {
+    onError() {
+      create();
+    },
+  },
 );
 
 const item = shallowRef({} as Items[keyof Items]);
@@ -49,12 +55,12 @@ async function submitItem(form: typeof item.value) {
   );
   await execute();
   item.value = {} as typeof item.value;
-  if (ok) toasts.create();
+  if (ok) create();
   else if (method.value === "POST") {
-    toasts.create("success", "Запись успешно добавлена!");
+    create("success", "Запись успешно добавлена!");
     window.scrollTo({ top: 0, behavior: "smooth" });
   } else {
-    toasts.create("info", "Запись обновлена!");
+    create("info", "Запись обновлена!");
   }
 }
 
@@ -63,9 +69,9 @@ async function deleteItem(itemId: string, index: number) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
   const { ok } = await api.delete(`/api/items/${props.view}/${itemId}`);
   if (ok) {
-    toasts.create("success", "Запись удалена!");
+    create("success", "Запись удалена!");
     state.value.splice(index, 1);
-  } else toasts.create();
+  } else create();
 }
 </script>
 

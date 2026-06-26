@@ -14,7 +14,8 @@ const props = defineProps({
 });
 
 const toast = useToast();
-const toasts = useToasts(toast);
+
+const { create } = useToasts(toast);
 
 const api = inject("api") as KyInstance;
 
@@ -34,7 +35,7 @@ const tabs = [
 const accordion = [
   { label: "Должности", icon: "i-mi-laptop", slot: "staffs" },
   { label: "Образование", icon: "i-mi-book", slot: "educations" },
-  { label: "Места работы", icon: "i-mi-computer", slot: "workplaces" },
+  { label: "Работа", icon: "i-mi-computer", slot: "workplaces" },
   { label: "Документы", icon: "i-mi-document", slot: "documents" },
   { label: "Адреса", icon: "i-mi-home", slot: "addresses" },
   { label: "Контакты", icon: "i-mi-call", slot: "contacts" },
@@ -45,6 +46,11 @@ const accordion = [
 const { execute, state, isLoading } = useAsyncState<Person>(
   async () => await api.get("/api/persons/" + props.id).json(),
   {} as Person,
+  {
+    onError() {
+      create();
+    },
+  },
 );
 
 // Определяем функцию для отправки данных формы на сервер
@@ -55,9 +61,9 @@ async function submit(form: Person) {
     json: form,
   });
   await execute();
-  if (ok) toasts.create("info", "Данные обновлены!");
+  if (ok) create("info", "Данные обновлены!");
   else {
-    toasts.create();
+    create();
   }
 }
 </script>

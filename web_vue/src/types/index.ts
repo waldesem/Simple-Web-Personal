@@ -3,8 +3,34 @@ import type {
   AccordionItem,
   InputProps,
   SelectProps,
+  TabsItem,
   TextareaProps,
+  ToastProps,
 } from "@nuxt/ui";
+
+export interface ToastComposable {
+  add: (options: ToastProps) => void;
+}
+
+export enum Titles {
+  error = "Ошибка",
+  primary = "Информация",
+  secondary = "Вопрос",
+  success = "Успех",
+  info = "Информация",
+  warning = "Внимание",
+  neutral = "Предупреждение",
+}
+
+export enum Icons {
+  error = "i-mi-circle-error",
+  primary = "i-mi-circle-information",
+  secondary = "i-mi-circle-help",
+  success = "i-mi-circle-check",
+  info = "i-mi-circle-information",
+  warning = "i-mi-circle-warning",
+  neutral = "i-mi-circle",
+}
 
 export enum Actions {
   delete = "delete",
@@ -56,15 +82,17 @@ export type FormFields<T> = {
   };
 }[keyof FormElemAttrs];
 
-export interface Navigations extends AccordionItem {
+export type NavigationItem = AccordionItem & TabsItem;
+
+export interface Navigations extends NavigationItem {
   label: string;
   slot: keyof Items;
 }
 
 export interface Auth {
-  message: string;
-  access_token: string;
-  refresh_token: string;
+  message?: string;
+  access_token?: string;
+  refresh_token?: string;
 }
 
 export interface Login {

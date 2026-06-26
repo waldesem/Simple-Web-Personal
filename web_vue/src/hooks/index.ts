@@ -1,9 +1,9 @@
-import ky, { isHTTPError } from "ky";
+import ky from "ky";
 import { useRouter } from "vue-router";
 import { access, refresh } from "@/state";
 import { Auth } from "@/types";
 
-const router = useRouter();
+const { push } = useRouter();
 
 export const api = ky.extend({
   hooks: {
@@ -18,7 +18,7 @@ export const api = ky.extend({
               .json();
             request.headers.set("Authorization", "Bearer " + access_token);
             access.value = access_token;
-          } else router.push("login");
+          } else push("login");
         }
       },
     ],
@@ -38,22 +38,8 @@ export const api = ky.extend({
               request: new Request(request, { headers }),
             });
           }
-          router.push("login");
+          push("login");
         }
-      },
-    ],
-    beforeError: [
-      ({ error }) => {
-        if (isHTTPError(error)) {
-          if (
-            typeof error.data === "object" &&
-            error.data !== null &&
-            "message" in error.data
-          ) {
-            alert(error.data.message);
-          }
-        }
-        return error;
       },
     ],
   },

@@ -1,19 +1,6 @@
 import { ref } from "vue";
 import type { AlertProps, ToastProps } from "@nuxt/ui";
-
-interface ToastComposable {
-  add: (options: ToastProps) => void;
-}
-
-const context = {
-  error: ["Ошибка", "i-mi-circle-error"],
-  primary: ["Информация", "i-mi-circle-information"],
-  secondary: ["Вопрос", "i-mi-circle-help"],
-  success: ["Успех", "i-mi-circle-check"],
-  info: ["Информация", "i-mi-circle-information"],
-  warning: ["Внимание", "i-mi-circle-warning"],
-  neutral: ["Предупреждение", "i-mi-circle"],
-};
+import { Icons, Titles, ToastComposable } from "@/types";
 
 export function useToasts(toast: ToastComposable) {
   function create(
@@ -21,10 +8,10 @@ export function useToasts(toast: ToastComposable) {
     description: string = "Невозможно выполнить действие!",
   ) {
     toast.add({
-      title: context[status][0],
+      title: Titles[status],
       description: description,
       color: status,
-      icon: context[status][1],
+      icon: Icons[status],
     });
   }
   return { create };
@@ -33,16 +20,16 @@ export function useToasts(toast: ToastComposable) {
 export function useAlert() {
   const alert = ref<AlertProps | null>(null);
 
-  function create(
+  function update(
     status: AlertProps["color"] = "error",
     description: string = "Неизвестная ошибка.",
   ) {
     alert.value = {
-      icon: context[status][1],
+      icon: Icons[status],
       color: status,
-      title: context[status][0],
+      title: Titles[status],
       description: description,
     };
   }
-  return { alert, create };
+  return { alert, update };
 }

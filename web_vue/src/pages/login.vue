@@ -4,13 +4,13 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import type { FormSubmitEvent } from "@nuxt/ui";
 import { useAlert } from "@/composables";
+import { access, refresh } from "@/state";
 import { auth, validate } from "@/schema/forms";
 import type { Auth, Login } from "@/types";
-import { access, refresh } from "@/state";
 
-const router = useRouter();
+const { push } = useRouter();
 
-const alerts = useAlert();
+const { alert, update } = useAlert();
 
 // Объявляем переменные для формы и состояния
 const method = ref<"POST" | "PATCH">("POST");
@@ -27,18 +27,15 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
     if (message === "success") {
       access.value = access_token;
       refresh.value = refresh_token;
-      return router.push("/index");
+      return push("/index");
     } else if (message === "denied") {
-      alerts.create("warning", "Требуется смена пароля.");
+      update("warning", "Требуется смена пароля.");
       method.value = "PATCH";
     } else if (message === "updated") {
       method.value = "POST";
-      alerts.create(
-        "success",
-        "Пароль успешно изменен. Войдите с новым паролем.",
-      );
-    } else alerts.create("error", "Ошибочный логин или паролью");
-  } else alerts.create();
+      update("success", "Пароль изменен. Войдите с новым паролем.");
+    } else update("error", "Неправильный логин или пароль");
+  } else update();
 }
 </script>
 
@@ -58,13 +55,7 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
       @submit.prevent="onSubmit($event)"
     >
       <template #validation>
-        <UAlert
-          variant="subtle"
-          :icon="alerts.alert.value?.icon"
-          :color="alerts.alert.value?.color"
-          :title="alerts.alert.value?.title"
-          :description="alerts.alert.value?.description"
-        />
+        <UAlert variant="subtle" v-bind="{ ...alert }" />
       </template>
       <template #footer>
         <UButton
@@ -76,10 +67,10 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
             () => {
               if (method == 'POST') {
                 method = 'PATCH';
-                alerts.create('info', 'Введите новый пароль и подтверждение.');
+                update('info', 'Введите новый пароль и подтверждение.');
               } else {
                 method = 'POST';
-                alerts.create('success', 'Введите логин и пароль');
+                update('success', 'Введите логин и пароль');
               }
             }
           "
