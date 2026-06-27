@@ -1,16 +1,11 @@
 import { createApp } from "vue";
-import { createRouter, createWebHistory } from "vue-router";
-import { routes, handleHotUpdate } from "vue-router/auto-routes";
+import { handleHotUpdate } from "vue-router/auto-routes";
 import { addCollection } from "@iconify/vue";
 import ui from "@nuxt/ui/vue-plugin";
 import App from "./App.vue";
 import "./assets/main.css";
-import { api } from "./hooks/index.ts";
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-});
+import { api } from "./hooks";
+import { router } from "./router";
 
 if (import.meta.hot) {
   handleHotUpdate(router);

@@ -16,14 +16,14 @@ if TYPE_CHECKING:
 
 
 @lru_cache
-def get_user(username: str) -> dict | None:
+def get_user(user_id: str) -> dict | None:
     """Retrieve user."""
     cur: sqlite3.Cursor = g.db.cursor()
     user = cur.execute(
         "SELECT id, fullname, username, email, role, created,\
         pswd_create, change_pswd, blocked, deleted, attempt\
-        FROM users WHERE username = ?",
-        (username.lower(),),
+        FROM users WHERE id = ?",
+        (user_id,),
     ).fetchone()
     return dict(user) if user else None
 
@@ -35,7 +35,6 @@ def authorize(role: Roles | None = None) -> Callable:
         @wraps(func)
         def wrapper(*args: tuple, **kwargs: dict) -> Callable:
             # username = getpass.getuser()
-            # user = get_user(username)
             header = request.headers["Authorization"]
             if (decoded := decode_token(header[7:])) and (
                 user := get_user(decoded["id"])

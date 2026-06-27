@@ -6,7 +6,8 @@ from typing import TYPE_CHECKING, Literal
 from flask import Blueprint, Response, g, jsonify
 from werkzeug.security import generate_password_hash
 
-from app.depends.depend import validize
+from app.classes.enums import Roles
+from app.depends.depend import authorize, validize
 from app.models.model import Action, User
 
 if TYPE_CHECKING:
@@ -16,6 +17,7 @@ bp = Blueprint("users", __name__, url_prefix="/users")
 
 
 @bp.get("/")
+@authorize(Roles.admin)
 def get_users() -> Response:
     """Retrieve a list of users or once user by id."""
     cur: sqlite3.Cursor = g.db.cursor()
@@ -28,6 +30,7 @@ def get_users() -> Response:
 
 @bp.get("/<int:user_id>")
 @validize()
+@authorize(Roles.admin)
 def edit_user(user_id: int, json_query: Action) -> tuple[Literal[""], Literal[200]]:
     """Change a user's information."""
     cur: sqlite3.Cursor = g.db.cursor()
@@ -47,6 +50,7 @@ def edit_user(user_id: int, json_query: Action) -> tuple[Literal[""], Literal[20
 
 @bp.post("/")
 @validize()
+@authorize(Roles.admin)
 def post_user(json_data: User) -> tuple[Literal[""], Literal[201, 204]]:
     """Create a new user."""
     cur: sqlite3.Cursor = g.db.cursor()
@@ -72,6 +76,7 @@ def post_user(json_data: User) -> tuple[Literal[""], Literal[201, 204]]:
 
 @bp.patch("/<int:user_id>")
 @validize()
+@authorize(Roles.admin)
 def update_user(user_id: int, json_data: User) -> tuple[Literal[""], Literal[201]]:
     """Change a user's role."""
     cur: sqlite3.Cursor = g.db.cursor()

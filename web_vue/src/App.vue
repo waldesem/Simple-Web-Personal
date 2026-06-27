@@ -8,14 +8,15 @@ const DefaultLayout = defineAsyncComponent(
 
 const route = useRoute();
 
-const layout = shallowRef(DefaultLayout);
+const Layout = shallowRef(DefaultLayout);
 
 watch(
   () => route.meta.layout,
   async (metaLayout) => {
-    if (metaLayout) {
+    if (!metaLayout) Layout.value = DefaultLayout;
+    else {
       const component = await import(`@/components/layouts/${metaLayout}.vue`);
-      layout.value = markRaw(component.default || DefaultLayout);
+      Layout.value = markRaw(component.default);
     }
   },
   { immediate: true },
@@ -25,9 +26,9 @@ watch(
 <template>
   <UApp>
     <RouterView v-slot="{ Component }">
-      <component :is="layout">
+      <component :is="Layout">
         <Transition mode="out-in" name="fade">
-          <KeepAlive include="index" :max="1">
+          <KeepAlive include="persons" :max="1">
             <component :is="Component" />
           </KeepAlive>
         </Transition>

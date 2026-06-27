@@ -18,7 +18,12 @@ export function useToasts(toast: ToastComposable) {
 }
 
 export function useAlert() {
-  const alert = ref<AlertProps | null>(null);
+  const alert = ref<AlertProps>({
+    icon: Icons.success,
+    color: "success",
+    title: "Вход в систему",
+    description: "Введите логин и пароль.",
+  });
 
   function update(
     status: AlertProps["color"] = "error",

@@ -1,1 +1,0 @@
-import{Bt as e,Ut as t,gt as n,nn as r,xt as i}from"./tv-DWius-eH.js";import{n as a,t as o}from"./Main-_HC7q0IR.js";import{t as s}from"./_plugin-vue_export-helper-BDNMzG2s.js";var c={};function l(s,c){let l=o,u=a;return e(),n(u,null,{default:r(()=>[i(l,null,{default:r(()=>[t(s.$slots,`default`)]),_:3})]),_:3})}var u=s(c,[[`render`,l]]);export{u as default};

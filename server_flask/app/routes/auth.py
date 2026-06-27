@@ -40,7 +40,7 @@ def post_login(json_data: Login) -> tuple[Response, Literal[201]]:
         g.db.commit()
         return jsonify({"message": "invalid"}), 201
 
-    delta_change = datetime.now() - user["pswd_create"]
+    delta_change = datetime.now() - datetime.fromisoformat(user["pswd_create"])
     if not user["change_pswd"] and delta_change.days < 365:
         if user["attempt"]:
             stmt = "UPDATE users SET attempt = 0 WHERE id = ?"

@@ -2,13 +2,13 @@
 import ky from "ky";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import type { FormSubmitEvent } from "@nuxt/ui";
 import { useAlert } from "@/composables";
 import { access, refresh } from "@/state";
 import { auth, validate } from "@/schema/forms";
+import type { FormSubmitEvent } from "@nuxt/ui";
 import type { Auth, Login } from "@/types";
 
-const { push } = useRouter();
+const router = useRouter();
 
 const { alert, update } = useAlert();
 
@@ -17,7 +17,7 @@ const method = ref<"POST" | "PATCH">("POST");
 
 // Объявляем функцию для отправки формы
 async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
-  const resp = await ky("/routes/auth/login", {
+  const resp = await ky("/api/auth/login", {
     method: method.value,
     json: payload.data,
   });
@@ -27,7 +27,7 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
     if (message === "success") {
       access.value = access_token;
       refresh.value = refresh_token;
-      return push("/index");
+      return router.push("/persons");
     } else if (message === "denied") {
       update("warning", "Требуется смена пароля.");
       method.value = "PATCH";
@@ -42,8 +42,9 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
 <template>
   <UPageCard class="w-full max-w-md m-auto my-[20vh]">
     <UAuthForm
-      description="Доступ в систему кадровой безопасности."
       icon="i-mi-lock"
+      title="Вход в систему"
+      description="Доступ в систему кадровой безопасности."
       :validate="validate[method]"
       :fields="auth[method]"
       :submit="{
