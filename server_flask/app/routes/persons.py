@@ -7,6 +7,7 @@ from typing import Any, Literal
 
 from flask import Blueprint, Response, current_app, g, jsonify
 
+from app.classes.enums import Roles
 from app.depends.depend import authorize, validize
 from app.models.model import Anketa, Person
 
@@ -70,7 +71,7 @@ def get_person(person_id: int) -> Response:
 
 @bp.post("/")
 @validize()
-@authorize()
+@authorize(Roles.user)
 def post_person(json_data: Person) -> Response:
     """Add a record in persons table."""
     cur: sqlite3.Cursor = g.db.cursor()
@@ -81,7 +82,7 @@ def post_person(json_data: Person) -> Response:
 
 @bp.post("/json")
 @validize()
-@authorize()
+@authorize(Roles.user)
 def post_json_file(json_data: Anketa) -> Response:
     """Create a new person or updates an existing person from json."""
     cur: sqlite3.Cursor = g.db.cursor()
@@ -135,9 +136,7 @@ def post_json_file(json_data: Anketa) -> Response:
                 if json_data.experience
             ],
             "previous": [
-                prev.dict()
-                for prev in json_data.name_was_changed
-                if json_data.name_was_changed
+                prev.dict() for prev in json_data.previous if json_data.previous
             ],
             "affilations": [
                 affilation.dict()
@@ -163,7 +162,7 @@ def post_json_file(json_data: Anketa) -> Response:
 
 @bp.patch("/<int:person_id>")
 @validize()
-@authorize()
+@authorize(Roles.user)
 def patch_person(person_id: int, json_data: Person) -> tuple[Literal[""], Literal[200]]:
     """Replace a record in persons table."""
     data = json_data.dict()

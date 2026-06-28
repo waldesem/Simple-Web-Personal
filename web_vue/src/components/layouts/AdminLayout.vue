@@ -1,6 +1,6 @@
 <template>
   <UPage>
-    <UHeader v-once to="/users">
+    <UHeader v-once>
       <template #title>
         <div class="inline-flex items-center text-xl font-bold space-x-1">
           <div>ADMIN</div>

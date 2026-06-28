@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Literal
 
 from flask import Blueprint, Response, g, jsonify
 
+from app.classes.enums import Roles
 from app.depends.depend import authorize, validize
 from app.models.model import ItemsModels, TableModel
 
@@ -28,7 +29,7 @@ def get_items(table: TableModel, person_id: int) -> Response:
 
 @bp.post("/<table>/<int:person_id>")
 @validize()
-@authorize()
+@authorize(Roles.user)
 def post(
     table: TableModel,
     person_id: int,
@@ -51,7 +52,7 @@ def post(
 
 @bp.patch("/<table>/<int:person_id>/<int:item_id>")
 @validize()
-@authorize()
+@authorize(Roles.user)
 def patch(
     table: TableModel,
     person_id: int,
@@ -74,7 +75,7 @@ def patch(
 
 @bp.delete("/<table>/<int:item_id>")
 @validize()
-@authorize()
+@authorize(Roles.user)
 def delete(table: TableModel, item_id: int) -> tuple[Literal[""], Literal[204]]:
     """Delete an item from the database with provided table name and item ID."""
     cur: Cursor = g.db.cursor()

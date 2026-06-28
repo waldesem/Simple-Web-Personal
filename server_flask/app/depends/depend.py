@@ -20,9 +20,7 @@ def get_user(user_id: str) -> dict | None:
     """Retrieve user."""
     cur: sqlite3.Cursor = g.db.cursor()
     user = cur.execute(
-        "SELECT id, fullname, username, email, role, created,\
-        pswd_create, change_pswd, blocked, deleted, attempt\
-        FROM users WHERE id = ?",
+        "SELECT id, fullname, username, email, role FROM users WHERE id = ?",
         (user_id,),
     ).fetchone()
     return dict(user) if user else None
@@ -35,9 +33,10 @@ def authorize(role: Roles | None = None) -> Callable:
         @wraps(func)
         def wrapper(*args: tuple, **kwargs: dict) -> Callable:
             # username = getpass.getuser()
-            header = request.headers["Authorization"]
-            if (decoded := decode_token(header[7:])) and (
-                user := get_user(decoded["id"])
+            if (
+                (header := request.headers.get("Authorization"))
+                and (decoded := decode_token(header[7:]))
+                and (user := get_user(decoded["id"]))
             ):
                 g.user = user
             else:
@@ -46,7 +45,7 @@ def authorize(role: Roles | None = None) -> Callable:
             if not user or user["blocked"] or user["deleted"]:
                 return abort(401)
 
-            if role and user["role"] != role:
+            if role and user["role"] != role.value:
                 return abort(403)
 
             g.current_user = user

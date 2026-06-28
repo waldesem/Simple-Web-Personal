@@ -28,4 +28,3 @@ class Decisions(Enum):
     comments = "С КОММЕНТАРИЯМИ"
     cancel = "ОТКАЗ ОТ ПРОВЕРКИ"
     denied = "НЕГАТИВ"
-

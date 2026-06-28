@@ -14,7 +14,7 @@ class Config:
 
     ACCESS_SECRET_KEY = secrets.token_hex()
     REFRESH_SECRET_KEY = secrets.token_hex()
-    ACCESS_SECRET_KEY_LIVE = 1
+    ACCESS_SECRET_KEY_LIVE = 15
     REFRESH_SECRET_KEY_LIVE = 60 * 30 * 365
     BASE_PATH = setting.get("Destination", "path")
     DATABASE_URI = Path(BASE_PATH, "database.db")

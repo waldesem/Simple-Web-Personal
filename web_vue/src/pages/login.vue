@@ -6,17 +6,17 @@ import { useAlert } from "@/composables";
 import { access, refresh } from "@/state";
 import { auth, validate } from "@/schema/forms";
 import type { FormSubmitEvent } from "@nuxt/ui";
-import type { Auth, Login } from "@/types";
+import type { Auth, Login, Register } from "@/types";
 
 const router = useRouter();
 
 const { alert, update } = useAlert();
 
 // Объявляем переменные для формы и состояния
-const method = ref<"POST" | "PATCH">("POST");
+const method = ref<"post" | "patch">("post");
 
 // Объявляем функцию для отправки формы
-async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
+async function onSubmit(payload: FormSubmitEvent<Partial<Register | Login>>) {
   const resp = await ky("/api/auth/login", {
     method: method.value,
     json: payload.data,
@@ -27,12 +27,12 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
     if (message === "success") {
       access.value = access_token;
       refresh.value = refresh_token;
-      return router.push("/persons");
+      return router.push("/");
     } else if (message === "denied") {
       update("warning", "Требуется смена пароля.");
-      method.value = "PATCH";
+      method.value = "patch";
     } else if (message === "updated") {
-      method.value = "POST";
+      method.value = "post";
       update("success", "Пароль изменен. Войдите с новым паролем.");
     } else update("error", "Неправильный логин или пароль");
   } else update();
@@ -48,7 +48,7 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
       :validate="validate[method]"
       :fields="auth[method]"
       :submit="{
-        label: method === 'POST' ? 'Войти' : 'Изменить',
+        label: method === 'post' ? 'Войти' : 'Изменить',
         color: 'success',
         variant: 'outline',
       }"
@@ -60,17 +60,17 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Login>>) {
       </template>
       <template #footer>
         <UButton
-          :label="method == 'POST' ? 'Изменить' : 'Отмена'"
+          :label="method == 'post' ? 'Изменить' : 'Отмена'"
           color="secondary"
           variant="outline"
           block
           @click="
             () => {
-              if (method == 'POST') {
-                method = 'PATCH';
+              if (method == 'post') {
+                method = 'patch';
                 update('info', 'Введите новый пароль и подтверждение.');
               } else {
-                method = 'POST';
+                method = 'post';
                 update('success', 'Введите логин и пароль');
               }
             }

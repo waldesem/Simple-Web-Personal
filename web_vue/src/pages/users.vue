@@ -37,11 +37,7 @@ const columns: TableColumn<User>[] = [
     header: "Создан",
     cell: ({ row }) => localStr(row.original.created),
   },
-  {
-    accessorKey: "attempt",
-    header: "Попыток",
-    cell: ({ row }) => row.original.attempt,
-  },
+  { accessorKey: "attempt", header: "Попыток" },
   {
     accessorKey: "blocked",
     header: "Блокир.",
@@ -119,11 +115,6 @@ function getRowItems(row: Row<User>) {
 const { execute, isLoading, state } = useAsyncState<User[]>(
   async () => await api.get("/api/users/").json(),
   [],
-  {
-    onError() {
-      create();
-    },
-  },
 );
 
 async function submit(form: User) {

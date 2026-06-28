@@ -1,7 +1,13 @@
 [project]
-name = "webapp-flask"
-version = "1.0.0"
-description = "StaffSec"
+name = "StaffSec"
+version = "1.1.0"
+description = "Webapp for StaffSec"
+authors = [
+    {name = "Vladimir Semenenko", email = "wsemenenko@gmail.com"}
+]
+readme = "README.md"
+license = "MIT"
+keywords = ["staffsec", "webapp", "flask", "python", "vue"]
 requires-python = ">=3.11"
 dependencies = [
     "blinker==1.8.2",

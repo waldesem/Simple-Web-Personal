@@ -1,5 +1,5 @@
 import { Conclusions, Decisions, Roles } from "@/types";
-import type { Items, FormFields, User, Person, Login } from "@/types";
+import type { Items, FormFields, User, Person, Login, Register } from "@/types";
 import { AuthFormField, FormError } from "@nuxt/ui";
 
 const login: AuthFormField[] = [
@@ -37,11 +37,11 @@ const register = login.concat([
 ]);
 
 export const auth = {
-  POST: login,
-  PATCH: register,
+  post: login,
+  patch: register,
 };
 
-function validateLog(state: Partial<Login>): FormError[] {
+function validateLog(state: Login): FormError[] {
   const errors = [];
   if (!state.username)
     errors.push({ name: "username", message: "Обязательное поле!" });
@@ -50,23 +50,25 @@ function validateLog(state: Partial<Login>): FormError[] {
   return errors;
 }
 
-function validateReg(state: Partial<Login>): FormError[] {
+function validateReg(state: Register): FormError[] {
   const errors = validateLog(state);
   if (!state.new_pswd)
     errors.push({ name: "new_pswd", message: "Обязательное поле!" });
-  if (!state.conf_pswd)
-    errors.push({ name: "conf_pswd", message: "Обязательное поле!" });
-  if (state.new_pswd?.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,16}$/))
-    errors.push({
-      name: "new_pswd",
-      message: "От 8 до 16 символов: заглавные и строчные буквы, цифры",
-    });
-  if (state.password === state.new_pswd)
+  else if (state.password === state.new_pswd)
     errors.push({
       name: "new_pswd",
       message: "Новый пароль не должен совпадать с текущим!",
     });
-  if (state.new_pswd !== state.conf_pswd)
+  else if (
+    !state.new_pswd.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z0-9]{8,16}$/)
+  )
+    errors.push({
+      name: "new_pswd",
+      message: "От 8 до 16 символов: заглавные и строчные буквы, цифры",
+    });
+  if (!state.conf_pswd)
+    errors.push({ name: "conf_pswd", message: "Обязательное поле!" });
+  else if (state.new_pswd !== state.conf_pswd)
     errors.push({
       name: "conf_pswd",
       message: "Новый пароль и подтверждение не совпадают!",
@@ -75,8 +77,8 @@ function validateReg(state: Partial<Login>): FormError[] {
 }
 
 export const validate = {
-  POST: validateLog,
-  PATCH: validateReg,
+  post: validateLog,
+  patch: validateReg,
 };
 
 export const user = [

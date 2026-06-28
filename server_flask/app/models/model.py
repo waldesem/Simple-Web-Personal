@@ -86,14 +86,14 @@ class Person(BaseModel):
 
     surname: str = Field(max_length=255)
     firstname: str = Field(max_length=255)
-    patronymic: str | None = Field(default=None, max_length=255)
+    patronymic: str | None = Field(max_length=255)
     birthday: date
-    birthplace: str | None = Field(None, max_length=255)
-    citizenship: str | None = Field(default=None, max_length=255)
-    dual: str | None = Field(default=None, max_length=255)
+    birthplace: str | None = Field(max_length=255)
+    citizenship: str | None = Field(max_length=255)
+    dual: str | None = Field(max_length=255)
     snils: str | None = None
     inn: str | None = None
-    marital: str | None = Field(default=None, max_length=255)
+    marital: str | None = Field(max_length=255)
     addition: str | None = None
     editable: bool = False
 
@@ -123,9 +123,9 @@ class Prev(BaseModel):
     """Previous in schema."""
 
     surname: str = Field(max_length=255)
-    firstname: str | None = Field(default=None, max_length=255)
-    patronymic: str | None = Field(default=None, max_length=255)
-    changed: str | None = Field(default=None, max_length=4)
+    firstname: str | None = Field(max_length=255)
+    patronymic: str | None = Field(max_length=255)
+    changed: str | None = Field(max_length=4)
     reason: str | None = None
     comparator: Literal["previous"]
 
@@ -136,9 +136,9 @@ class Prev(BaseModel):
 class Education(BaseModel):
     """Education in schema."""
 
-    view: str | None = Field(default=None, max_length=255)
+    view: str | None = Field(max_length=255)
     institution: str = Field(max_length=255)
-    finished: str | None = Field(default=None, max_length=4)
+    finished: str | None = Field(max_length=4)
     specialty: str | None = None
     comparator: Literal["educations"]
 
@@ -164,7 +164,7 @@ class Document(BaseModel):
     view: str | None = "Паспорт"
     series: str | None = None
     digits: str = Field(max_length=12)
-    agency: str | None = Field(default=None, max_length=255)
+    agency: str | None = Field(max_length=255)
     issue: date | None = None
     comparator: Literal["documents"]
 
@@ -203,7 +203,7 @@ class Workplace(BaseModel):
     starts: date | None = None
     finished: date | None | str
     workplace: str = Field(max_length=255)
-    address: str | None = Field(None, max_length=255)
+    address: str | None = Field(max_length=255)
     position: str = Field(max_length=255)
     reason: str | None = None
     comparator: Literal["workplaces"]
@@ -217,7 +217,7 @@ class Affilation(BaseModel):
 
     view: str = Field(max_length=255)
     organization: str = Field(max_length=255)
-    inn: str | None = Field(None, max_length=12)
+    inn: str | None = Field(max_length=12)
     activity: str | None = None
     comparator: Literal["affilations"]
 
@@ -310,8 +310,8 @@ class EducationJson(BaseModel):
 
     view: str = Field(alias="educationType")
     institution: str = Field(alias="institutionName")
-    finished: str | None = Field(default=None, alias="endYear")
-    specialty: str | None = Field(None, alias="educationType")
+    finished: str | None = Field(alias="endYear")
+    specialty: str | None = Field(alias="educationType")
 
 
 class PrevJson(BaseModel):
@@ -329,17 +329,17 @@ class WorkplaceJson(BaseModel):
 
     now_work: bool = Field(default=False, alias="currentJob")
     starts: date = Field(alias="beginDate")
-    finished: date | None = Field(default=None, alias="endDate")
+    finished: date | None = Field(alias="endDate")
     workplace: str = Field(alias="name")
     address: str | None = Field(None)
     position: str
-    reason: str | None = Field(default=None, alias="fireReason")
+    reason: str | None = Field(alias="fireReason")
 
 
 class AffilationJson(BaseModel):
     """Affilation json model."""
 
-    view: str | None = Field(default=None, alias="activity")
+    view: str | None = Field(alias="activity")
     organization: str = Field(alias="name")
     inn: str | None = Field(None)
 
@@ -349,25 +349,25 @@ class Anketa(BaseModel):
 
     surname: str = Field(alias="lastName")
     firstname: str = Field(alias="firstName")
-    patronymic: str | None = Field(default=None, alias="midName")
+    patronymic: str | None = Field(alias="midName")
     birthday: date
     birthplace: str | None = None
-    citizenship: str | None = Field(default=None, alias="citizen")
-    dual: str | None = Field(default=None, alias="additionalCitizenship")
+    citizenship: str | None = Field(alias="citizen")
+    dual: str | None = Field(alias="additionalCitizenship")
     snils: str | None = None
     inn: str | None = None
-    marital: str | None = Field(default=None, alias="maritalStatus")
+    marital: str | None = Field(alias="maritalStatus")
     email: str | None = None
     department: str | None = None
     position: str = Field(alias="positionName")
-    series: str | None = Field(default=None, alias="passportSerial")
+    series: str | None = Field(alias="passportSerial")
     digits: str = Field(alias="passportNumber")
-    issue: date | None = Field(default=None, alias="passportIssueDate")
-    agency: str | None = Field(default=None, alias="passportIssuedBy")
-    valid_address: str | None = Field(None, alias="validAddress")
-    reg_address: str | None = Field(None, alias="regAddress")
-    contact_phone: str | None = Field(None, alias="contactPhone")
+    issue: date | None = Field(alias="passportIssueDate")
+    agency: str | None = Field(alias="passportIssuedBy")
+    valid_address: str | None = Field(alias="validAddress")
+    reg_address: str | None = Field(alias="regAddress")
+    contact_phone: str | None = Field(alias="contactPhone")
     education: list[EducationJson] = []
     experience: list[WorkplaceJson] = []
-    name_was_changed: list[PrevJson] = Field(default=[], alias="nameWasChanged")
+    previous: list[PrevJson] = Field(default=[], alias="nameWasChanged")
     organizations: list[AffilationJson] = []

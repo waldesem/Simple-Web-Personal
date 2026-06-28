@@ -98,6 +98,9 @@ export interface Auth {
 export interface Login {
   username: string;
   password: string;
+}
+
+export interface Register extends Login {
   new_pswd: string;
   conf_pswd: string;
 }

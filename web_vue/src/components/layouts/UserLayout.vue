@@ -1,28 +1,9 @@
 <script setup lang="ts">
-import { inject } from "vue";
-import { useAsyncState } from "@vueuse/core";
 import { useRouter } from "vue-router";
-import { KyInstance } from "ky";
 import { access, refresh, session } from "@/state";
 import type { Session } from "@/types";
 
-const api = inject("api") as KyInstance;
-
 const router = useRouter();
-
-const { state } = useAsyncState<Session>(
-  async () => await api.get("/api/auth/session").json(),
-  {} as Session,
-  {
-    onSuccess(data) {
-      console.log(access.value);
-      session.value = data;
-    },
-    onError() {
-      router.replace("/login");
-    },
-  },
-);
 
 function logout() {
   session.value = {} as Session;
@@ -34,7 +15,7 @@ function logout() {
 
 <template>
   <UPage>
-    <UHeader to="/persons">
+    <UHeader to="/">
       <template #title>
         <div class="inline-flex items-center text-xl font-bold space-x-1">
           <div class="text-blue-600">КАДРОВАЯ</div>
@@ -43,7 +24,7 @@ function logout() {
       </template>
       <template #default>
         <UButton
-          v-if="state.id"
+          v-if="session.id"
           active-class="font-bold"
           inactive-class="text-muted"
           color="neutral"
@@ -55,7 +36,7 @@ function logout() {
       </template>
       <template #right>
         <UButton
-          v-if="state.id"
+          v-if="session.id"
           active-class="font-bold"
           inactive-class="text-muted"
           icon="i-mi-log-out"
