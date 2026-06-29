@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, onMounted } from "vue";
+import { inject, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 import { KyInstance } from "ky";
 import { session } from "@/state";
@@ -9,9 +9,11 @@ const router = useRouter();
 
 const api = inject("api") as KyInstance;
 
-onMounted(async () => {
+const value = null;
+
+onBeforeMount(async () => {
   try {
-    session.value = await api.get("/api/auth/session").json<Session>();
+    session.value = await api.get("/auth/session").json<Session>();
     router.push("/persons");
   } catch (error) {
     console.error(error);
@@ -22,8 +24,12 @@ onMounted(async () => {
 
 <template>
   <div>
-    <UContainer>
-      <UEmpty title="Redirecting..." description="Please wait..." />
-    </UContainer>
+    <UPageCard class="w-full max-w-md m-auto my-[20vh]">
+      <UEmpty title="Redirecting..." description="Please wait...">
+        <template #body>
+          <UProgress animation="swing" v-model="value" />
+        </template>
+      </UEmpty>
+    </UPageCard>
   </div>
 </template>

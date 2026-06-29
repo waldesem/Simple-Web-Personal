@@ -17,9 +17,9 @@ const toast = useToast();
 
 const { create } = useToasts(toast);
 
-const api = inject("api") as KyInstance;
-
 const { copy, copied } = useClipboard();
+
+const api = inject("api") as KyInstance;
 
 const modal = ref(false); // Объявляем переменную модального окна
 
@@ -44,7 +44,7 @@ const accordion = [
 ] as Navigations[];
 
 const { execute, state, isLoading } = useAsyncState<Person>(
-  async () => await api.get("/api/persons/" + props.id).json(),
+  async () => await api.get("/persons/" + props.id).json(),
   {} as Person,
   {
     onError() {
@@ -57,7 +57,7 @@ const { execute, state, isLoading } = useAsyncState<Person>(
 async function submit(form: Person) {
   modal.value = false;
   isLoading.value = true;
-  const { ok } = await api.patch("/api/persons/" + props.id, {
+  const { ok } = await api.patch("/persons/" + props.id, {
     json: form,
   });
   await execute();

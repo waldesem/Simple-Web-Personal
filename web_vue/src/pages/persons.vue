@@ -52,7 +52,7 @@ const columns: TableColumn<Person>[] = [
 const { execute, isLoading, state } = useAsyncState<Person[]>(
   async () =>
     await api
-      .get("/api/candidates", {
+      .get("/candidates", {
         searchParams: {
           limit: limit.value,
           page: page.value,
@@ -93,7 +93,7 @@ function addToast(person_id: string | null) {
 // Обработчик результата загрузки данных
 async function submit(form: Person) {
   modal.value = false;
-  const resp = await api.post("/api/persons/", { json: form });
+  const resp = await api.post("/persons/", { json: form });
   if (resp.ok) {
     const { person_id } = (await resp.json()) as { person_id: string | null };
     addToast(person_id);
@@ -103,7 +103,7 @@ async function submit(form: Person) {
 onChange(async (files) => {
   if (files) {
     const str = (await files?.[0].text()) as string;
-    const resp = await api.post("/api/persons/json", {
+    const resp = await api.post("/persons/json", {
       json: JSON.parse(str),
     });
     if (resp.ok) {

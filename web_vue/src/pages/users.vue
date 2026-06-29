@@ -113,14 +113,13 @@ function getRowItems(row: Row<User>) {
 }
 
 const { execute, isLoading, state } = useAsyncState<User[]>(
-  async () => await api.get("/api/users/").json(),
+  async () => await api.get("/users/").json(),
   [],
 );
 
 async function submit(form: User) {
   modal.value = false;
-  const url =
-    "/api/users" + (method.value === "POST" ? "/" : "/" + user.value.id);
+  const url = "/users" + (method.value === "POST" ? "/" : "/" + user.value.id);
   const { ok } = await api(url, { method: method.value, json: form });
   user.value = {} as User;
   if (ok) {
@@ -132,7 +131,7 @@ async function submit(form: User) {
 // Объявляем функцию для действия с пользователем
 async function edit(action: Actions, id: string) {
   if (!confirm("Подтвердить действие?")) return;
-  const { ok } = await api.get("/api/users/" + id, {
+  const { ok } = await api.get("/users/" + id, {
     searchParams: { action: action },
   });
   if (ok) {

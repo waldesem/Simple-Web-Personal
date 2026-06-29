@@ -17,7 +17,8 @@ const method = ref<"post" | "patch">("post");
 
 // Объявляем функцию для отправки формы
 async function onSubmit(payload: FormSubmitEvent<Partial<Register | Login>>) {
-  const resp = await ky("/api/auth/login", {
+  const resp = await ky("/auth/login", {
+    baseUrl: "/api",
     method: method.value,
     json: payload.data,
   });
