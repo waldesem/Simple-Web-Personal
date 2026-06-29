@@ -1,7 +1,7 @@
 """Routes."""
 
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 
 from flask import Blueprint, Response, g, jsonify
 from werkzeug.security import generate_password_hash
@@ -31,7 +31,7 @@ def get_users() -> Response:
 @bp.get("/<int:user_id>")
 @validize()
 @authorize(Roles.admin)
-def edit_user(user_id: int, json_query: Action) -> tuple[Literal[""], Literal[200]]:
+def edit_user(user_id: int, json_query: Action) -> Response:
     """Change a user's information."""
     cur: sqlite3.Cursor = g.db.cursor()
     stmt = "UPDATE users SET "
@@ -45,18 +45,18 @@ def edit_user(user_id: int, json_query: Action) -> tuple[Literal[""], Literal[20
         stmt += "deleted = NOT deleted"
     cur.execute(stmt + " WHERE id = ?", (*params, user_id))
     g.db.commit()
-    return "", 200
+    return jsonify({"message": "success"})
 
 
 @bp.post("/")
 @validize()
 @authorize(Roles.admin)
-def post_user(json_data: User) -> tuple[Literal[""], Literal[201, 204]]:
+def post_user(json_data: User) -> Response:
     """Create a new user."""
     cur: sqlite3.Cursor = g.db.cursor()
     stmt = "SELECT * FROM users WHERE username = ? OR email = ?"
     if cur.execute(stmt, (json_data.username, json_data.email)).fetchone():
-        return "", 204
+        return jsonify({"message": "success"})
 
     cur.execute(
         "INSERT INTO users\
@@ -71,16 +71,16 @@ def post_user(json_data: User) -> tuple[Literal[""], Literal[201, 204]]:
         ),
     )
     g.db.commit()
-    return "", 201
+    return jsonify({"message": "success"})
 
 
 @bp.patch("/<int:user_id>")
 @validize()
 @authorize(Roles.admin)
-def update_user(user_id: int, json_data: User) -> tuple[Literal[""], Literal[201]]:
+def update_user(user_id: int, json_data: User) -> Response:
     """Change a user's role."""
     cur: sqlite3.Cursor = g.db.cursor()
     stmt = "UPDATE users SET role = ?, change_pswd = 1 WHERE id = ?"
     cur.execute(stmt, (json_data.role, user_id))
     g.db.commit()
-    return "", 201
+    return jsonify({"message": "success"})

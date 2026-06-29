@@ -73,5 +73,5 @@ def decode_token(token: str, *, refresh: bool = False) -> dict | None:
             algorithms=["HS256"],
             options={"verify_exp": True},
         )
-    except (jwt.exceptions.InvalidTokenError, IndexError, AttributeError):
+    except jwt.exceptions.InvalidTokenError:
         return None

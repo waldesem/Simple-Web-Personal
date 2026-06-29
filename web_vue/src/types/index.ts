@@ -139,6 +139,10 @@ export interface Person {
   created: string;
 }
 
+export interface PersonId {
+  person_id: string | null;
+}
+
 interface Previous {
   id: string;
   surname: string;

@@ -1,7 +1,7 @@
 """Routes."""
 
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 
 from flask import Blueprint, Response, abort, g, jsonify, request
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -18,7 +18,7 @@ bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 @bp.post("/login")
 @validize()
-def post_login(json_data: Login) -> tuple[Response, Literal[201]]:
+def post_login(json_data: Login) -> Response:
     """Handle the login process."""
     cur: sqlite3.Cursor = g.db.cursor()
     stmt = "SELECT * FROM users WHERE username = ?"
@@ -26,7 +26,7 @@ def post_login(json_data: Login) -> tuple[Response, Literal[201]]:
     user = dict(result) if result else None
 
     if not user or user["blocked"] or user["deleted"]:
-        return jsonify({"message": "invalid"}), 201
+        return jsonify({"message": "invalid"})
 
     if not check_password_hash(user["passhash"], json_data.password):
         stmt = "UPDATE users SET "
@@ -38,7 +38,7 @@ def post_login(json_data: Login) -> tuple[Response, Literal[201]]:
             stmt += "blocked = 1"
         cur.execute(stmt + " WHERE id = ?", (*params, user["id"]))
         g.db.commit()
-        return jsonify({"message": "invalid"}), 201
+        return jsonify({"message": "invalid"})
 
     delta_change = datetime.now() - datetime.fromisoformat(user["pswd_create"])
     if not user["change_pswd"] and delta_change.days < 365:
@@ -52,13 +52,13 @@ def post_login(json_data: Login) -> tuple[Response, Literal[201]]:
                 "access_token": create_token(user["id"]),
                 "refresh_token": create_token(user["id"], "REFRESH"),
             },
-        ), 201
-    return jsonify({"message": "denied"}), 201
+        )
+    return jsonify({"message": "denied"})
 
 
 @bp.patch("/login")
 @validize()
-def patch_login(json_data: Update) -> tuple[Response, Literal[200]]:
+def patch_login(json_data: Update) -> Response:
     """Handle the login process."""
     cur: sqlite3.Cursor = g.db.cursor()
     stmt = "SELECT * FROM users WHERE username = ?"
@@ -66,7 +66,7 @@ def patch_login(json_data: Update) -> tuple[Response, Literal[200]]:
     user = dict(result) if result else None
 
     if not user or user["blocked"] or user["deleted"]:
-        return jsonify({"message": "invalid"}), 200
+        return jsonify({"message": "invalid"})
 
     stmt = "UPDATE users SET "
     if not check_password_hash(user["passhash"], json_data.password):
@@ -78,7 +78,7 @@ def patch_login(json_data: Update) -> tuple[Response, Literal[200]]:
             stmt += "blocked = 1"
         cur.execute(stmt + " WHERE id = ?", (*params, user["id"]))
         g.db.commit()
-        return jsonify({"message": "invalid"}), 200
+        return jsonify({"message": "invalid"})
 
     stmt += "passhash = ?, pswd_create =?, attempt = 0, change_pswd = 0 WHERE id = ?"
     cur.execute(
@@ -90,11 +90,11 @@ def patch_login(json_data: Update) -> tuple[Response, Literal[200]]:
         ),
     )
     g.db.commit()
-    return jsonify({"message": "updated"}), 200
+    return jsonify({"message": "updated"})
 
 
 @bp.post("/refresh")
-def refresh_token() -> tuple[Response, Literal[201]]:
+def refresh_token() -> Response:
     """Refresh the access token."""
     refresh_token = request.get_json()
     if decoded := decode_token(refresh_token, refresh=True):
@@ -102,12 +102,12 @@ def refresh_token() -> tuple[Response, Literal[201]]:
             {
                 "access_token": create_token(decoded["id"]),
             },
-        ), 201
+        )
     return abort(400)
 
 
 @bp.get("/session")
 @authorize()
-def get_session() -> tuple[Response, Literal[200]]:
+def get_session() -> Response:
     """Retrieve a session."""
-    return jsonify(g.current_user), 200
+    return jsonify(g.current_user)

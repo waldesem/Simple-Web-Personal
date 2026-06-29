@@ -3,10 +3,10 @@
 from app import create_app
 
 
-def main(host: str = "127.0.0.1", port: int = 5000, *, debug: bool = False) -> None:
+def main() -> None:
     """Run the server based on the provided arguments."""
     app = create_app()
-    app.run(host, port, debug=debug)
+    app.run("127.0.0.1", 5000, debug=False)
 
 
 if __name__ == "__main__":

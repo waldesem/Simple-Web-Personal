@@ -3,7 +3,7 @@
 import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any
 
 from flask import Blueprint, Response, current_app, g, jsonify
 
@@ -163,7 +163,7 @@ def post_json_file(json_data: Anketa) -> Response:
 @bp.patch("/<int:person_id>")
 @validize()
 @authorize(Roles.user)
-def patch_person(person_id: int, json_data: Person) -> tuple[Literal[""], Literal[200]]:
+def patch_person(person_id: int, json_data: Person) -> Response:
     """Replace a record in persons table."""
     data = json_data.dict()
     data["user_id"] = g.current_user["id"]
@@ -174,4 +174,4 @@ def patch_person(person_id: int, json_data: Person) -> tuple[Literal[""], Litera
     )
     cur.execute(stmt, (*data.values(), person_id))
     g.db.commit()
-    return "", 200
+    return jsonify({"message": "success"})

@@ -30,7 +30,7 @@ def create_app(config: type[Config] = Config) -> Flask:
         return app.send_static_file(path)
 
     @app.before_request
-    def _load_connection() -> None | Response:
+    def _load_connection() -> None:
         if request.path.startswith("/api"):
             db = sqlite3.connect(config.DATABASE_URI)
             db.row_factory = sqlite3.Row

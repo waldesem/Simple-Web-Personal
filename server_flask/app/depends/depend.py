@@ -77,7 +77,7 @@ def validize() -> Callable:
 
             except ValidationError as exc:
                 current_app.logger.warning(exc)
-                return abort(400)
+                return abort(500)
 
         return wrapper
 

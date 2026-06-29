@@ -7,7 +7,7 @@ import { TableColumn, TableRow } from "@nuxt/ui";
 import { useToasts } from "@/composables";
 import { localStr, timeAgoStr } from "@/utils";
 import { person as PersonForm } from "@/schema/forms";
-import type { Person } from "@/types";
+import type { Person, PersonId } from "@/types";
 
 definePage({ meta: { layout: "UserLayout" } });
 
@@ -66,22 +66,15 @@ const { execute, isLoading, state } = useAsyncState<Person[]>(
       hasNext.value = data.length > limit.value;
       data = hasNext.value ? data.slice(0, limit.value) : data;
     },
-    onError() {
-      create();
-    },
   },
 );
 
 watch([debounced, limit], async () => {
-  console.log("debounced, limit");
   if (page.value === 0) await execute();
   else page.value = 0;
 });
 
-watch(page, async () => {
-  console.log("page");
-  await execute();
-});
+watch(page, async () => await execute());
 
 function addToast(person_id: string | null) {
   if (person_id) {
@@ -95,7 +88,7 @@ async function submit(form: Person) {
   modal.value = false;
   const resp = await api.post("/persons/", { json: form });
   if (resp.ok) {
-    const { person_id } = (await resp.json()) as { person_id: string | null };
+    const { person_id } = await resp.json<PersonId>();
     addToast(person_id);
   } else create();
 }
@@ -107,9 +100,7 @@ onChange(async (files) => {
       json: JSON.parse(str),
     });
     if (resp.ok) {
-      const { person_id } = (await resp.json()) as {
-        person_id: string | null;
-      };
+      const { person_id } = await resp.json<PersonId>();
       addToast(person_id);
     } else create();
   }
@@ -170,7 +161,8 @@ onChange(async (files) => {
         loading-animation="swing"
         loading-color="error"
         @select="
-          (_, r: TableRow<Person>) => router.push(`/profile/${r.original.id}`)
+          (_, { original }: TableRow<Person>) =>
+            router.push(`/profile/${original.id}`)
         "
       />
 

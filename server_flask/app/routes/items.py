@@ -1,7 +1,7 @@
 """Routes."""
 
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 
 from flask import Blueprint, Response, g, jsonify
 
@@ -30,11 +30,7 @@ def get_items(table: TableModel, person_id: int) -> Response:
 @bp.post("/<table>/<int:person_id>")
 @validize()
 @authorize(Roles.user)
-def post(
-    table: TableModel,
-    person_id: int,
-    json_data: ItemsModels,
-) -> tuple[Literal[""], Literal[201]]:
+def post(table: TableModel, person_id: int, json_data: ItemsModels) -> Response:
     """Insert a record in the specified table."""
     data = json_data.__root__.dict(exclude={"comparator"})
     data["person_id"] = person_id
@@ -47,7 +43,7 @@ def post(
     )
     cur.execute(stmt, tuple(data.values()))
     g.db.commit()
-    return "", 201
+    return jsonify({"message": "success"})
 
 
 @bp.patch("/<table>/<int:person_id>/<int:item_id>")
@@ -58,7 +54,7 @@ def patch(
     person_id: int,
     item_id: int,
     json_data: ItemsModels,
-) -> tuple[Literal[""], Literal[200]]:
+) -> Response:
     """Update a record in the specified table."""
     data = json_data.__root__.dict(exclude={"comparator"})
     data["person_id"] = person_id
@@ -70,15 +66,15 @@ def patch(
     )
     cur.execute(stmt, (*data.values(), item_id))
     g.db.commit()
-    return "", 200
+    return jsonify({"message": "success"})
 
 
 @bp.delete("/<table>/<int:item_id>")
 @validize()
 @authorize(Roles.user)
-def delete(table: TableModel, item_id: int) -> tuple[Literal[""], Literal[204]]:
+def delete(table: TableModel, item_id: int) -> Response:
     """Delete an item from the database with provided table name and item ID."""
     cur: Cursor = g.db.cursor()
     cur.execute(f"DELETE FROM {table.__root__} WHERE id = ?", (item_id,))  # noqa: S608
     g.db.commit()
-    return "", 204
+    return jsonify({"message": "success"})

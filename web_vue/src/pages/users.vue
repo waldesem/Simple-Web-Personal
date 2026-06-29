@@ -2,11 +2,10 @@
 import { KyInstance } from "ky";
 import { h, inject, resolveComponent, shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
-import { TableColumn } from "@nuxt/ui";
 import { useToasts } from "@/composables";
 import { localStr } from "@/utils";
 import { user as formUser } from "@/schema/forms";
-import type { Row } from "@tanstack/vue-table";
+import type { TableColumn } from "@nuxt/ui";
 import { Actions, type User } from "@/types";
 
 definePage({ meta: { layout: "AdminLayout" } });
@@ -17,14 +16,14 @@ const { create } = useToasts(toast);
 
 const api = inject("api") as KyInstance;
 
+const Button = resolveComponent("UButton");
+const DropdownMenu = resolveComponent("UDropdownMenu");
+
 // Определяем переменные для работы с данными
 const globalFilter = shallowRef("");
 const method = shallowRef<"POST" | "PATCH">("POST");
 const modal = shallowRef(false);
 const user = shallowRef({} as User);
-
-const Button = resolveComponent("UButton");
-const DropdownMenu = resolveComponent("UDropdownMenu");
 
 // Определяем колонки таблицы
 const columns: TableColumn<User>[] = [
@@ -67,7 +66,7 @@ const columns: TableColumn<User>[] = [
           content: {
             align: "end",
           },
-          items: getRowItems(row),
+          items: getRowItems(row.original),
         },
         () =>
           h(Button, {
@@ -81,32 +80,32 @@ const columns: TableColumn<User>[] = [
 ];
 
 // Определяем функцию для получения элементов меню
-function getRowItems(row: Row<User>) {
+function getRowItems(original: User) {
   return [
     {
       label: "Редактировать",
       onSelect() {
-        user.value = row.original;
+        user.value = original;
         method.value = "PATCH";
         modal.value = true;
       },
     },
     {
-      label: row.original.deleted ? "Восстановить" : "Удалить",
+      label: original.deleted ? "Восстановить" : "Удалить",
       onSelect() {
-        edit(Actions.delete, row.original.id);
+        edit(Actions.delete, original.id);
       },
     },
     {
-      label: row.original.blocked ? "Разблокировать" : "Заблокировать",
+      label: original.blocked ? "Разблокировать" : "Заблокировать",
       onSelect() {
-        edit(Actions.block, row.original.id);
+        edit(Actions.block, original.id);
       },
     },
     {
       label: "Сбросить пароль",
       onSelect() {
-        edit(Actions.reset, row.original.id);
+        edit(Actions.reset, original.id);
       },
     },
   ];
@@ -117,17 +116,6 @@ const { execute, isLoading, state } = useAsyncState<User[]>(
   [],
 );
 
-async function submit(form: User) {
-  modal.value = false;
-  const url = "/users" + (method.value === "POST" ? "/" : "/" + user.value.id);
-  const { ok } = await api(url, { method: method.value, json: form });
-  user.value = {} as User;
-  if (ok) {
-    await execute();
-    create("success", "Пользователь успешно добавлен!");
-  } else create();
-}
-
 // Объявляем функцию для действия с пользователем
 async function edit(action: Actions, id: string) {
   if (!confirm("Подтвердить действие?")) return;
@@ -137,6 +125,19 @@ async function edit(action: Actions, id: string) {
   if (ok) {
     await execute();
     create("success", "Действие выполнено!");
+  } else create();
+}
+
+async function submit(form: User) {
+  modal.value = false;
+  const { ok } = await api(
+    "/users" + (method.value === "POST" ? "/" : "/" + user.value.id),
+    { method: method.value, json: form },
+  );
+  user.value = {} as User;
+  if (ok) {
+    await execute();
+    create("success", "Пользователь успешно добавлен!");
   } else create();
 }
 </script>
