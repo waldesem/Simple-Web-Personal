@@ -90,7 +90,7 @@ export interface Navigations extends NavigationItem {
 }
 
 export interface Auth {
-  message?: string;
+  message: string;
   access_token?: string;
   refresh_token?: string;
 }

@@ -42,12 +42,12 @@ def create_app(config: type[Config] = Config) -> Flask:
         if db := g.pop("db", None):
             db.close()
 
-    @app.errorhandler(404)
-    def handle_404(error: HTTPException) -> WerkzeugResponse:  # noqa: ARG001
-        return app.redirect("/")
-
     @app.errorhandler(HTTPException)
-    def handle_exception(error: HTTPException) -> HTTPException:
-        return error
+    def handle_exception(error: HTTPException | int) -> WerkzeugResponse:
+        if isinstance(error, int):
+            app.logger.exception("Request finished with error %.", error)
+        else:
+            app.logger.exception(error)
+        return app.redirect("/")
 
     return app

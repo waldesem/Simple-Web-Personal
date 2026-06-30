@@ -104,7 +104,9 @@ class Person(BaseModel):
     @classmethod
     def normalize_name(cls, v: str | None) -> str | None:
         """Normalize name."""
-        return v.upper() if v and re.match(r"^[А-яЁёIV\-\s\.\,\'\(\)]*$", v) else None
+        if v and re.match(r"^[А-яЁёIV\-\s\.\,\'\(\)]*$", v):
+            return v.upper()
+        return None
 
     @validator("inn")
     @classmethod
@@ -317,11 +319,11 @@ class EducationJson(BaseModel):
 class PrevJson(BaseModel):
     """Previous in schema."""
 
-    surname: str | None = None
-    firstname: str | None = None
-    patronymic: str | None = None
-    changed: str | None = None
-    reason: str | None = None
+    surname: str | None
+    firstname: str | None
+    patronymic: str | None
+    changed: str | None
+    reason: str | None
 
 
 class WorkplaceJson(BaseModel):
@@ -341,7 +343,7 @@ class AffilationJson(BaseModel):
 
     view: str | None = Field(alias="activity")
     organization: str = Field(alias="name")
-    inn: str | None = Field(None)
+    inn: str | None
 
 
 class Anketa(BaseModel):
