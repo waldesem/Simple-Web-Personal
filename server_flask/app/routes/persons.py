@@ -126,12 +126,12 @@ def post_json_file(json_data: Anketa) -> Response:
                 },
             ],
             "educations": [
-                education.dict()
+                education.dict(exclude={"comparator"})
                 for education in json_data.education
                 if json_data.education
             ],
             "workplaces": [
-                workplace.dict()
+                workplace.dict(exclude={"comparator"})
                 for workplace in json_data.experience
                 if json_data.experience
             ],
@@ -139,7 +139,7 @@ def post_json_file(json_data: Anketa) -> Response:
                 prev.dict() for prev in json_data.previous if json_data.previous
             ],
             "affilations": [
-                affilation.dict()
+                affilation.dict(exclude={"comparator"})
                 for affilation in json_data.organizations
                 if json_data.organizations
             ],

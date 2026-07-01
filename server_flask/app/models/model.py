@@ -84,21 +84,22 @@ class Query(BaseModel):
 class Person(BaseModel):
     """Pydantic model form schema."""
 
-    surname: str = Field(max_length=255)
-    firstname: str = Field(max_length=255)
-    patronymic: str | None = Field(max_length=255)
+    surname: str = Field(alias="lastName", max_length=255)
+    firstname: str = Field(alias="firstName", max_length=255)
+    patronymic: str | None = Field(alias="midName", max_length=255)
     birthday: date
-    birthplace: str | None = Field(max_length=255)
-    citizenship: str | None = Field(max_length=255)
-    dual: str | None = Field(max_length=255)
+    birthplace: str | None = None
+    citizenship: str | None = Field(alias="citizen", max_length=255)
+    dual: str | None = Field(alias="additionalCitizenship", max_length=255)
     snils: str | None = None
     inn: str | None = None
-    marital: str | None = Field(max_length=255)
+    marital: str | None = Field(alias="maritalStatus", max_length=255)
     addition: str | None = None
     editable: bool = False
 
     class Config:
         anystr_strip_whitespace = True
+        allow_population_by_field_name = True
 
     @validator("surname", "firstname", "patronymic")
     @classmethod
@@ -124,28 +125,30 @@ class Person(BaseModel):
 class Prev(BaseModel):
     """Previous in schema."""
 
-    surname: str = Field(max_length=255)
-    firstname: str | None = Field(max_length=255)
-    patronymic: str | None = Field(max_length=255)
+    surname: str = Field(alias="lastNameBeforeChange", max_length=255)
+    firstname: str | None = Field(alias="firstNameBeforeChange", max_length=255)
+    patronymic: str | None = Field(alias="midNameBeforeChange", max_length=255)
     changed: str | None = Field(max_length=4)
     reason: str | None = None
     comparator: Literal["previous"]
 
     class Config:
         anystr_strip_whitespace = True
+        allow_population_by_field_name = True
 
 
 class Education(BaseModel):
     """Education in schema."""
 
-    view: str | None = Field(max_length=255)
-    institution: str = Field(max_length=255)
-    finished: str | None = Field(max_length=4)
-    specialty: str | None = None
+    view: str = Field(alias="educationType", max_length=255)
+    institution: str = Field(alias="institutionName", max_length=255)
+    finished: str | None = Field(alias="endYear", max_length=4)
+    specialty: str | None = Field(alias="educationType", max_length=255)
     comparator: Literal["educations"]
 
     class Config:
         anystr_strip_whitespace = True
+        allow_population_by_field_name = True
 
 
 class Staff(BaseModel):
@@ -201,30 +204,31 @@ class Contact(BaseModel):
 class Workplace(BaseModel):
     """Workplaces in schema."""
 
-    now_work: bool | None
-    starts: date | None = None
-    finished: date | None | str
-    workplace: str = Field(max_length=255)
+    now_work: bool | None = Field(default=False, alias="currentJob")
+    starts: date | None = Field(alias="beginDate")
+    finished: date | None = Field(alias="endDate")
+    workplace: str = Field(alias="name", max_length=255)
     address: str | None = Field(max_length=255)
     position: str = Field(max_length=255)
-    reason: str | None = None
+    reason: str | None = Field(alias="fireReason")
     comparator: Literal["workplaces"]
 
     class Config:
         anystr_strip_whitespace = True
+        allow_population_by_field_name = True
 
 
 class Affilation(BaseModel):
     """Affilation in schema."""
 
-    view: str = Field(max_length=255)
-    organization: str = Field(max_length=255)
+    view: str = Field(alias="activity", max_length=255)
+    organization: str = Field(alias="name", max_length=255)
     inn: str | None = Field(max_length=12)
-    activity: str | None = None
     comparator: Literal["affilations"]
 
     class Config:
         anystr_strip_whitespace = True
+        allow_population_by_field_name = True
 
 
 class Check(BaseModel):
@@ -307,58 +311,9 @@ class ItemsModels(BaseModel):
     ) = Field(..., discriminator="comparator")
 
 
-class EducationJson(BaseModel):
-    """Education json model."""
-
-    view: str = Field(alias="educationType")
-    institution: str = Field(alias="institutionName")
-    finished: str | None = Field(alias="endYear")
-    specialty: str | None = Field(alias="educationType")
-
-
-class PrevJson(BaseModel):
-    """Previous in schema."""
-
-    surname: str | None
-    firstname: str | None
-    patronymic: str | None
-    changed: str | None
-    reason: str | None
-
-
-class WorkplaceJson(BaseModel):
-    """Workplaces json model."""
-
-    now_work: bool = Field(default=False, alias="currentJob")
-    starts: date = Field(alias="beginDate")
-    finished: date | None = Field(alias="endDate")
-    workplace: str = Field(alias="name")
-    address: str | None = Field(None)
-    position: str
-    reason: str | None = Field(alias="fireReason")
-
-
-class AffilationJson(BaseModel):
-    """Affilation json model."""
-
-    view: str | None = Field(alias="activity")
-    organization: str = Field(alias="name")
-    inn: str | None
-
-
-class Anketa(BaseModel):
+class Anketa(Person):
     """Candidate anketa schema."""
 
-    surname: str = Field(alias="lastName")
-    firstname: str = Field(alias="firstName")
-    patronymic: str | None = Field(alias="midName")
-    birthday: date
-    birthplace: str | None = None
-    citizenship: str | None = Field(alias="citizen")
-    dual: str | None = Field(alias="additionalCitizenship")
-    snils: str | None = None
-    inn: str | None = None
-    marital: str | None = Field(alias="maritalStatus")
     email: str | None = None
     department: str | None = None
     position: str = Field(alias="positionName")
@@ -369,7 +324,7 @@ class Anketa(BaseModel):
     valid_address: str | None = Field(alias="validAddress")
     reg_address: str | None = Field(alias="regAddress")
     contact_phone: str | None = Field(alias="contactPhone")
-    education: list[EducationJson] = []
-    experience: list[WorkplaceJson] = []
-    previous: list[PrevJson] = Field(default=[], alias="nameWasChanged")
-    organizations: list[AffilationJson] = []
+    education: list[Education] = []
+    experience: list[Workplace] = []
+    previous: list[Prev] = Field(default=[], alias="nameWasChanged")
+    organizations: list[Affilation] = []
