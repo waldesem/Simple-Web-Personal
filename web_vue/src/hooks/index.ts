@@ -4,7 +4,7 @@ import { router } from "@/router";
 import { Auth } from "@/types";
 
 export const api = ky.extend({
-  baseUrl: "/api",
+  baseUrl: "/api/",
   hooks: {
     beforeRequest: [
       async ({ request }) => {
@@ -14,7 +14,7 @@ export const api = ky.extend({
           if (refresh.value) {
             try {
               const { access_token } = await ky
-                .post<Auth>("/auth/refresh", { json: refresh.value })
+                .post<Auth>("auth/refresh", { json: refresh.value })
                 .json();
               request.headers.set("Authorization", "Bearer " + access_token);
               access.value = access_token;
@@ -33,7 +33,7 @@ export const api = ky.extend({
           if (response.status === 401 && retryCount === 0) {
             try {
               const { access_token } = await ky
-                .post<Auth>("/auth/refresh", { json: refresh.value })
+                .post<Auth>("auth/refresh", { json: refresh.value })
                 .json();
 
               const headers = new Headers(request.headers);
@@ -44,6 +44,7 @@ export const api = ky.extend({
                 request: new Request(request, { headers }),
               });
             } catch (error) {
+              console.error(error);
               router.push("/login");
             }
           } else if (response.status >= 400 && response.status < 500)

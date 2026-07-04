@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, onBeforeMount } from "vue";
+import { inject, onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { KyInstance } from "ky";
 import { session } from "@/state";
@@ -9,12 +9,12 @@ const router = useRouter();
 
 const api = inject("api") as KyInstance;
 
-const value = null;
+const value = ref(null);
 
 onBeforeMount(async () => {
   try {
-    session.value = await api.get("/auth/session").json<Session>();
-    router.push("/persons");
+    session.value = await api.get("auth/session").json<Session>();
+    router.replace("/persons");
   } catch (error) {
     console.error(error);
     router.replace("/login");

@@ -112,14 +112,14 @@ function getRowItems(original: User) {
 }
 
 const { execute, isLoading, state } = useAsyncState<User[]>(
-  async () => await api.get("/users/").json(),
+  async () => await api.get("users/").json(),
   [],
 );
 
 // Объявляем функцию для действия с пользователем
 async function edit(action: Actions, id: string) {
   if (!confirm("Подтвердить действие?")) return;
-  const { ok } = await api.get("/users/" + id, {
+  const { ok } = await api.get("users/" + id, {
     searchParams: { action: action },
   });
   if (ok) {
@@ -131,7 +131,7 @@ async function edit(action: Actions, id: string) {
 async function submit(form: User) {
   modal.value = false;
   const { ok } = await api(
-    "/users" + (method.value === "POST" ? "/" : "/" + user.value.id),
+    "users" + (method.value === "POST" ? "/" : "/" + user.value.id),
     { method: method.value, json: form },
   );
   user.value = {} as User;

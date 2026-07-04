@@ -27,7 +27,7 @@ const { create } = useToasts(toast);
 const api = inject("api") as KyInstance;
 
 const { execute, state, isLoading } = useAsyncState<Items[keyof Items][]>(
-  async () => await api.get(`/items/${props.view}/${props.candId}`).json(),
+  async () => await api.get(`items/${props.view}/${props.candId}`).json(),
   [],
   {
     onError() {
@@ -45,7 +45,7 @@ const visible = shallowRef(false);
 async function submitItem(form: typeof item.value) {
   modal.value = false;
   isLoading.value = true;
-  const url = `/items/${props.view}/${props.candId}`;
+  const url = `items/${props.view}/${props.candId}`;
   const { ok } = await api(
     method.value === "POST" ? url : url + "/" + item.value.id,
     {
@@ -67,7 +67,7 @@ async function submitItem(form: typeof item.value) {
 // Определяем функцию для удаления данных
 async function deleteItem(itemId: string, index: number) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
-  const { ok } = await api.delete(`/items/${props.view}/${itemId}`);
+  const { ok } = await api.delete(`items/${props.view}/${itemId}`);
   if (ok) {
     create("success", "Запись удалена!");
     state.value.splice(index, 1);

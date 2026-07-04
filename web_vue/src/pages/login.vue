@@ -16,9 +16,9 @@ const { alert, update } = useAlert();
 const method = ref<"post" | "patch">("post");
 
 // Объявляем функцию для отправки формы
-async function onSubmit(payload: FormSubmitEvent<Partial<Register | Login>>) {
-  const resp = await ky("/auth/login", {
-    baseUrl: "/api",
+async function onSubmit(payload: FormSubmitEvent<Register | Login>) {
+  const resp = await ky("auth/login", {
+    baseUrl: "/api/",
     method: method.value,
     json: payload.data,
   });
@@ -28,7 +28,7 @@ async function onSubmit(payload: FormSubmitEvent<Partial<Register | Login>>) {
     if (message === "success") {
       access.value = access_token;
       refresh.value = refresh_token;
-      return router.push("/");
+      return router.replace("/");
     } else if (message === "denied") {
       update("warning", "Требуется смена пароля.");
       method.value = "patch";

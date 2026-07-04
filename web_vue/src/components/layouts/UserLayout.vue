@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { access, refresh, session } from "@/state";
-import type { Session } from "@/types";
+import { Roles, type Session } from "@/types";
 
 const router = useRouter();
 
@@ -24,7 +24,7 @@ function logout() {
       </template>
       <template #default>
         <UButton
-          v-if="session.id"
+          v-if="session.role === Roles.admin"
           active-class="font-bold"
           inactive-class="text-muted"
           color="neutral"
