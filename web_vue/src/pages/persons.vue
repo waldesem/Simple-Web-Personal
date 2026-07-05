@@ -7,7 +7,8 @@ import { TableColumn, TableRow } from "@nuxt/ui";
 import { useToasts } from "@/composables";
 import { localStr, timeAgoStr } from "@/utils";
 import { person as PersonForm } from "@/schema/forms";
-import type { Person, PersonId } from "@/types";
+import { Roles, type Person, type PersonId } from "@/types";
+import { session } from "@/state";
 
 definePage({ meta: { layout: "UserLayout" } });
 
@@ -110,7 +111,7 @@ onChange(async (files) => {
 <template>
   <UContainer>
     <UPageHeader title="КАНДИДАТЫ">
-      <template #links>
+      <template #links v-if="session.role === Roles.user">
         <UButton
           icon="i-mi-cloud-upload"
           size="xl"

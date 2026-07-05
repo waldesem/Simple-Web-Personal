@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, type PropType } from "vue";
-import type { ItemFields } from "@/types";
+import { Roles, type ItemFields } from "@/types";
+import { session } from "@/state";
 
 const emits = defineEmits(["update", "delete"]);
 
@@ -26,7 +27,7 @@ const buttons = [
 <template>
   <div @mouseover="visible = true" @mouseleave="visible = false">
     <Transition name="fade">
-      <div v-show="visible" class="relative">
+      <div v-show="visible && session.role === Roles.admin" class="relative">
         <UFieldGroup class="absolute right-1" size="sm">
           <UButton
             v-for="(button, index) in buttons"

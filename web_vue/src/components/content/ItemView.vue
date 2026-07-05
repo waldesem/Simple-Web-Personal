@@ -5,7 +5,8 @@ import { useAsyncState } from "@vueuse/core";
 import { useToasts } from "@/composables";
 import { itemsFields } from "@/schema/items";
 import { itemsForms } from "@/schema/forms";
-import type { Items } from "@/types";
+import { Roles, type Items } from "@/types";
+import { session } from "@/state";
 
 // Определяем данные которые передаются из родительского компонента
 const props = defineProps({
@@ -77,7 +78,12 @@ async function deleteItem(itemId: string, index: number) {
 
 <template>
   <!-- Выводим сообщение если данные отсутствуют -->
-  <UEmpty v-if="!state.length" size="sm" title="Нет данных" variant="naked">
+  <UEmpty
+    v-if="!state.length && session.role === Roles.user"
+    size="sm"
+    title="Нет данных"
+    variant="naked"
+  >
     <template #body>
       <UButton
         :leading="isLoading"
@@ -122,7 +128,7 @@ async function deleteItem(itemId: string, index: number) {
     >
       <Transition name="fade">
         <UButton
-          v-if="state.length && visible"
+          v-if="state.length && visible && session.role === Roles.user"
           block
           class="my-2"
           color="neutral"
