@@ -143,7 +143,7 @@ class Education(BaseModel):
     view: str = Field(alias="educationType", max_length=255)
     institution: str = Field(alias="institutionName", max_length=255)
     finished: str | None = Field(alias="endYear", max_length=4)
-    specialty: str | None = Field(alias="educationType", max_length=255)
+    specialty: str | None = Field(alias="specialty", max_length=255)
     comparator: Literal["educations"]
 
     class Config:
