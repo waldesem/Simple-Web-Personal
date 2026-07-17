@@ -2,6 +2,11 @@
 import { useRouter } from "vue-router";
 import { access, refresh, session } from "@/state";
 import { Roles, type Session } from "@/types";
+import { defineAsyncComponent } from "vue";
+
+const BrandHead = defineAsyncComponent(
+  () => import("@/components/content/BrandHead.vue"),
+);
 
 const router = useRouter();
 
@@ -17,10 +22,7 @@ function logout() {
   <UPage>
     <UHeader to="/">
       <template #title>
-        <div class="inline-flex items-center text-xl font-bold space-x-1">
-          <div class="text-blue-600">КАДРОВАЯ</div>
-          <div class="text-red-600">БЕЗОПАСНОСТЬ</div>
-        </div>
+        <BrandHead />
       </template>
       <template #default>
         <UButton
