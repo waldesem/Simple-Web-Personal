@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import { defineAsyncComponent, inject, onMounted } from "vue";
+import { inject, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { KyInstance } from "ky";
 import { session } from "@/state";
 import type { Session } from "@/types";
-
-const BrandHead = defineAsyncComponent(
-  () => import("@/components/content/BrandHead.vue"),
-);
 
 const router = useRouter();
 
@@ -27,7 +23,7 @@ onMounted(async () => {
 <template>
   <div>
     <UPageBody class="flex flex-col items-center justify-center h-screen">
-      <BrandHead :animated="true" size="text-7xl" />
+      <UProgress color="error" animation="swing" size="xl" />
     </UPageBody>
   </div>
 </template>

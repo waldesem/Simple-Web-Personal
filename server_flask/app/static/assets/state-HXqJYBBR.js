@@ -1,0 +1,1 @@
+import{S as e}from"./useForwardProps-5ox5Qx2b.js";var t=e(`session`,{},sessionStorage),n=e(`access`,``,sessionStorage),r=e(`refresh`,``,localStorage);export{r as n,t as r,n as t};
