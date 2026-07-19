@@ -21,6 +21,8 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(["update"]);
+
 const toast = useToast();
 
 const { create } = useToasts(toast);
@@ -31,6 +33,9 @@ const { execute, state, isLoading } = useAsyncState<Items[keyof Items][]>(
   async () => await api.get(`items/${props.view}/${props.candId}`).json(),
   [],
   {
+    onSuccess(data) {
+      emit("update", data);
+    },
     onError() {
       create();
     },

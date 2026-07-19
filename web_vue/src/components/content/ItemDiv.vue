@@ -42,12 +42,12 @@ const buttons = [
       </div>
     </Transition>
 
-    <div v-for="field in fields" :key="field.key" class="m-2">
+    <div v-for="field in props.fields" :key="field.key" class="m-2">
       <div
         v-if="
           (item[field.key] !== '' && item[field.key] !== null) || field.slot
         "
-        class="flex grid grid-cols-12 gap-3 mb-4"
+        class="grid grid-cols-12 gap-3 mb-4"
       >
         <div class="col-span-3">{{ field.label }}</div>
         <div class="col-span-9 wrap-break-word">

@@ -10,20 +10,13 @@ const router = useRouter();
 const api = inject("api") as KyInstance;
 
 onMounted(async () => {
-  try {
-    session.value = await api.get("auth/session").json<Session>();
-    router.replace("/persons");
-  } catch (error) {
-    console.error(error);
-    router.replace("/login");
-  }
+  session.value = await api.get("auth/session").json<Session>();
+  router.push("/persons");
 });
 </script>
 
 <template>
-  <div>
-    <UPageBody class="flex flex-col items-center justify-center h-screen">
-      <UProgress color="error" animation="swing" size="xl" />
-    </UPageBody>
+  <div class="flex flex-col items-center justify-center h-screen">
+    <UProgress class="w-1/2" color="error" animation="swing" />
   </div>
 </template>

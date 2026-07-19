@@ -96,8 +96,10 @@ def patch_login(json_data: Update) -> Response:
 @bp.post("/refresh")
 def refresh_token() -> Response:
     """Refresh the access token."""
-    refresh_token = request.get_json()
-    if decoded := decode_token(refresh_token, refresh=True):
+    data = request.get_json()
+    if (refresh_token := data.get("token")) and (
+        decoded := decode_token(refresh_token, refresh=True)
+    ):
         return jsonify(
             {
                 "access_token": create_token(decoded["id"]),

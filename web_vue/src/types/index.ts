@@ -258,3 +258,9 @@ export interface Items {
   staffs: Staff;
   workplaces: Work;
 }
+
+type ToArray<T> = {
+  [K in keyof T]: T[K][];
+};
+
+export interface ItemsArray extends ToArray<Items> {}

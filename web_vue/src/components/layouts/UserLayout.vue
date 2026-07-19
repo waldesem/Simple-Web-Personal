@@ -20,7 +20,7 @@ function logout() {
 
 <template>
   <UPage>
-    <UHeader to="/">
+    <UHeader to="/persons" class="no-print">
       <template #title>
         <BrandHead />
       </template>
@@ -51,6 +51,6 @@ function logout() {
     <UMain>
       <slot />
     </UMain>
-    <UFooter v-once />
+    <UFooter v-once class="no-print" />
   </UPage>
 </template>

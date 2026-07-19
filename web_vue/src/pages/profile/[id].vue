@@ -3,9 +3,10 @@ import { KyInstance } from "ky";
 import { inject, ref } from "vue";
 import { useAsyncState, useClipboard } from "@vueuse/core";
 import { useToasts } from "@/composables";
-import { person as PersonItem } from "@/schema/items";
+import { accordion, person as PersonItem, tabs } from "@/schema/items";
 import { person as PersonForm } from "@/schema/forms";
-import type { Navigations, Person } from "@/types";
+import type { ItemsArray, Person } from "@/types";
+import PrintDiv from "@/components/content/PrintDiv.vue";
 
 definePage({ meta: { layout: "UserLayout" }, props: true });
 
@@ -23,25 +24,11 @@ const api = inject("api") as KyInstance;
 
 const modal = ref(false); // Объявляем переменную модального окна
 
+const print = ref(false);
+
+const itemsData = ref({} as ItemsArray);
+
 const anketa = { label: "Анкета", icon: "i-mi-user", slot: "person" };
-
-const tabs = [
-  { label: "Проверки", icon: "i-mi-document-check", slot: "checks" },
-  { label: "Полиграф", icon: "i-mi-heart", slot: "poligrafs" },
-  { label: "Расследования", icon: "i-mi-archive", slot: "investigations" },
-  { label: "Запросы", icon: "i-mi-comment", slot: "inquiries" },
-] as Navigations[];
-
-const accordion = [
-  { label: "Должности", icon: "i-mi-laptop", slot: "staffs" },
-  { label: "Образование", icon: "i-mi-book", slot: "educations" },
-  { label: "Работа", icon: "i-mi-computer", slot: "workplaces" },
-  { label: "Документы", icon: "i-mi-document", slot: "documents" },
-  { label: "Адреса", icon: "i-mi-home", slot: "addresses" },
-  { label: "Контакты", icon: "i-mi-call", slot: "contacts" },
-  { label: "Изменения имени", icon: "i-mi-edit", slot: "previous" },
-  { label: "Аффилированность", icon: "i-mi-users", slot: "affilations" },
-] as Navigations[];
 
 const { execute, state, isLoading } = useAsyncState<Person>(
   async () => await api.get("persons/" + props.id).json(),
@@ -69,10 +56,17 @@ async function submit(form: Person) {
 </script>
 
 <template>
-  <UContainer>
+  <UContainer v-if="print">
+    <PrintDiv :person="state" :datas="itemsData" @print="print = false" />
+  </UContainer>
+  <UContainer v-else>
     <UPageHeader
       :title="`${state.surname} ${state.firstname} ${state.patronymic ?? ''}`"
-    />
+    >
+      <template #links>
+        <UButton icon="i-mi-print" variant="outline" @click="print = true" />
+      </template>
+    </UPageHeader>
     <UPageBody>
       <UTabs :items="[anketa, ...tabs]" :unmount-on-hide="false">
         <!-- Слот вкладки для отображения анкеты -->
@@ -110,7 +104,7 @@ async function submit(form: Person) {
           <USeparator />
 
           <!-- Aккордеон с данными staffs, educations и т.д. -->
-          <UAccordion :items="accordion">
+          <UAccordion :items="accordion" :unmount-on-hide="false">
             <template
               v-for="accord in accordion"
               #[accord.slot]
@@ -120,6 +114,7 @@ async function submit(form: Person) {
                 :cand-id="props.id"
                 :title="accord.label"
                 :view="accord.slot"
+                @update="(event) => (itemsData[accord.slot] = event)"
               />
             </template>
           </UAccordion>

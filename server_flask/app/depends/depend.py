@@ -33,7 +33,7 @@ def authorize(role: Roles | None = None) -> Callable:
         @wraps(func)
         def wrapper(*args: tuple, **kwargs: dict) -> Callable:
             if not (header := request.headers.get("Authorization")):
-                return abort(400)
+                return abort(401)
 
             if not (decoded := decode_token(header[7:])):
                 return abort(401)
