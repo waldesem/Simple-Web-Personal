@@ -1,17 +1,23 @@
 <script setup lang="ts">
 import { shallowRef, watch, markRaw } from "vue";
 import { useRoute } from "vue-router";
+import UserLayout from "./components/layouts/UserLayout.vue";
+import AdminLayout from "./components/layouts/AdminLayout.vue";
 
 const route = useRoute();
 
-const layout = shallowRef(null);
+const layout = shallowRef();
+
+const layouts = {
+  user: UserLayout,
+  admin: AdminLayout,
+};
 
 watch(
   () => route.meta.layout,
   async (metaLayout) => {
     if (metaLayout) {
-      const component = await import(`@/components/layouts/${metaLayout}.vue`);
-      layout.value = markRaw(component.default);
+      layout.value = markRaw(layouts[metaLayout as keyof typeof layouts]);
     }
   },
   { immediate: true },

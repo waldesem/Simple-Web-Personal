@@ -19,7 +19,6 @@ function logout() {
 </script>
 
 <template>
-  <!-- <UPage> -->
   <UHeader to="/persons" class="no-print">
     <template #title>
       <BrandHead />
@@ -48,5 +47,4 @@ function logout() {
       />
     </template>
   </UHeader>
-  <!-- </UPage> -->
 </template>

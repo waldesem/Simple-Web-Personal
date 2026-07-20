@@ -8,7 +8,7 @@ import { user as formUser } from "@/schema/forms";
 import type { TableColumn } from "@nuxt/ui";
 import { Actions, type User } from "@/types";
 
-definePage({ meta: { layout: "AdminLayout" } });
+definePage({ meta: { layout: "admin" } });
 
 const toast = useToast();
 

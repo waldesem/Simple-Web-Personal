@@ -10,7 +10,7 @@ import { person as PersonForm } from "@/schema/forms";
 import { Roles, type Person, type PersonId } from "@/types";
 import { session } from "@/state";
 
-definePage({ meta: { layout: "UserLayout" } });
+definePage({ meta: { layout: "user" } });
 
 const router = useRouter();
 

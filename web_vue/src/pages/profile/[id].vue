@@ -8,7 +8,7 @@ import { person as PersonForm } from "@/schema/forms";
 import type { ItemsArray, Person } from "@/types";
 import PrintDiv from "@/components/content/PrintDiv.vue";
 
-definePage({ meta: { layout: "UserLayout" }, props: true });
+definePage({ meta: { layout: "user" }, props: true });
 
 const props = defineProps({
   id: { type: String, required: true }, // ID кандидата из index.vue

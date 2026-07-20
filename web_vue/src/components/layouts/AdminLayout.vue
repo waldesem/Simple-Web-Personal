@@ -6,7 +6,6 @@ const BrandHead = defineAsyncComponent(
 );
 </script>
 <template>
-  <!-- <UPage> -->
   <UHeader v-once>
     <template #title>
       <BrandHead color1="text-grat-800" color2="text-gray-600" />
@@ -30,5 +29,4 @@ const BrandHead = defineAsyncComponent(
       <UAvatar text="A" :chip="{ inset: true, color: 'secondary' }" />
     </template>
   </UHeader>
-  <!-- </UPage> -->
 </template>
