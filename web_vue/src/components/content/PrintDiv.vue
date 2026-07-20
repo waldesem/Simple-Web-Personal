@@ -53,7 +53,10 @@ const emit = defineEmits(["print"]);
     <div class="mt-6 border-dashed border-b" />
 
     <template v-for="(accord, index) in accordion" :key="index">
-      <div class="font-bold tracking-wider underline mt-6">
+      <div
+        v-if="datas[accord.slot]"
+        class="font-bold tracking-wider underline mt-6"
+      >
         {{ accord.label }}
       </div>
       <template v-if="datas[accord.slot] && Array.isArray(datas[accord.slot])">
