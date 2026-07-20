@@ -68,7 +68,7 @@ async function submit(form: Person) {
       </template>
     </UPageHeader>
     <UPageBody>
-      <UTabs :items="[anketa, ...tabs]" :unmount-on-hide="false">
+      <UTabs :items="[anketa, ...tabs]" :unmount-on-hide="true">
         <!-- Слот вкладки для отображения анкеты -->
         <template #person>
           <ItemDiv

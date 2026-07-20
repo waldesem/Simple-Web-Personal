@@ -1,22 +1,17 @@
 <script setup lang="ts">
-import { shallowRef, watch, markRaw, defineAsyncComponent } from "vue";
+import { shallowRef, watch, markRaw } from "vue";
 import { useRoute } from "vue-router";
-
-const DefaultLayout = defineAsyncComponent(
-  () => import("@/components/layouts/DefaultLayout.vue"),
-);
 
 const route = useRoute();
 
-const Layout = shallowRef(DefaultLayout);
+const layout = shallowRef(null);
 
 watch(
   () => route.meta.layout,
   async (metaLayout) => {
-    if (!metaLayout) Layout.value = DefaultLayout;
-    else {
+    if (metaLayout) {
       const component = await import(`@/components/layouts/${metaLayout}.vue`);
-      Layout.value = markRaw(component.default);
+      layout.value = markRaw(component.default);
     }
   },
   { immediate: true },
@@ -25,14 +20,16 @@ watch(
 
 <template>
   <UApp>
-    <RouterView v-slot="{ Component }">
-      <component :is="Layout">
+    <UMain>
+      <component v-if="layout" :is="layout" />
+      <RouterView v-slot="{ Component }">
         <Transition mode="out-in" name="fade">
           <KeepAlive include="persons" :max="1">
             <component :is="Component" />
           </KeepAlive>
         </Transition>
-      </component>
-    </RouterView>
+      </RouterView>
+      <UFooter v-once class="no-print" />
+    </UMain>
   </UApp>
 </template>

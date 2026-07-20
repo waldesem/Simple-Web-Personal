@@ -48,7 +48,6 @@ def authorize(role: Roles | None = None) -> Callable:
                 g.current_user = user
 
                 return func(*args, **kwargs)
-
             return abort(400)
 
         return wrapper

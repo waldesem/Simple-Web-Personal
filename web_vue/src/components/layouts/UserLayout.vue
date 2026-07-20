@@ -19,38 +19,34 @@ function logout() {
 </script>
 
 <template>
-  <UPage>
-    <UHeader to="/persons" class="no-print">
-      <template #title>
-        <BrandHead />
-      </template>
-      <template #default>
-        <UButton
-          v-if="session.role === Roles.admin"
-          active-class="font-bold"
-          inactive-class="text-muted"
-          color="neutral"
-          icon="i-mi-users"
-          label="Пользователи"
-          to="/users"
-          variant="link"
-        />
-      </template>
-      <template #right>
-        <UButton
-          v-if="session.id"
-          active-class="font-bold"
-          inactive-class="text-muted"
-          icon="i-mi-log-out"
-          label="Выйти"
-          variant="link"
-          @click="logout"
-        />
-      </template>
-    </UHeader>
-    <UMain>
-      <slot />
-    </UMain>
-    <UFooter v-once class="no-print" />
-  </UPage>
+  <!-- <UPage> -->
+  <UHeader to="/persons" class="no-print">
+    <template #title>
+      <BrandHead />
+    </template>
+    <template #default>
+      <UButton
+        v-if="session.role === Roles.admin"
+        active-class="font-bold"
+        inactive-class="text-muted"
+        color="neutral"
+        icon="i-mi-users"
+        label="Пользователи"
+        to="/users"
+        variant="link"
+      />
+    </template>
+    <template #right>
+      <UButton
+        v-if="session.id"
+        active-class="font-bold"
+        inactive-class="text-muted"
+        icon="i-mi-log-out"
+        label="Выйти"
+        variant="link"
+        @click="logout"
+      />
+    </template>
+  </UHeader>
+  <!-- </UPage> -->
 </template>
