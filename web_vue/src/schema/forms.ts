@@ -6,14 +6,14 @@ const login: AuthFormField[] = [
   {
     name: "username",
     label: "Имя пользователя",
-    icon: "i-mi-user",
+    icon: "i-lucide-user",
     type: "text",
     required: true,
   },
   {
     name: "password",
     label: "Пароль",
-    icon: "i-mi-lock",
+    icon: "i-lucide-lock",
     type: "password",
     required: true,
   },
@@ -23,14 +23,14 @@ const register = login.concat([
   {
     name: "new_pswd",
     label: "Новый пароль",
-    icon: "i-mi-lock",
+    icon: "i-lucide-lock",
     type: "password",
     required: true,
   },
   {
     name: "conf_pswd",
     label: "Подтверждение пароля",
-    icon: "i-mi-lock",
+    icon: "i-lucide-lock",
     type: "password",
     required: true,
   },

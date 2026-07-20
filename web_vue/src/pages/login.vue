@@ -43,7 +43,7 @@ async function onSubmit(payload: FormSubmitEvent<Register | Login>) {
 <template>
   <UPageCard class="w-full max-w-md m-auto my-[20vh]">
     <UAuthForm
-      icon="i-mi-lock"
+      icon="i-lucide-lock"
       title="Вход в систему"
       description="Доступ в систему кадровой безопасности."
       :validate="validate[method]"

@@ -28,7 +28,7 @@ const print = ref(false);
 
 const itemsData = ref({} as ItemsArray);
 
-const anketa = { label: "Анкета", icon: "i-mi-user", slot: "person" };
+const anketa = { label: "Анкета", icon: "i-lucide-user", slot: "person" };
 
 const { execute, state, isLoading } = useAsyncState<Person>(
   async () => await api.get("persons/" + props.id).json(),
@@ -64,7 +64,11 @@ async function submit(form: Person) {
       :title="`${state.surname} ${state.firstname} ${state.patronymic ?? ''}`"
     >
       <template #links>
-        <UButton icon="i-mi-print" variant="outline" @click="print = true" />
+        <UButton
+          icon="i-lucide-printer"
+          variant="outline"
+          @click="print = true"
+        />
       </template>
     </UPageHeader>
     <UPageBody>

@@ -113,7 +113,7 @@ onChange(async (files) => {
     <UPageHeader title="КАНДИДАТЫ">
       <template #links v-if="session.role === Roles.user">
         <UButton
-          icon="i-mi-cloud-upload"
+          icon="i-lucide-cloud-upload"
           size="xl"
           title="Загрузить файл"
           variant="ghost"
@@ -127,7 +127,7 @@ onChange(async (files) => {
           title="Анкета"
         >
           <UButton
-            icon="i-mi-user-add"
+            icon="i-lucide-user-plus"
             size="xl"
             title="Добавить анкету"
             variant="ghost"
@@ -145,7 +145,7 @@ onChange(async (files) => {
     <UPageBody>
       <UInput
         id="search"
-        icon="i-mi-search"
+        icon="i-lucide-search"
         v-model.trim="search"
         :loading="isLoading"
         type="search"
@@ -171,7 +171,7 @@ onChange(async (files) => {
       <UButton
         v-show="state.length"
         :loading="isLoading"
-        icon="i-mi-refresh"
+        icon="i-lucide-refresh-cw"
         label="Обновить"
         size="sm"
         variant="ghost"
@@ -186,7 +186,7 @@ onChange(async (files) => {
         <UButton
           class="me-2 rounded-full"
           :disabled="!page || isLoading"
-          icon="i-mi-arrow-left"
+          icon="i-lucide-arrow-left"
           title="Вперед"
           @click="page--"
         />
@@ -201,7 +201,7 @@ onChange(async (files) => {
         <UButton
           class="ms-2 rounded-full"
           :disabled="!hasNext || isLoading"
-          icon="i-mi-arrow-right"
+          icon="i-lucide-arrow-right"
           title="Назад"
           @click="page++"
         />

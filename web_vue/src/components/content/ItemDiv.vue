@@ -19,8 +19,8 @@ const props = defineProps({
 });
 
 const buttons = [
-  { icon: "i-mi-edit-alt", title: "Изменить", emit: "update" },
-  { icon: "i-mi-delete", title: "Удалить", emit: "delete" },
+  { icon: "i-lucide-square-pen", title: "Изменить", emit: "update" },
+  { icon: "i-lucide-trash", title: "Удалить", emit: "delete" },
 ] as { icon: string; title: string; emit: Parameters<typeof emits>[0] }[];
 </script>
 

@@ -137,7 +137,7 @@ async function deleteItem(itemId: string, index: number) {
           block
           class="my-2"
           color="neutral"
-          icon="i-mi-add"
+          icon="i-lucide-plus"
           title="Добавить запись"
           size="sm"
           variant="outline"

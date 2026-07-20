@@ -20,7 +20,7 @@ const emit = defineEmits(["print"]);
 <template>
   <UButton
     class="absolute right-10 no-print"
-    icon="i-mi-close"
+    icon="i-lucide-x"
     variant="ghost"
     @click="emit('print')"
   />

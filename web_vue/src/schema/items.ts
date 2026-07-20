@@ -179,19 +179,19 @@ export const itemsFields = {
 };
 
 export const tabs = [
-  { label: "Проверки", icon: "i-mi-document-check", slot: "checks" },
-  { label: "Полиграф", icon: "i-mi-heart", slot: "poligrafs" },
-  { label: "Расследования", icon: "i-mi-archive", slot: "investigations" },
-  { label: "Запросы", icon: "i-mi-comment", slot: "inquiries" },
+  { label: "Проверки", icon: "i-lucide-file-check", slot: "checks" },
+  { label: "Полиграф", icon: "i-lucide-heart-pulse", slot: "poligrafs" },
+  { label: "Расследования", icon: "i-lucide-archive", slot: "investigations" },
+  { label: "Запросы", icon: "i-lucide-file-question-mark", slot: "inquiries" },
 ] as Navigations[];
 
 export const accordion = [
-  { label: "Должности", icon: "i-mi-laptop", slot: "staffs" },
-  { label: "Образование", icon: "i-mi-book", slot: "educations" },
-  { label: "Работа", icon: "i-mi-computer", slot: "workplaces" },
-  { label: "Документы", icon: "i-mi-document", slot: "documents" },
-  { label: "Адреса", icon: "i-mi-home", slot: "addresses" },
-  { label: "Контакты", icon: "i-mi-call", slot: "contacts" },
-  { label: "Изменения имени", icon: "i-mi-edit", slot: "previous" },
-  { label: "Аффилированность", icon: "i-mi-users", slot: "affilations" },
+  { label: "Должности", icon: "i-mi-briefcase-business", slot: "staffs" },
+  { label: "Образование", icon: "i-mi-graduation-cap", slot: "educations" },
+  { label: "Работа", icon: "i-mi-construction", slot: "workplaces" },
+  { label: "Документы", icon: "i-mi-book-check", slot: "documents" },
+  { label: "Адреса", icon: "i-mi-house", slot: "addresses" },
+  { label: "Контакты", icon: "i-mi-phone", slot: "contacts" },
+  { label: "Изменения имени", icon: "i-mi-save-pen", slot: "previous" },
+  { label: "Аффилированность", icon: "i-mi-chart-pie", slot: "affilations" },
 ] as Navigations[];

@@ -23,13 +23,13 @@ export enum Titles {
 }
 
 export enum Icons {
-  error = "i-mi-circle-error",
-  primary = "i-mi-circle-information",
-  secondary = "i-mi-circle-help",
-  success = "i-mi-circle-check",
-  info = "i-mi-circle-information",
-  warning = "i-mi-circle-warning",
-  neutral = "i-mi-circle",
+  error = "i-lucide-circle-x",
+  primary = "i-lucide-circle-info",
+  secondary = "i-lucide-circle-question-mark",
+  success = "i-lucide-circle-chevron-down",
+  info = "i-lucide-circle-info",
+  warning = "i-lucide-circle-alert",
+  neutral = "i-lucide-circle",
 }
 
 export enum Actions {

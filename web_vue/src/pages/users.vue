@@ -71,7 +71,7 @@ const columns: TableColumn<User>[] = [
         () =>
           h(Button, {
             color: "neutral",
-            icon: "i-mi-options-vertical",
+            icon: "i-lucide-ellipsis-vertical",
             variant: "ghost",
           }),
       );
@@ -150,7 +150,7 @@ async function submit(form: User) {
           <UButton
             :loading="isLoading"
             color="neutral"
-            icon="i-mi-user-add"
+            icon="i-lucide-user-plus"
             size="xl"
             title="Добавить пользователя"
             variant="ghost"
@@ -169,7 +169,7 @@ async function submit(form: User) {
     <UPageBody>
       <UInput
         id="search"
-        icon="i-mi-search"
+        icon="i-lucide-search"
         v-model.trim="globalFilter"
         :loading="isLoading"
         type="search"
