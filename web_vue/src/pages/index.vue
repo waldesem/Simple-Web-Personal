@@ -11,7 +11,7 @@ const api = inject("api") as KyInstance;
 onMounted(async () => {
   try {
     session.value = await api.get("auth/session").json();
-    router.push("/persons");
+    router.replace("/persons");
   } catch (e) {
     console.error(e);
   }

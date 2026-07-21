@@ -56,9 +56,12 @@ async function submit(form: Person) {
 </script>
 
 <template>
-  <UContainer v-if="print">
-    <PrintDiv :person="state" :datas="itemsData" @print="print = false" />
-  </UContainer>
+  <PrintDiv
+    v-if="print"
+    :person="state"
+    :datas="itemsData"
+    @print="print = false"
+  />
   <UContainer v-else>
     <UPageHeader
       :title="`${state.surname} ${state.firstname} ${state.patronymic ?? ''}`"
@@ -71,64 +74,62 @@ async function submit(form: Person) {
         />
       </template>
     </UPageHeader>
-    <UPageBody>
-      <UTabs :items="[anketa, ...tabs]" :unmount-on-hide="true">
-        <!-- Слот вкладки для отображения анкеты -->
-        <template #person>
-          <ItemDiv
-            :class="{ 'animate-pulse': isLoading }"
-            :fields="PersonItem"
-            :item="state"
-            @delete="null"
-            @update="modal = true"
+    <UTabs :items="[anketa, ...tabs]" :unmount-on-hide="true">
+      <!-- Слот вкладки для отображения анкеты -->
+      <template #person>
+        <ItemDiv
+          :class="{ 'animate-pulse': isLoading }"
+          :fields="PersonItem"
+          :item="state"
+          @delete="null"
+          @update="modal = true"
+        >
+          <template #destination>
+            <UButton
+              v-if="state?.destination"
+              :color="copied ? 'success' : 'info'"
+              :label="copied ? 'Скопировано' : 'Копировать'"
+              size="sm"
+              variant="outline"
+              @click="copy(state.destination)"
+            />
+          </template>
+        </ItemDiv>
+
+        <!-- Модальное окно для редактирования данных -->
+        <UModal
+          v-model:open="modal"
+          title="Aнкета"
+          description="Редактирование анкетные данные"
+        >
+          <template #body>
+            <FormDiv :fields="PersonForm" :item="state" @submit="submit" />
+          </template>
+        </UModal>
+
+        <USeparator />
+
+        <!-- Aккордеон с данными staffs, educations и т.д. -->
+        <UAccordion :items="accordion" :unmount-on-hide="false">
+          <template
+            v-for="accord in accordion"
+            #[accord.slot]
+            :key="accord.slot"
           >
-            <template #destination>
-              <UButton
-                v-if="state?.destination"
-                :color="copied ? 'success' : 'info'"
-                :label="copied ? 'Скопировано' : 'Копировать'"
-                size="sm"
-                variant="outline"
-                @click="copy(state.destination)"
-              />
-            </template>
-          </ItemDiv>
+            <ItemView
+              :cand-id="props.id"
+              :title="accord.label"
+              :view="accord.slot"
+              @update="(event) => (itemsData[accord.slot] = event)"
+            />
+          </template>
+        </UAccordion>
+      </template>
 
-          <!-- Модальное окно для редактирования данных -->
-          <UModal
-            v-model:open="modal"
-            title="Aнкета"
-            description="Редактирование анкетные данные"
-          >
-            <template #body>
-              <FormDiv :fields="PersonForm" :item="state" @submit="submit" />
-            </template>
-          </UModal>
-
-          <USeparator />
-
-          <!-- Aккордеон с данными staffs, educations и т.д. -->
-          <UAccordion :items="accordion" :unmount-on-hide="false">
-            <template
-              v-for="accord in accordion"
-              #[accord.slot]
-              :key="accord.slot"
-            >
-              <ItemView
-                :cand-id="props.id"
-                :title="accord.label"
-                :view="accord.slot"
-                @update="(event) => (itemsData[accord.slot] = event)"
-              />
-            </template>
-          </UAccordion>
-        </template>
-
-        <!-- Вкладки проверки, полиграф и др. -->
-        <template v-for="tab in tabs" #[tab.slot] :key="tab.slot">
-          <ItemView :cand-id="props.id" :title="tab.label" :view="tab.slot" />
-        </template>
-      </UTabs>
-    </UPageBody>
+      <!-- Вкладки проверки, полиграф и др. -->
+      <template v-for="tab in tabs" #[tab.slot] :key="tab.slot">
+        <ItemView :cand-id="props.id" :title="tab.label" :view="tab.slot" />
+      </template>
+    </UTabs>
   </UContainer>
 </template>

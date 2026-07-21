@@ -53,7 +53,7 @@ async function onSubmit(payload: FormSubmitEvent<Register | Login>) {
         color: 'success',
         variant: 'outline',
       }"
-      :ui="{ leadingIcon: 'text-blue-800' }"
+      :ui="{ leadingIcon: 'primary' }"
       @submit.prevent="onSubmit($event)"
     >
       <template #validation>

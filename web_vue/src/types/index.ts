@@ -5,32 +5,7 @@ import type {
   SelectProps,
   TabsItem,
   TextareaProps,
-  ToastProps,
 } from "@nuxt/ui";
-
-export interface ToastComposable {
-  add: (options: ToastProps) => void;
-}
-
-export enum Titles {
-  error = "Ошибка",
-  primary = "Информация",
-  secondary = "Вопрос",
-  success = "Успех",
-  info = "Информация",
-  warning = "Внимание",
-  neutral = "Предупреждение",
-}
-
-export enum Icons {
-  error = "i-lucide-circle-x",
-  primary = "i-lucide-circle-info",
-  secondary = "i-lucide-circle-question-mark",
-  success = "i-lucide-circle-chevron-down",
-  info = "i-lucide-circle-info",
-  warning = "i-lucide-circle-alert",
-  neutral = "i-lucide-circle",
-}
 
 export enum Actions {
   delete = "delete",
@@ -82,7 +57,7 @@ export type FormFields<T> = {
   };
 }[keyof FormElemAttrs];
 
-export type NavigationItem = AccordionItem & TabsItem;
+type NavigationItem = AccordionItem & TabsItem;
 
 export interface Navigations extends NavigationItem {
   label: string;

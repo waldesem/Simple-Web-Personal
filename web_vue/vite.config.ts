@@ -1,8 +1,8 @@
+import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import VueRouter from "vue-router/vite";
 import ui from "@nuxt/ui/vite";
-import path from "path";
 
 export default defineConfig({
   build: {
@@ -20,13 +20,13 @@ export default defineConfig({
       },
       ui: {
         colors: {
-          error: "red",
-          info: "blue",
-          neutral: "neutral",
           primary: "blue",
-          secondary: "gray",
-          success: "green",
+          secondary: "zinc",
+          info: "cyan",
+          error: "red",
+          success: "emerald",
           warning: "amber",
+          neutral: "mist",
         },
         input: {
           slots: {
@@ -70,7 +70,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"),
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   server: {

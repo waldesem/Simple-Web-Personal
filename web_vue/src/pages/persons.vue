@@ -142,70 +142,68 @@ onChange(async (files) => {
     </UPageHeader>
 
     <!-- Строка поиска -->
-    <UPageBody>
-      <UInput
-        id="search"
-        icon="i-lucide-search"
-        v-model.trim="search"
-        :loading="isLoading"
-        type="search"
-        placeholder="поиск по фаимилии, имени, отчеству"
-      />
+    <UInput
+      id="search"
+      icon="i-lucide-search"
+      v-model.trim="search"
+      :loading="isLoading"
+      type="search"
+      placeholder="поиск по фаимилии, имени, отчеству"
+    />
 
-      <!-- Таблица с данными кандидатов -->
-      <UTable
-        class="flex-1"
-        empty="Нет данных"
-        :data="state"
-        :columns="columns"
-        :loading="isLoading"
-        loading-animation="swing"
-        loading-color="error"
-        @select="
-          (_, { original }: TableRow<Person>) =>
-            router.push(`/profile/${original.id}`)
-        "
-      />
+    <!-- Таблица с данными кандидатов -->
+    <UTable
+      class="flex-1"
+      empty="Нет данных"
+      :data="state"
+      :columns="columns"
+      :loading="isLoading"
+      loading-animation="swing"
+      loading-color="error"
+      @select="
+        (_, { original }: TableRow<Person>) =>
+          router.push(`/profile/${original.id}`)
+      "
+    />
 
-      <!-- Время последнего обновления -->
+    <!-- Время последнего обновления -->
+    <UButton
+      v-show="state.length"
+      :loading="isLoading"
+      icon="i-lucide-refresh-cw"
+      label="Обновить"
+      size="sm"
+      variant="ghost"
+      @click="execute()"
+    />
+
+    <!-- Пагинация -->
+    <div
+      v-show="state.length"
+      class="flex justify-center border-t border-default pt-8 pb-2"
+    >
       <UButton
-        v-show="state.length"
-        :loading="isLoading"
-        icon="i-lucide-refresh-cw"
-        label="Обновить"
-        size="sm"
-        variant="ghost"
-        @click="execute()"
+        class="me-2 rounded-full"
+        :disabled="!page || isLoading"
+        icon="i-lucide-arrow-left"
+        title="Вперед"
+        @click="page--"
       />
-
-      <!-- Пагинация -->
-      <div
-        v-show="state.length"
-        class="flex justify-center border-t border-default pt-8 pb-2"
-      >
-        <UButton
-          class="me-2 rounded-full"
-          :disabled="!page || isLoading"
-          icon="i-lucide-arrow-left"
-          title="Вперед"
-          @click="page--"
-        />
-        <USelect
-          v-model="limit"
-          :items="[10, 50, 100]"
-          title="Количество записей"
-          :ui="{
-            base: 'w-auto',
-          }"
-        />
-        <UButton
-          class="ms-2 rounded-full"
-          :disabled="!hasNext || isLoading"
-          icon="i-lucide-arrow-right"
-          title="Назад"
-          @click="page++"
-        />
-      </div>
-    </UPageBody>
+      <USelect
+        v-model="limit"
+        :items="[10, 50, 100]"
+        title="Количество записей"
+        :ui="{
+          base: 'w-auto',
+        }"
+      />
+      <UButton
+        class="ms-2 rounded-full"
+        :disabled="!hasNext || isLoading"
+        icon="i-lucide-arrow-right"
+        title="Назад"
+        @click="page++"
+      />
+    </div>
   </UContainer>
 </template>
