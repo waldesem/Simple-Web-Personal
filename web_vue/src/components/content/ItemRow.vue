@@ -6,14 +6,14 @@ import { Items, Person } from "@/types";
 const props = defineProps({
   data: {
     type: Object as PropType<Person | Items[keyof Items]>,
-    default: () => ({}),
+    required: true,
   },
   field: {
     type: Object as PropType<
       | (typeof personFields)[number]
       | (typeof itemsFields)[keyof typeof itemsFields][number]
     >,
-    default: () => ({}),
+    required: true,
   },
 });
 </script>

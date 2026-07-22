@@ -80,14 +80,10 @@ async function deleteItem(itemId: string, index: number) {
 
 <template>
   <!-- Выводим сообщение если данные отсутствуют -->
-  <UEmpty
-    v-if="!state.length && session.role === Roles.user"
-    size="sm"
-    title="Нет данных"
-    variant="naked"
-  >
+  <UEmpty v-if="!state.length" size="sm" title="Нет данных" variant="naked">
     <template #body>
       <UButton
+        v-if="session.role === Roles.user"
         :leading="isLoading"
         label="Добавить запись"
         size="sm"

@@ -18,7 +18,7 @@ const props = defineProps({
   },
   item: {
     type: Object as PropType<Person | Items[keyof Items]>,
-    default: () => ({}),
+    required: true,
   },
 });
 </script>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type PropType } from "vue";
+import type { PropType } from "vue";
 import { accordion, person as PersonField, itemsFields } from "@/schema/items";
 import { ItemsArray, Person } from "@/types";
 import ItemRow from "./ItemRow.vue";
@@ -7,11 +7,11 @@ import ItemRow from "./ItemRow.vue";
 const props = defineProps({
   person: {
     type: Object as PropType<Person>,
-    default: () => ({}),
+    required: true,
   },
   datas: {
     type: Object as PropType<ItemsArray>,
-    default: () => ({}),
+    required: true,
   },
 });
 
@@ -20,7 +20,7 @@ const print = defineModel();
 
 <template>
   <UButton
-    class="absolute right-10 no-print"
+    class="absolute right-0 no-print"
     icon="i-lucide-x"
     variant="ghost"
     @click="print = false"
@@ -39,29 +39,77 @@ const print = defineModel();
     />
   </template>
 
-  <div class="mt-6 border-dashed border-b" />
+  <USeparator class="mt-6 mx-2" />
 
-  <template v-for="(accord, index) in accordion" :key="index">
-    <div
+  <UCollapsible
+    v-for="(accord, index) in accordion"
+    :key="index"
+    :unmount-on-hide="false"
+    default-open
+  >
+    <UButton
       v-if="datas[accord.slot]"
-      class="font-bold tracking-wider underline mt-6"
+      variant="ghost"
+      color="neutral"
+      size="xl"
+      class="font-bold tracking-wider underline mt-2"
     >
       {{ accord.label }}
-    </div>
-    <template v-if="datas[accord.slot] && Array.isArray(datas[accord.slot])">
-      <div
-        class="my-3 border-dashed border-b"
+    </UButton>
+    <template
+      #content
+      v-if="datas[accord.slot] && Array.isArray(datas[accord.slot])"
+    >
+      <UCollapsible
         v-for="(data, idx) in datas[accord.slot]"
         :key="idx"
+        :unmount-on-hide="false"
+        default-open
+        class="collapsible-root-wrapper"
       >
-        <template v-for="(field, ix) in itemsFields[accord.slot]" :key="ix">
-          <ItemRow
-            v-if="data[field.key as keyof typeof data]"
-            :data="data"
-            :field="field"
-          />
+        <template #content>
+          <template v-for="(field, ix) in itemsFields[accord.slot]" :key="ix">
+            <ItemRow
+              v-if="data[field.key as keyof typeof data]"
+              :data="data"
+              :field="field"
+            />
+          </template>
         </template>
-      </div>
+        <template #default>
+          <UButton class="group" variant="ghost" color="neutral" block>
+            <USeparator
+              icon="i-lucide-chevron-up"
+              :ui="{
+                icon: 'group-data-[state=closed]:rotate-180 transition-transform duration-200',
+              }"
+            />
+          </UButton>
+        </template>
+      </UCollapsible>
     </template>
-  </template>
+  </UCollapsible>
 </template>
+
+<style scoped>
+@media print {
+  div[data-state="closed"] {
+    display: none !important;
+    visibility: hidden;
+  }
+}
+
+/* Предполагаем, что CollapsibleRoot рендерит эти элементы с какими-то классами или тегами */
+.collapsible-root-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Меняем порядок визуально: контент (2) становится выше триггера (1) */
+[data-slot="content"] {
+  order: 1;
+}
+[data-slot="base"] {
+  order: 2;
+}
+</style>
