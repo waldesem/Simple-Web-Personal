@@ -144,45 +144,52 @@ async function submit(form: User) {
 
 <template>
   <UContainer>
-    <UPageHeader title="ПОЛЬЗОВАТЕЛИ" :ui="{ title: 'text-2xl text-gray-600' }">
-      <template #links>
-        <UModal v-model:open="modal" title="Пользователь">
-          <UButton
-            :loading="isLoading"
-            color="neutral"
-            icon="i-lucide-user-plus"
-            size="xl"
-            title="Добавить пользователя"
-            variant="ghost"
-            @click="
-              method = 'POST';
-              modal = true;
-            "
-          />
-          <template #body>
-            <FormDiv :fields="formUser" :item="user" @submit="submit" />
-          </template>
-        </UModal>
-      </template>
-    </UPageHeader>
+    <UPage>
+      <UPageHeader
+        title="ПОЛЬЗОВАТЕЛИ"
+        :ui="{ title: 'text-2xl text-gray-600' }"
+      >
+        <template #links>
+          <UModal v-model:open="modal" title="Пользователь">
+            <UButton
+              :loading="isLoading"
+              color="neutral"
+              icon="i-lucide-user-plus"
+              size="xl"
+              title="Добавить пользователя"
+              variant="ghost"
+              @click="
+                method = 'POST';
+                modal = true;
+              "
+            />
+            <template #body>
+              <FormDiv :fields="formUser" :item="user" @submit="submit" />
+            </template>
+          </UModal>
+        </template>
+      </UPageHeader>
 
-    <UInput
-      id="search"
-      icon="i-lucide-search"
-      v-model.trim="globalFilter"
-      :loading="isLoading"
-      type="search"
-      placeholder="поиск..."
-    />
-    <UTable
-      class="flex-1"
-      empty="Нет данных"
-      :columns="columns"
-      :data="state"
-      v-model:global-filter="globalFilter"
-      :loading="isLoading"
-      loading-animation="swing"
-      loading-color="secondary"
-    />
+      <UPageBody>
+        <UInput
+          id="search"
+          icon="i-lucide-search"
+          v-model.trim="globalFilter"
+          :loading="isLoading"
+          type="search"
+          placeholder="поиск..."
+        />
+        <UTable
+          class="flex-1"
+          empty="Нет данных"
+          :columns="columns"
+          :data="state"
+          v-model:global-filter="globalFilter"
+          :loading="isLoading"
+          loading-animation="swing"
+          loading-color="secondary"
+        />
+      </UPageBody>
+    </UPage>
   </UContainer>
 </template>

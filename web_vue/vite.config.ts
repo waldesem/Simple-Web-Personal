@@ -48,7 +48,7 @@ export default defineConfig({
         },
         pageHeader: {
           slots: {
-            root: "relative border-none pt-20 pb-4",
+            root: "relative border-none mt-10",
             title: "text-2xl sm:text-3xl text-red-800",
           },
         },

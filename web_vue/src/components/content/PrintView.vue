@@ -2,6 +2,7 @@
 import { type PropType } from "vue";
 import { accordion, person as PersonField, itemsFields } from "@/schema/items";
 import { ItemsArray, Person } from "@/types";
+import ItemRow from "./ItemRow.vue";
 
 const props = defineProps({
   person: {
@@ -14,7 +15,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["print"]);
+const print = defineModel();
 </script>
 
 <template>
@@ -22,7 +23,7 @@ const emit = defineEmits(["print"]);
     class="absolute right-10 no-print"
     icon="i-lucide-x"
     variant="ghost"
-    @click="emit('print')"
+    @click="print = false"
   />
   <div class="uppercase text-xl font-bold underline mb-6">
     {{
@@ -30,24 +31,13 @@ const emit = defineEmits(["print"]);
     }}
   </div>
 
-  <div v-for="(field, index) in PersonField" :key="index">
-    <div
-      v-if="
-        props.person[field.key] &&
-        !field.slot &&
-        !field.component &&
-        !['surname', 'firstname', 'patronymic'].includes(field.key)
-      "
-      class="grid grid-cols-12 gap-4 mb-4"
-    >
-      <div class="col-span-3">{{ field.label }}</div>
-      <div class="col-span-9 wrap-break-word">
-        <span>
-          {{ field.foo ? field.foo(props.person) : props.person[field.key] }}
-        </span>
-      </div>
-    </div>
-  </div>
+  <template v-for="(field, index) in PersonField.slice(3)" :key="index">
+    <ItemRow
+      v-if="props.person[field.key] && !field.slot"
+      :data="props.person"
+      :field="field"
+    />
+  </template>
 
   <div class="mt-6 border-dashed border-b" />
 
@@ -65,25 +55,11 @@ const emit = defineEmits(["print"]);
         :key="idx"
       >
         <template v-for="(field, ix) in itemsFields[accord.slot]" :key="ix">
-          <div
-            v-if="
-              data[field.key as keyof typeof data] &&
-              !field.slot &&
-              !field.component
-            "
-            class="grid grid-cols-12 gap-4 mb-4"
-          >
-            <div class="col-span-3">{{ field.label }}</div>
-            <div class="col-span-9 wrap-break-word">
-              <span>
-                {{
-                  field.foo
-                    ? field.foo(data as any)
-                    : data[field.key as keyof typeof data]
-                }}
-              </span>
-            </div>
-          </div>
+          <ItemRow
+            v-if="data[field.key as keyof typeof data]"
+            :data="data"
+            :field="field"
+          />
         </template>
       </div>
     </template>

@@ -186,12 +186,16 @@ export const tabs = [
 ] as Navigations[];
 
 export const accordion = [
-  { label: "Должности", icon: "i-mi-briefcase-business", slot: "staffs" },
-  { label: "Образование", icon: "i-mi-graduation-cap", slot: "educations" },
-  { label: "Работа", icon: "i-mi-construction", slot: "workplaces" },
-  { label: "Документы", icon: "i-mi-book-check", slot: "documents" },
-  { label: "Адреса", icon: "i-mi-house", slot: "addresses" },
-  { label: "Контакты", icon: "i-mi-phone", slot: "contacts" },
-  { label: "Изменения имени", icon: "i-mi-save-pen", slot: "previous" },
-  { label: "Аффилированность", icon: "i-mi-chart-pie", slot: "affilations" },
+  { label: "Должности", icon: "i-lucide-briefcase-business", slot: "staffs" },
+  { label: "Образование", icon: "i-lucide-graduation-cap", slot: "educations" },
+  { label: "Работа", icon: "i-lucide-construction", slot: "workplaces" },
+  { label: "Документы", icon: "i-lucide-book-check", slot: "documents" },
+  { label: "Адреса", icon: "i-lucide-house", slot: "addresses" },
+  { label: "Контакты", icon: "i-lucide-phone", slot: "contacts" },
+  { label: "Изменения имени", icon: "i-lucide-save-pen", slot: "previous" },
+  {
+    label: "Аффилированность",
+    icon: "i-lucide-chart-pie",
+    slot: "affilations",
+  },
 ] as Navigations[];

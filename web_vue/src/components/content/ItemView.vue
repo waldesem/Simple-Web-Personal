@@ -36,9 +36,6 @@ const { execute, state, isLoading } = useAsyncState<Items[keyof Items][]>(
     onSuccess(data) {
       emit("update", data);
     },
-    onError() {
-      create();
-    },
   },
 );
 

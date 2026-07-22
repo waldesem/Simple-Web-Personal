@@ -110,100 +110,104 @@ onChange(async (files) => {
 
 <template>
   <UContainer>
-    <UPageHeader title="КАНДИДАТЫ">
-      <template #links v-if="session.role === Roles.user">
-        <UButton
-          icon="i-lucide-cloud-upload"
-          size="xl"
-          title="Загрузить файл"
-          variant="ghost"
-          :loading="isLoading"
-          @click="open()"
-        />
-        <!-- Модальное окно для добавления анкеты -->
-        <UModal
-          v-model:open="modal"
-          description="Введите анкетные данные"
-          title="Анкета"
-        >
+    <UPage>
+      <UPageHeader title="КАНДИДАТЫ">
+        <template #links v-if="session.role === Roles.user">
           <UButton
-            icon="i-lucide-user-plus"
+            icon="i-lucide-cloud-upload"
             size="xl"
-            title="Добавить анкету"
+            title="Загрузить файл"
             variant="ghost"
             :loading="isLoading"
-            @click="modal = true"
+            @click="open()"
           />
-          <template #body>
-            <FormDiv :fields="PersonForm" @submit="submit" />
-          </template>
-        </UModal>
-      </template>
-    </UPageHeader>
+          <!-- Модальное окно для добавления анкеты -->
+          <UModal
+            v-model:open="modal"
+            description="Введите анкетные данные"
+            title="Анкета"
+          >
+            <UButton
+              icon="i-lucide-user-plus"
+              size="xl"
+              title="Добавить анкету"
+              variant="ghost"
+              :loading="isLoading"
+              @click="modal = true"
+            />
+            <template #body>
+              <FormDiv :fields="PersonForm" @submit="submit" />
+            </template>
+          </UModal>
+        </template>
+      </UPageHeader>
 
-    <!-- Строка поиска -->
-    <UInput
-      id="search"
-      icon="i-lucide-search"
-      v-model.trim="search"
-      :loading="isLoading"
-      type="search"
-      placeholder="поиск по фаимилии, имени, отчеству"
-    />
+      <UPageBody>
+        <!-- Строка поиска -->
+        <UInput
+          id="search"
+          icon="i-lucide-search"
+          v-model.trim="search"
+          :loading="isLoading"
+          type="search"
+          placeholder="поиск по фаимилии, имени, отчеству"
+        />
 
-    <!-- Таблица с данными кандидатов -->
-    <UTable
-      class="flex-1"
-      empty="Нет данных"
-      :data="state"
-      :columns="columns"
-      :loading="isLoading"
-      loading-animation="swing"
-      loading-color="error"
-      @select="
-        (_, { original }: TableRow<Person>) =>
-          router.push(`/profile/${original.id}`)
-      "
-    />
+        <!-- Таблица с данными кандидатов -->
+        <UTable
+          class="flex-1"
+          empty="Нет данных"
+          :data="state"
+          :columns="columns"
+          :loading="isLoading"
+          loading-animation="swing"
+          loading-color="error"
+          @select="
+            (_, { original }: TableRow<Person>) =>
+              router.push(`/profile/${original.id}`)
+          "
+        />
 
-    <!-- Время последнего обновления -->
-    <UButton
-      v-show="state.length"
-      :loading="isLoading"
-      icon="i-lucide-refresh-cw"
-      label="Обновить"
-      size="sm"
-      variant="ghost"
-      @click="execute()"
-    />
+        <!-- Время последнего обновления -->
+        <UButton
+          v-show="state.length"
+          :loading="isLoading"
+          icon="i-lucide-refresh-cw"
+          label="Обновить"
+          size="sm"
+          variant="ghost"
+          @click="execute()"
+        />
 
-    <!-- Пагинация -->
-    <div
-      v-show="state.length"
-      class="flex justify-center border-t border-default pt-8 pb-2"
-    >
-      <UButton
-        class="me-2 rounded-full"
-        :disabled="!page || isLoading"
-        icon="i-lucide-arrow-left"
-        title="Вперед"
-        @click="page--"
-      />
-      <USelect
-        v-model="limit"
-        :items="[10, 50, 100]"
-        title="Количество записей"
-        :ui="{
-          base: 'w-auto',
-        }"
-      />
-      <UButton
-        class="ms-2 rounded-full"
-        :disabled="!hasNext || isLoading"
-        icon="i-lucide-arrow-right"
-        title="Назад"
-        @click="page++"
-      />
-    </div>
+        <!-- Пагинация -->
+        <div
+          v-show="state.length"
+          class="flex justify-center border-t border-default pt-8 pb-2"
+        >
+          <UButton
+            class="me-2 rounded-full"
+            :disabled="!page || isLoading"
+            icon="i-lucide-arrow-left"
+            title="Вперед"
+            @click="page--"
+          />
+          <USelect
+            v-model="limit"
+            :items="[10, 50, 100]"
+            title="Количество записей"
+            :ui="{
+              base: 'w-auto',
+            }"
+          />
+          <UButton
+            class="ms-2 rounded-full"
+            :disabled="!hasNext || isLoading"
+            icon="i-lucide-arrow-right"
+            title="Назад"
+            @click="page++"
+          />
+        </div>
+      </UPageBody>
+    </UPage>
   </UContainer>
 </template>
