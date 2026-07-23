@@ -39,7 +39,7 @@ const print = defineModel();
     />
   </template>
 
-  <USeparator class="mt-6 mx-2" />
+  <USeparator class="mt-6 px-2" />
 
   <UCollapsible
     v-for="(accord, index) in accordion"
@@ -48,11 +48,17 @@ const print = defineModel();
     default-open
   >
     <UButton
-      v-if="datas[accord.slot]"
+      v-if="datas[accord.slot].length"
       variant="ghost"
+      trailing-icon="i-lucide-chevron-down"
       color="neutral"
       size="xl"
-      class="font-bold tracking-wider underline mt-2"
+      class="group font-bold tracking-wider underline my-2"
+      :ui="{
+        base: 'px-1',
+        trailingIcon:
+          'group-data-[state=closed]:rotate-180 transition-transform duration-200',
+      }"
     >
       {{ accord.label }}
     </UButton>
@@ -79,7 +85,7 @@ const print = defineModel();
         <template #default>
           <UButton class="group" variant="ghost" color="neutral" block>
             <USeparator
-              icon="i-lucide-chevron-up"
+              icon="i-lucide-chevron-down"
               :ui="{
                 icon: 'group-data-[state=closed]:rotate-180 transition-transform duration-200',
               }"
@@ -93,19 +99,18 @@ const print = defineModel();
 
 <style scoped>
 @media print {
-  div[data-state="closed"] {
+  div[data-state="closed"],
+  .iconify {
     display: none !important;
     visibility: hidden;
   }
 }
 
-/* Предполагаем, что CollapsibleRoot рендерит эти элементы с какими-то классами или тегами */
 .collapsible-root-wrapper {
   display: flex;
   flex-direction: column;
 }
 
-/* Меняем порядок визуально: контент (2) становится выше триггера (1) */
 [data-slot="content"] {
   order: 1;
 }
