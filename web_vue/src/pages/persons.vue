@@ -34,18 +34,36 @@ const { open, onChange } = useFileDialog({
 });
 
 const columns: TableColumn<Person>[] = [
-  { accessorKey: "id", header: "#" },
-  { accessorKey: "surname", header: "Фамилия" },
-  { accessorKey: "firstname", header: "Имя" },
-  { accessorKey: "patronymic", header: "Отчество" },
+  {
+    accessorKey: "id",
+    header: "#",
+    meta: { class: { th: "w-2/23" } },
+  },
+  {
+    accessorKey: "surname",
+    header: "Фамилия",
+    meta: { class: { th: "w-5/23" } },
+  },
+  {
+    accessorKey: "firstname",
+    header: "Имя",
+    meta: { class: { th: "w-5/23" } },
+  },
+  {
+    accessorKey: "patronymic",
+    header: "Отчество",
+    meta: { class: { th: "w-5/23" } },
+  },
   {
     accessorKey: "birthday",
     header: "Дата рождения",
+    meta: { class: { th: "w-3/23" } },
     cell: ({ row }) => localStr(row.original.birthday),
   },
   {
     accessorKey: "created",
     header: "Обновлено",
+    meta: { class: { th: "w-3/23" } },
     cell: ({ row }) => timeAgoStr(row.original.created),
   },
 ];

@@ -78,6 +78,7 @@ async function submit(form: Person) {
             <template #person>
               <ItemDiv
                 :class="{ 'animate-pulse': isLoading }"
+                class="mx-2"
                 :fields="personFields"
                 :item="state"
                 @delete="null"
@@ -113,7 +114,11 @@ async function submit(form: Person) {
               <USeparator />
 
               <!-- Aккордеон с данными staffs, educations и т.д. -->
-              <UAccordion :items="accordion" :unmount-on-hide="false">
+              <UAccordion
+                :items="accordion"
+                :unmount-on-hide="false"
+                class="mx-2"
+              >
                 <template
                   v-for="accord in accordion"
                   #[accord.slot]
@@ -131,11 +136,13 @@ async function submit(form: Person) {
 
             <!-- Вкладки проверки, полиграф и др. -->
             <template v-for="tab in tabs" #[tab.slot] :key="tab.slot">
-              <ItemView
-                :cand-id="props.id"
-                :title="tab.label"
-                :view="tab.slot"
-              />
+              <div class="mx-2">
+                <ItemView
+                  :cand-id="props.id"
+                  :title="tab.label"
+                  :view="tab.slot"
+                />
+              </div>
             </template>
           </UTabs>
         </UPageBody>

@@ -124,7 +124,7 @@ async function deleteItem(itemId: string, index: number) {
       "
       :title="props.title"
     >
-      <Transition name="fade">
+      <Transition name="slide-down">
         <UButton
           v-if="state.length && visible && session.role === Roles.user"
           block
