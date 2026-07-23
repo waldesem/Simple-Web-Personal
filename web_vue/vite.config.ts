@@ -13,6 +13,7 @@ export default defineConfig({
     VueRouter(),
     vue(),
     ui({
+      colorMode: false,
       icon: {
         clientBundle: {
           scan: true,
@@ -20,13 +21,13 @@ export default defineConfig({
       },
       ui: {
         colors: {
-          primary: "blue",
-          secondary: "zinc",
-          info: "cyan",
           error: "red",
-          success: "emerald",
-          warning: "amber",
+          info: "cyan",
           neutral: "mist",
+          secondary: "zinc",
+          success: "emerald",
+          primary: "blue",
+          warning: "amber",
         },
         input: {
           slots: {
