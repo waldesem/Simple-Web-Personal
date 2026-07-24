@@ -22,11 +22,11 @@ const props = defineProps({
   <div class="grid grid-cols-12 gap-4 mb-4">
     <div class="col-span-3">{{ props.field.label }}</div>
     <div class="col-span-9 wrap-break-word">
+      <slot v-if="field.slot" />
       <component
-        v-if="field.component"
+        v-else-if="field.component"
         :is="field.component(props.data as any)"
       />
-      <slot v-else-if="field.slot" :name="field.key" />
       <span v-else>
         {{
           props.field.foo

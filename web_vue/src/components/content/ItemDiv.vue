@@ -47,16 +47,16 @@ const props = defineProps({
     </Transition>
 
     <template v-for="field in props.fields" :key="field.key">
+      <ItemRow v-if="field.slot" :data="item" :field="field">
+        <template #default>
+          <slot :name="field.key"></slot>
+        </template>
+      </ItemRow>
       <ItemRow
-        v-if="
-          (item[field.key as keyof typeof item] !== '' &&
-            item[field.key as keyof typeof item] !== null) ||
-          field.slot
-        "
+        v-else-if="item[field.key as keyof typeof item]"
         :data="item"
         :field="field"
       />
     </template>
-    <slot></slot>
   </div>
 </template>

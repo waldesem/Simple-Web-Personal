@@ -31,7 +31,7 @@ const print = defineModel();
     }}
   </div>
 
-  <template v-for="(field, index) in PersonField.slice(3)" :key="index">
+  <template v-for="(field, index) in PersonField.slice(3, -1)" :key="index">
     <ItemRow
       v-if="props.person[field.key] && !field.slot"
       :data="props.person"

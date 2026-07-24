@@ -13,7 +13,7 @@ const PrintView = defineAsyncComponent(
 
 definePage({ meta: { layout: "user" }, props: true });
 
-const props = defineProps({
+const { id: candId } = defineProps({
   id: { type: String, required: true }, // ID кандидата из persons.vue
 });
 
@@ -27,14 +27,14 @@ const api = inject("api") as KyInstance;
 
 const modal = ref(false); // Объявляем переменную модального окна
 
-const print = ref(false);
+const print = ref(false); // Переключатель печати
 
-const itemsData = ref({} as ItemsArray);
+const itemsData = ref({} as ItemsArray); // Данные для печатной формы
 
 const anketa = { label: "Анкета", icon: "i-lucide-user", slot: "person" };
 
 const { execute, state, isLoading } = useAsyncState<Person>(
-  async () => await api.get("persons/" + props.id).json(),
+  async () => await api.get("persons/" + candId).json(),
   {} as Person,
 );
 
@@ -42,13 +42,14 @@ const { execute, state, isLoading } = useAsyncState<Person>(
 async function submit(form: Person) {
   modal.value = false;
   isLoading.value = true;
-  const { ok } = await api.patch("persons/" + props.id, {
+  const { ok } = await api.patch("persons/" + candId, {
     json: form,
   });
   await execute();
   if (ok) create("info", "Данные обновлены!");
   else {
     create();
+    isLoading.value = false;
   }
 }
 </script>
@@ -78,7 +79,7 @@ async function submit(form: Person) {
             <template #person>
               <ItemDiv
                 :class="{ 'animate-pulse': isLoading }"
-                class="mx-2"
+                class="m-2"
                 :fields="personFields"
                 :item="state"
                 @delete="null"
@@ -125,7 +126,7 @@ async function submit(form: Person) {
                   :key="accord.slot"
                 >
                   <ItemView
-                    :cand-id="props.id"
+                    :cand-id="candId"
                     :title="accord.label"
                     :view="accord.slot"
                     @update="(event) => (itemsData[accord.slot] = event)"
@@ -136,11 +137,12 @@ async function submit(form: Person) {
 
             <!-- Вкладки проверки, полиграф и др. -->
             <template v-for="tab in tabs" #[tab.slot] :key="tab.slot">
-              <div class="mx-2">
+              <div class="m-2">
                 <ItemView
-                  :cand-id="props.id"
+                  :cand-id="candId"
                   :title="tab.label"
                   :view="tab.slot"
+                  @update="(event) => (itemsData[tab.slot] = event)"
                 />
               </div>
             </template>

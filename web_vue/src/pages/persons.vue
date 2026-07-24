@@ -151,7 +151,6 @@ onChange(async (files) => {
               title="Добавить анкету"
               variant="ghost"
               :loading="isLoading"
-              @click="modal = true"
             />
             <template #body>
               <FormDiv :fields="PersonForm" @submit="submit" />

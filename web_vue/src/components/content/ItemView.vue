@@ -58,7 +58,7 @@ async function submitItem(form: typeof item.value) {
   );
   await execute();
   item.value = {} as typeof item.value;
-  if (ok) create();
+  if (!ok) create();
   else if (method.value === "POST") {
     create("success", "Запись успешно добавлена!");
     window.scrollTo({ top: 0, behavior: "smooth" });
