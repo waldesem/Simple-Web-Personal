@@ -3,12 +3,12 @@ import { KyInstance } from "ky";
 import { inject, ref, watch } from "vue";
 import { refDebounced, useAsyncState, useFileDialog } from "@vueuse/core";
 import { useRouter } from "vue-router";
-import { TableColumn, TableRow } from "@nuxt/ui";
+import { TableRow } from "@nuxt/ui";
 import { useToasts } from "@/composables";
-import { localStr, timeAgoStr } from "@/utils";
-import { person as PersonForm } from "@/schema/forms";
-import { Roles, type Person, type PersonId } from "@/types";
 import { session } from "@/state";
+import { columns } from "@/schema/items";
+import { person as personForm } from "@/schema/forms";
+import { Roles, type Person, type PersonId } from "@/types";
 
 definePage({ meta: { layout: "user" } });
 
@@ -32,41 +32,6 @@ const { open, onChange } = useFileDialog({
   accept: "*.json",
   multiple: false,
 });
-
-const columns: TableColumn<Person>[] = [
-  {
-    accessorKey: "id",
-    header: "#",
-    meta: { class: { th: "w-2/23" } },
-  },
-  {
-    accessorKey: "surname",
-    header: "Фамилия",
-    meta: { class: { th: "w-5/23" } },
-  },
-  {
-    accessorKey: "firstname",
-    header: "Имя",
-    meta: { class: { th: "w-5/23" } },
-  },
-  {
-    accessorKey: "patronymic",
-    header: "Отчество",
-    meta: { class: { th: "w-5/23" } },
-  },
-  {
-    accessorKey: "birthday",
-    header: "Дата рождения",
-    meta: { class: { th: "w-3/23" } },
-    cell: ({ row }) => localStr(row.original.birthday),
-  },
-  {
-    accessorKey: "created",
-    header: "Обновлено",
-    meta: { class: { th: "w-3/23" } },
-    cell: ({ row }) => timeAgoStr(row.original.created),
-  },
-];
 
 const { execute, isLoading, state } = useAsyncState<Person[]>(
   async () =>
@@ -99,7 +64,7 @@ function addToast(person_id: string | null) {
   if (person_id) {
     create("success", "Анкета успешно добавлена!");
     router.push("profile/" + person_id);
-  } else create("secondary", "Возможно, анкета уже существует!");
+  } else create("warning", "Возможно, анкета уже существует!");
 }
 
 // Обработчик результата загрузки данных
@@ -132,7 +97,7 @@ onChange(async (files) => {
       <UPageHeader title="КАНДИДАТЫ">
         <template #links v-if="session.role === Roles.user">
           <UButton
-            icon="i-lucide-cloud-upload"
+            icon="i-lucide-upload"
             size="xl"
             title="Загрузить файл"
             variant="ghost"
@@ -153,7 +118,7 @@ onChange(async (files) => {
               :loading="isLoading"
             />
             <template #body>
-              <FormDiv :fields="PersonForm" @submit="submit" />
+              <FormDiv :fields="personForm" @submit="submit" />
             </template>
           </UModal>
         </template>
@@ -185,7 +150,7 @@ onChange(async (files) => {
           "
         />
 
-        <!-- Время последнего обновления -->
+        <!-- Кнопка обновления -->
         <UButton
           v-show="state.length"
           :loading="isLoading"
@@ -199,7 +164,7 @@ onChange(async (files) => {
         <!-- Пагинация -->
         <div
           v-show="state.length"
-          class="flex justify-center border-t border-default pt-8 pb-2"
+          class="flex justify-center border-t border-default pt-8"
         >
           <UButton
             class="me-2 rounded-full"
@@ -210,7 +175,7 @@ onChange(async (files) => {
           />
           <USelect
             v-model="limit"
-            :items="[10, 50, 100]"
+            :items="[10, 30, 50]"
             title="Количество записей"
             :ui="{
               base: 'w-auto',
@@ -228,3 +193,9 @@ onChange(async (files) => {
     </UPage>
   </UContainer>
 </template>
+
+<style scoped>
+.tbody {
+  opacity: v-bind("isLoading ? '0.5': '1'");
+}
+</style>

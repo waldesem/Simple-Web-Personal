@@ -3,12 +3,14 @@ import { KyInstance } from "ky";
 import { h, inject, resolveComponent, shallowRef } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { useToasts } from "@/composables";
-import { localStr } from "@/utils";
+import { localStr } from "@/schema/items";
 import { user as formUser } from "@/schema/forms";
 import type { TableColumn } from "@nuxt/ui";
-import { Actions, type User } from "@/types";
+import type { User } from "@/types";
 
 definePage({ meta: { layout: "admin" } });
+
+type Actions = "block" | "delete" | "reset";
 
 const toast = useToast();
 
@@ -93,19 +95,19 @@ function getRowItems(original: User) {
     {
       label: original.deleted ? "Восстановить" : "Удалить",
       onSelect() {
-        edit(Actions.delete, original.id);
+        edit("delete", original.id);
       },
     },
     {
       label: original.blocked ? "Разблокировать" : "Заблокировать",
       onSelect() {
-        edit(Actions.block, original.id);
+        edit("block", original.id);
       },
     },
     {
       label: "Сбросить пароль",
       onSelect() {
-        edit(Actions.reset, original.id);
+        edit("reset", original.id);
       },
     },
   ];

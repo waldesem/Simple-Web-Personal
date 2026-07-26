@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { defineAsyncComponent } from "vue";
 import { useRouter } from "vue-router";
 import { access, refresh, session } from "@/state";
 import { Roles, type Session } from "@/types";
-import { defineAsyncComponent } from "vue";
 
 const BrandHead = defineAsyncComponent(
   () => import("@/components/content/BrandHead.vue"),

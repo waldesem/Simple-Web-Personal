@@ -1,7 +1,20 @@
+<script lang="ts">
+import type { PropType } from "vue";
+import type {
+  person as PersonFieldsType,
+  itemsFields as ItemsFieldsType,
+} from "@/schema/items";
+
+export type ItemType = Person | Items[keyof Items];
+
+export type FieldsType =
+  | typeof PersonFieldsType
+  | (typeof ItemsFieldsType)[keyof typeof ItemsFieldsType];
+</script>
+
 <script setup lang="ts">
-import { ref, type PropType } from "vue";
+import { ref } from "vue";
 import { session } from "@/state";
-import type { person as PersonField, itemsFields } from "@/schema/items";
 import { Items, Person, Roles } from "@/types";
 import ItemRow from "./ItemRow.vue";
 
@@ -9,15 +22,13 @@ const emits = defineEmits(["update", "delete"]);
 
 const visible = ref(false);
 
-const props = defineProps({
+const { fields, item } = defineProps({
   fields: {
-    type: Array as PropType<
-      typeof PersonField | (typeof itemsFields)[keyof typeof itemsFields]
-    >,
+    type: Array as PropType<FieldsType>,
     required: true,
   },
   item: {
-    type: Object as PropType<Person | Items[keyof Items]>,
+    type: Object as PropType<ItemType>,
     required: true,
   },
 });
@@ -46,11 +57,9 @@ const props = defineProps({
       </div>
     </Transition>
 
-    <template v-for="field in props.fields" :key="field.key">
+    <template v-for="field in fields" :key="field.key">
       <ItemRow v-if="field.slot" :data="item" :field="field">
-        <template #default>
-          <slot :name="field.key"></slot>
-        </template>
+        <slot :name="field.key"></slot>
       </ItemRow>
       <ItemRow
         v-else-if="item[field.key as keyof typeof item]"

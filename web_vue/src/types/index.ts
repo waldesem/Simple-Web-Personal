@@ -1,18 +1,3 @@
-import type { Component } from "vue";
-import type {
-  AccordionItem,
-  InputProps,
-  SelectProps,
-  TabsItem,
-  TextareaProps,
-} from "@nuxt/ui";
-
-export enum Actions {
-  delete = "delete",
-  block = "block",
-  reset = "reset",
-}
-
 export enum Roles {
   admin = "admin",
   api = "api",
@@ -32,52 +17,6 @@ export enum Decisions {
   comments = "С КОММЕНТАРИЯМИ",
   cancel = "ОТКАЗ ОТ ПРОВЕРКИ",
   denied = "НЕГАТИВ",
-}
-
-export type ItemFields<T> = {
-  key: keyof T;
-  label: string;
-  slot?: boolean;
-  foo?: (row: T) => string;
-  component?: (row: T) => Component;
-};
-
-export type FormElemAttrs = {
-  input: InputProps;
-  select: SelectProps;
-  textarea: TextareaProps;
-};
-
-export type FormFields<T> = {
-  [K in keyof FormElemAttrs]: {
-    element?: K;
-    key: keyof T;
-    label: string;
-    props: Omit<FormElemAttrs[K], "modelValue" | "defaultValue">;
-  };
-}[keyof FormElemAttrs];
-
-type NavigationItem = AccordionItem & TabsItem;
-
-export interface Navigations extends NavigationItem {
-  label: string;
-  slot: keyof Items;
-}
-
-export interface Auth {
-  message: string;
-  access_token?: string;
-  refresh_token?: string;
-}
-
-export interface Login {
-  username: string;
-  password: string;
-}
-
-export interface Register extends Login {
-  new_pswd: string;
-  conf_pswd: string;
 }
 
 export interface Session {
@@ -233,9 +172,3 @@ export interface Items {
   staffs: Staff;
   workplaces: Work;
 }
-
-type ToArray<T> = {
-  [K in keyof T]: T[K][];
-};
-
-export interface ItemsArray extends ToArray<Items> {}

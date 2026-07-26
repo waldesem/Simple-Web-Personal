@@ -1,7 +1,120 @@
-import { h } from "vue";
-import { localStr } from "@/utils";
-import { Conclusions, Decisions } from "@/types";
-import type { Items, ItemFields, Navigations, Person } from "@/types";
+import { Component, h } from "vue";
+import type { AccordionItem, TableColumn, TabsItem } from "@nuxt/ui";
+import { Conclusions, Decisions, type Items, type Person } from "@/types";
+
+type NavigationItem = AccordionItem & TabsItem;
+
+export interface Navigations extends NavigationItem {
+  label: string;
+  slot: keyof Items;
+}
+
+export const tabs = [
+  { label: "Проверки", icon: "i-lucide-file-check", slot: "checks" },
+  { label: "Полиграф", icon: "i-lucide-heart-pulse", slot: "poligrafs" },
+  { label: "Расследования", icon: "i-lucide-archive", slot: "investigations" },
+  { label: "Запросы", icon: "i-lucide-file-question-mark", slot: "inquiries" },
+] as Navigations[];
+
+export const accordion = [
+  { label: "Должности", icon: "i-lucide-briefcase-business", slot: "staffs" },
+  { label: "Образование", icon: "i-lucide-graduation-cap", slot: "educations" },
+  { label: "Работа", icon: "i-lucide-construction", slot: "workplaces" },
+  { label: "Документы", icon: "i-lucide-book-check", slot: "documents" },
+  { label: "Адреса", icon: "i-lucide-house", slot: "addresses" },
+  { label: "Контакты", icon: "i-lucide-phone", slot: "contacts" },
+  { label: "Изменения имени", icon: "i-lucide-save-pen", slot: "previous" },
+  {
+    label: "Аффилированность",
+    icon: "i-lucide-chart-pie",
+    slot: "affilations",
+  },
+] as Navigations[];
+
+export function localStr(str: string): string {
+  try {
+    return str ? new Date(str).toLocaleDateString() : "";
+  } catch {
+    return "";
+  }
+}
+
+function timeAgoStr(str: string) {
+  const diff = Date.now() - new Date(str).getTime();
+  const diffSec = Math.floor(diff / 1000);
+  // Меньше минуты
+  if (diffSec < 60) {
+    return "Менее минуты назад";
+  }
+  // Меньше часа (но больше минуты)
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) {
+    return "Менее часа назад";
+  }
+  // Менее суток (но больше часа)
+  const diffHours = Math.floor(diffMin / 60);
+  if (diffHours < 24) {
+    return diffHours + " часов назад";
+  }
+  const diffDays = Math.floor(diffHours / 24);
+  // Менее недели (но больше суток)
+  if (diffDays < 7) {
+    return diffDays + " дней назад";
+  }
+  if (diffDays < 30) {
+    // Менее месяца (но больше недели)
+    return Math.floor(diffDays / 7) + " недели назад";
+  }
+  // Менее года (но больше месяца)
+  if (diffDays < 365) {
+    return Math.floor(diffDays / 30) + " месяцев назад";
+  }
+  // Больше года
+  return Math.floor(diffDays / 365) + " года назад";
+}
+
+export const columns: TableColumn<Person>[] = [
+  {
+    accessorKey: "id",
+    header: "#",
+    meta: { class: { th: "w-2/23" } },
+  },
+  {
+    accessorKey: "surname",
+    header: "Фамилия",
+    meta: { class: { th: "w-5/23" } },
+  },
+  {
+    accessorKey: "firstname",
+    header: "Имя",
+    meta: { class: { th: "w-5/23" } },
+  },
+  {
+    accessorKey: "patronymic",
+    header: "Отчество",
+    meta: { class: { th: "w-5/23" } },
+  },
+  {
+    accessorKey: "birthday",
+    header: "Дата рождения",
+    meta: { class: { th: "w-3/23" } },
+    cell: ({ row }) => localStr(row.original.birthday),
+  },
+  {
+    accessorKey: "created",
+    header: "Обновлено",
+    meta: { class: { th: "w-3/23" } },
+    cell: ({ row }) => timeAgoStr(row.original.created),
+  },
+];
+
+type ItemFields<T> = {
+  key: keyof T;
+  label: string;
+  slot?: boolean;
+  foo?: (row: T) => string;
+  component?: (row: T) => Component;
+};
 
 export const person = [
   { key: "surname", label: "Фамилия" },
@@ -177,25 +290,3 @@ export const itemsFields = {
   staffs,
   workplaces,
 };
-
-export const tabs = [
-  { label: "Проверки", icon: "i-lucide-file-check", slot: "checks" },
-  { label: "Полиграф", icon: "i-lucide-heart-pulse", slot: "poligrafs" },
-  { label: "Расследования", icon: "i-lucide-archive", slot: "investigations" },
-  { label: "Запросы", icon: "i-lucide-file-question-mark", slot: "inquiries" },
-] as Navigations[];
-
-export const accordion = [
-  { label: "Должности", icon: "i-lucide-briefcase-business", slot: "staffs" },
-  { label: "Образование", icon: "i-lucide-graduation-cap", slot: "educations" },
-  { label: "Работа", icon: "i-lucide-construction", slot: "workplaces" },
-  { label: "Документы", icon: "i-lucide-book-check", slot: "documents" },
-  { label: "Адреса", icon: "i-lucide-house", slot: "addresses" },
-  { label: "Контакты", icon: "i-lucide-phone", slot: "contacts" },
-  { label: "Изменения имени", icon: "i-lucide-save-pen", slot: "previous" },
-  {
-    label: "Аффилированность",
-    icon: "i-lucide-chart-pie",
-    slot: "affilations",
-  },
-] as Navigations[];

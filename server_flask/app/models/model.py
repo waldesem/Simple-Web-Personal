@@ -130,7 +130,7 @@ class Prev(BaseModel):
     patronymic: str | None = Field(alias="midNameBeforeChange", max_length=255)
     changed: str | None = Field(max_length=4)
     reason: str | None = None
-    comparator: Literal["previous"]
+    comparator: Literal["previous"] = "previous"
 
     class Config:
         anystr_strip_whitespace = True
@@ -144,7 +144,7 @@ class Education(BaseModel):
     institution: str = Field(alias="institutionName", max_length=255)
     finished: str | None = Field(alias="endYear", max_length=4)
     specialty: str | None = Field(alias="specialty", max_length=255)
-    comparator: Literal["educations"]
+    comparator: Literal["educations"] = "educations"
 
     class Config:
         anystr_strip_whitespace = True
@@ -156,7 +156,7 @@ class Staff(BaseModel):
 
     position: str
     department: str | None
-    comparator: Literal["staffs"]
+    comparator: Literal["staffs"] = "staffs"
 
     class Config:
         anystr_strip_whitespace = True
@@ -171,7 +171,7 @@ class Document(BaseModel):
     digits: str = Field(max_length=12)
     agency: str | None = Field(max_length=255)
     issue: date | None = None
-    comparator: Literal["documents"]
+    comparator: Literal["documents"] = "documents"
 
     class Config:
         anystr_strip_whitespace = True
@@ -182,7 +182,7 @@ class Address(BaseModel):
 
     view: str
     address: str
-    comparator: Literal["addresses"]
+    comparator: Literal["addresses"] = "addresses"
 
     class Config:
         anystr_strip_whitespace = True
@@ -194,7 +194,7 @@ class Contact(BaseModel):
 
     view: str
     contact: str
-    comparator: Literal["contacts"]
+    comparator: Literal["contacts"] = "contacts"
 
     class Config:
         anystr_strip_whitespace = True
@@ -211,7 +211,7 @@ class Workplace(BaseModel):
     address: str | None = Field(max_length=255)
     position: str = Field(max_length=255)
     reason: str | None = Field(alias="fireReason")
-    comparator: Literal["workplaces"]
+    comparator: Literal["workplaces"] = "workplaces"
 
     class Config:
         anystr_strip_whitespace = True
@@ -224,7 +224,7 @@ class Affilation(BaseModel):
     view: str = Field(alias="activity", max_length=255)
     organization: str = Field(alias="name", max_length=255)
     inn: str | None = Field(max_length=12)
-    comparator: Literal["affilations"]
+    comparator: Literal["affilations"] = "affilations"
 
     class Config:
         anystr_strip_whitespace = True
@@ -250,7 +250,7 @@ class Check(BaseModel):
     addition: str | None = None
     comment: str | None = None
     conclusion: Conclusions
-    comparator: Literal["checks"]
+    comparator: Literal["checks"] = "checks"
 
     class Config:
         use_enum_values = True
@@ -263,7 +263,7 @@ class Poligraf(BaseModel):
     theme: str = Field(max_length=255)
     results: str
     conclusion: Decisions
-    comparator: Literal["poligrafs"]
+    comparator: Literal["poligrafs"] = "poligrafs"
 
     class Config:
         use_enum_values = True
@@ -275,7 +275,7 @@ class Investigation(BaseModel):
 
     theme: str = Field(max_length=255)
     info: str
-    comparator: Literal["investigations"]
+    comparator: Literal["investigations"] = "investigations"
 
     class Config:
         anystr_strip_whitespace = True
@@ -286,7 +286,7 @@ class Inquiry(BaseModel):
 
     info: str
     initiator: str = Field(max_length=255)
-    comparator: Literal["inquiries"]
+    comparator: Literal["inquiries"] = "inquiries"
 
     class Config:
         anystr_strip_whitespace = True

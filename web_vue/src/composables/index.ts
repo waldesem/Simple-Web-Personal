@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import type { AlertProps, ToastProps } from "@nuxt/ui";
 
-export interface ToastComposable {
+interface ToastComposable {
   add: (options: ToastProps) => void;
 }
 

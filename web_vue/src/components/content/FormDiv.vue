@@ -1,23 +1,33 @@
 <script setup lang="ts">
-import { type PropType, resolveComponent, ref } from "vue";
-import type { FormElemAttrs, FormFields } from "@/types";
+import { resolveComponent, ref, type PropType } from "vue";
+import type {
+  user as userForm,
+  person as personForm,
+  itemsForms,
+  FormElemAttrs,
+} from "@/schema/forms";
+import { Items, Person, User } from "@/types";
 
 const emit = defineEmits(["submit"]);
 
-const props = defineProps({
+const { fields, item } = defineProps({
   fields: {
-    type: Array as PropType<FormFields<Record<string, any>>[]>,
+    type: Array as PropType<
+      | typeof userForm
+      | typeof personForm
+      | (typeof itemsForms)[keyof typeof itemsForms]
+    >,
     required: true,
   },
   item: {
-    type: Object as PropType<any>,
+    type: Object as PropType<User | Person | Items[keyof Items]>,
     default: () => ({}),
   },
 });
 
-const form = ref(props.item);
+const form = ref(item);
 
-const resolveFormElement = (element: keyof FormElemAttrs = "input") => {
+const matchComponent = (element: keyof FormElemAttrs = "input") => {
   const html = {
     input: resolveComponent("UInput"),
     select: resolveComponent("USelect"),
@@ -37,8 +47,8 @@ const resolveFormElement = (element: keyof FormElemAttrs = "input") => {
       :required="field.props.required ?? false"
     >
       <component
-        :is="resolveFormElement(field.element)"
-        v-model.lazy.trim="form[field.key]"
+        :is="matchComponent(field.element)"
+        v-model.lazy.trim="form[field.key as keyof typeof form]"
         v-bind="field.props"
       />
     </UFormField>

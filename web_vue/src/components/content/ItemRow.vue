@@ -1,18 +1,14 @@
 <script setup lang="ts">
-import { type PropType } from "vue";
-import type { person as personFields, itemsFields } from "@/schema/items";
-import { Items, Person } from "@/types";
+import type { PropType } from "vue";
+import type { ItemType, FieldsType } from "./ItemDiv.vue";
 
-const props = defineProps({
+const { data, field } = defineProps({
   data: {
-    type: Object as PropType<Person | Items[keyof Items]>,
+    type: Object as PropType<ItemType>,
     required: true,
   },
   field: {
-    type: Object as PropType<
-      | (typeof personFields)[number]
-      | (typeof itemsFields)[keyof typeof itemsFields][number]
-    >,
+    type: Object as PropType<FieldsType[number]>,
     required: true,
   },
 });
@@ -20,18 +16,18 @@ const props = defineProps({
 
 <template>
   <div class="grid grid-cols-12 gap-4 mb-4">
-    <div class="col-span-3">{{ props.field.label }}</div>
+    <div class="col-span-3">{{ field.label }}</div>
     <div class="col-span-9 wrap-break-word">
       <slot v-if="field.slot" />
       <component
         v-else-if="field.component"
-        :is="field.component(props.data as any)"
+        :is="field.component(data as any)"
       />
       <span v-else>
         {{
-          props.field.foo
-            ? props.field.foo(props.data as any)
-            : props.data[props.field.key as keyof typeof props.data]
+          field.foo
+            ? field.foo(data as any)
+            : data[field.key as keyof typeof data]
         }}
       </span>
     </div>

@@ -1,15 +1,23 @@
+<script lang="ts">
+import type { Items, Person } from "@/types";
+
+type ToArray<T> = {
+  [K in keyof T]: T[K][];
+};
+
+export interface ItemsArray extends ToArray<Items> {}
+</script>
+
 <script setup lang="ts">
 import { KyInstance } from "ky";
-import { defineAsyncComponent, inject, ref } from "vue";
+import { inject, ref, resolveComponent } from "vue";
 import { useAsyncState, useClipboard } from "@vueuse/core";
 import { useToasts } from "@/composables";
-import { accordion, person as personFields, tabs } from "@/schema/items";
-import { person as PersonForm } from "@/schema/forms";
-import type { ItemsArray, Person } from "@/types";
+import { accordion, person as personItem, tabs } from "@/schema/items";
+import { person as personForm } from "@/schema/forms";
 
-const PrintView = defineAsyncComponent(
-  () => import("@/components/content/PrintView.vue"),
-);
+const UAccordion = resolveComponent("UAccordion");
+const UTabs = resolveComponent("UTabs");
 
 definePage({ meta: { layout: "user" }, props: true });
 
@@ -29,8 +37,6 @@ const modal = ref(false); // Объявляем переменную модал�
 
 const print = ref(false); // Переключатель печати
 
-const itemsData = ref({} as ItemsArray); // Данные для печатной формы
-
 const anketa = { label: "Анкета", icon: "i-lucide-user", slot: "person" };
 
 const { execute, state, isLoading } = useAsyncState<Person>(
@@ -46,41 +52,51 @@ async function submit(form: Person) {
     json: form,
   });
   await execute();
-  if (ok) create("info", "Данные обновлены!");
-  else {
-    create();
-    isLoading.value = false;
-  }
+  ok ? create("info", "Данные обновлены!") : create();
 }
 </script>
 
 <template>
-  <KeepAlive exclude="PrintView">
-    <UContainer v-if="print" class="relative">
-      <PrintView :person="state" :datas="itemsData" v-model="print" />
-    </UContainer>
-
-    <UContainer v-else>
-      <UPage>
-        <UPageHeader
-          :title="`${state.surname} ${state.firstname} ${state.patronymic ?? ''}`"
-        >
-          <template #links>
-            <UButton
-              icon="i-lucide-printer"
-              variant="outline"
-              @click="print = true"
-            />
-          </template>
-        </UPageHeader>
-        <UPageBody>
-          <UTabs :items="[anketa, ...tabs]" :unmount-on-hide="true">
+  <UContainer>
+    <UPage>
+      <UPageHeader
+        :title="`${state.surname} ${state.firstname} ${state.patronymic ?? ''}`"
+        :ui="{
+          root: print ? 'mt-0' : '',
+          title: print ? 'text-xl text-gray-800' : '',
+        }"
+      >
+        <template #links>
+          <UButton
+            class="no-print"
+            :icon="print ? 'i-lucide-printer-x' : 'i-lucide-printer'"
+            :color="print ? 'error' : 'primary'"
+            :title="print ? 'Отмена' : 'Печать'"
+            variant="outline"
+            @click="print = !print"
+          />
+        </template>
+      </UPageHeader>
+      <UPageBody>
+        <!--При печати переключаем табы на аккордион и раскрываем все элементы -->
+        <KeepAlive>
+          <component
+            :is="print ? UAccordion : UTabs"
+            :items="[anketa, ...tabs]"
+            :unmount-on-hide="false"
+            v-bind="{
+              type: print ? 'multiple' : 'single',
+              defaultValue: print
+                ? accordion.map((_, idx) => String(idx))
+                : undefined,
+            }"
+          >
             <!-- Слот вкладки для отображения анкеты -->
             <template #person>
               <ItemDiv
                 :class="{ 'animate-pulse': isLoading }"
                 class="m-2"
-                :fields="personFields"
+                :fields="personItem"
                 :item="state"
                 @delete="null"
                 @update="modal = true"
@@ -105,7 +121,7 @@ async function submit(form: Person) {
               >
                 <template #body>
                   <FormDiv
-                    :fields="PersonForm"
+                    :fields="personForm"
                     :item="state"
                     @submit="submit"
                   />
@@ -118,7 +134,11 @@ async function submit(form: Person) {
               <UAccordion
                 :items="accordion"
                 :unmount-on-hide="false"
+                :type="print ? 'multiple' : 'single'"
                 class="mx-2"
+                :default-value="
+                  print ? accordion.map((_, idx) => String(idx)) : undefined
+                "
               >
                 <template
                   v-for="accord in accordion"
@@ -129,7 +149,6 @@ async function submit(form: Person) {
                     :cand-id="candId"
                     :title="accord.label"
                     :view="accord.slot"
-                    @update="(event) => (itemsData[accord.slot] = event)"
                   />
                 </template>
               </UAccordion>
@@ -142,13 +161,25 @@ async function submit(form: Person) {
                   :cand-id="candId"
                   :title="tab.label"
                   :view="tab.slot"
-                  @update="(event) => (itemsData[tab.slot] = event)"
                 />
               </div>
             </template>
-          </UTabs>
-        </UPageBody>
-      </UPage>
-    </UContainer>
-  </KeepAlive>
+          </component>
+        </KeepAlive>
+      </UPageBody>
+    </UPage>
+  </UContainer>
 </template>
+
+<style lang="css" scoped>
+@media print {
+  :deep(div[data-state="closed"]),
+  :deep(.iconify) {
+    display: none !important;
+    visibility: hidden;
+  }
+  :deep(span[data-slot="label"]) {
+    font-weight: bolder;
+  }
+}
+</style>

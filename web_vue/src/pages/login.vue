@@ -1,12 +1,116 @@
+<script lang="ts">
+import type { AuthFormField, FormError, FormSubmitEvent } from "@nuxt/ui";
+
+interface Auth {
+  message: string;
+  access_token?: string;
+  refresh_token?: string;
+}
+
+interface Login {
+  username: string;
+  password: string;
+}
+
+interface Register extends Login {
+  new_pswd: string;
+  conf_pswd: string;
+}
+
+// Login form fields
+const login: AuthFormField[] = [
+  {
+    name: "username",
+    label: "Имя пользователя",
+    icon: "i-lucide-user",
+    type: "text",
+    required: true,
+  },
+  {
+    name: "password",
+    label: "Пароль",
+    icon: "i-lucide-lock",
+    type: "password",
+    required: true,
+  },
+];
+
+// Update password fields
+const register = login.concat([
+  {
+    name: "new_pswd",
+    label: "Новый пароль",
+    icon: "i-lucide-lock",
+    type: "password",
+    required: true,
+  },
+  {
+    name: "conf_pswd",
+    label: "Подтверждение пароля",
+    icon: "i-lucide-lock",
+    type: "password",
+    required: true,
+  },
+]);
+
+const auth = {
+  post: login,
+  patch: register,
+};
+
+/*
+ * Функция для валидации формы входа/регистрация.
+ */
+function validateLog(state: Login): FormError[] {
+  const errors = [];
+  if (!state.username)
+    errors.push({ name: "username", message: "Обязательное поле!" });
+  if (!state.password)
+    errors.push({ name: "password", message: "Обязательное поле!" });
+  return errors;
+}
+
+/*
+ * Валидация формы обновления пароля пользователя
+ */
+function validateReg(state: Register): FormError[] {
+  const errors = validateLog(state);
+  if (!state.new_pswd)
+    errors.push({ name: "new_pswd", message: "Обязательное поле!" });
+  else if (state.password === state.new_pswd)
+    errors.push({
+      name: "new_pswd",
+      message: "Новый пароль не должен совпадать с текущим!",
+    });
+  else if (
+    !state.new_pswd.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z0-9]{8,16}$/)
+  )
+    errors.push({
+      name: "new_pswd",
+      message: "От 8 до 16 символов: заглавные и строчные буквы, цифры",
+    });
+  if (!state.conf_pswd)
+    errors.push({ name: "conf_pswd", message: "Обязательное поле!" });
+  else if (state.new_pswd !== state.conf_pswd)
+    errors.push({
+      name: "conf_pswd",
+      message: "Новый пароль и подтверждение не совпадают!",
+    });
+  return errors;
+}
+
+const validate = {
+  post: validateLog,
+  patch: validateReg,
+};
+</script>
+
 <script setup lang="ts">
 import ky from "ky";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAlert } from "@/composables";
 import { access, refresh } from "@/state";
-import { auth, validate } from "@/schema/forms";
-import type { FormSubmitEvent } from "@nuxt/ui";
-import type { Auth, Login, Register } from "@/types";
 
 const router = useRouter();
 

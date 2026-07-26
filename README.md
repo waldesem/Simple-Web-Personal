@@ -12,7 +12,7 @@ StaffSec is a desktop webapp for managing local database.
 
 ## Installation
 
-To use this project, you will need to have Python 3.12 or higher.
+To use this project, you will need to have Python 3.11 or higher.
 
 ```bash
 git clone https://github.com/waldesem/Simple-Web-Personal.git

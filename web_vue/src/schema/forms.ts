@@ -1,85 +1,21 @@
 import { Conclusions, Decisions, Roles } from "@/types";
-import type { Items, FormFields, User, Person, Login, Register } from "@/types";
-import { AuthFormField, FormError } from "@nuxt/ui";
+import type { Items, User, Person } from "@/types";
+import { InputProps, SelectProps, TextareaProps } from "@nuxt/ui";
 
-const login: AuthFormField[] = [
-  {
-    name: "username",
-    label: "Имя пользователя",
-    icon: "i-lucide-user",
-    type: "text",
-    required: true,
-  },
-  {
-    name: "password",
-    label: "Пароль",
-    icon: "i-lucide-lock",
-    type: "password",
-    required: true,
-  },
-];
-
-const register = login.concat([
-  {
-    name: "new_pswd",
-    label: "Новый пароль",
-    icon: "i-lucide-lock",
-    type: "password",
-    required: true,
-  },
-  {
-    name: "conf_pswd",
-    label: "Подтверждение пароля",
-    icon: "i-lucide-lock",
-    type: "password",
-    required: true,
-  },
-]);
-
-export const auth = {
-  post: login,
-  patch: register,
+export type FormElemAttrs = {
+  input: InputProps;
+  select: SelectProps;
+  textarea: TextareaProps;
 };
 
-function validateLog(state: Login): FormError[] {
-  const errors = [];
-  if (!state.username)
-    errors.push({ name: "username", message: "Обязательное поле!" });
-  if (!state.password)
-    errors.push({ name: "password", message: "Обязательное поле!" });
-  return errors;
-}
-
-function validateReg(state: Register): FormError[] {
-  const errors = validateLog(state);
-  if (!state.new_pswd)
-    errors.push({ name: "new_pswd", message: "Обязательное поле!" });
-  else if (state.password === state.new_pswd)
-    errors.push({
-      name: "new_pswd",
-      message: "Новый пароль не должен совпадать с текущим!",
-    });
-  else if (
-    !state.new_pswd.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z0-9]{8,16}$/)
-  )
-    errors.push({
-      name: "new_pswd",
-      message: "От 8 до 16 символов: заглавные и строчные буквы, цифры",
-    });
-  if (!state.conf_pswd)
-    errors.push({ name: "conf_pswd", message: "Обязательное поле!" });
-  else if (state.new_pswd !== state.conf_pswd)
-    errors.push({
-      name: "conf_pswd",
-      message: "Новый пароль и подтверждение не совпадают!",
-    });
-  return errors;
-}
-
-export const validate = {
-  post: validateLog,
-  patch: validateReg,
-};
+export type FormFields<T> = {
+  [K in keyof FormElemAttrs]: {
+    element?: K;
+    key: keyof T;
+    label: string;
+    props: Omit<FormElemAttrs[K], "modelValue" | "defaultValue">;
+  };
+}[keyof FormElemAttrs];
 
 export const user = [
   {

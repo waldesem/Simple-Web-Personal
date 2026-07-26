@@ -9,7 +9,7 @@ import { Roles, type Items } from "@/types";
 import { session } from "@/state";
 
 // Определяем данные которые передаются из родительского компонента
-const props = defineProps({
+const { candId, title, view } = defineProps({
   candId: { type: String, required: true },
   title: {
     type: String,
@@ -21,8 +21,6 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update"]);
-
 const toast = useToast();
 
 const { create } = useToasts(toast);
@@ -30,13 +28,8 @@ const { create } = useToasts(toast);
 const api = inject("api") as KyInstance;
 
 const { execute, state, isLoading } = useAsyncState<Items[keyof Items][]>(
-  async () => await api.get(`items/${props.view}/${props.candId}`).json(),
+  async () => await api.get(`items/${view}/${candId}`).json(),
   [],
-  {
-    onSuccess(data) {
-      emit("update", data);
-    },
-  },
 );
 
 const item = shallowRef({} as Items[keyof Items]);
@@ -48,12 +41,12 @@ const visible = shallowRef(false);
 async function submitItem(form: typeof item.value) {
   modal.value = false;
   isLoading.value = true;
-  const url = `items/${props.view}/${props.candId}`;
+  const url = `items/${view}/${candId}`;
   const { ok } = await api(
     method.value === "POST" ? url : url + "/" + item.value.id,
     {
       method: method.value,
-      json: { comparator: props.view, ...form },
+      json: { comparator: view, ...form },
     },
   );
   await execute();
@@ -70,7 +63,7 @@ async function submitItem(form: typeof item.value) {
 // Определяем функцию для удаления данных
 async function deleteItem(itemId: string, index: number) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
-  const { ok } = await api.delete(`items/${props.view}/${itemId}`);
+  const { ok } = await api.delete(`items/${view}/${itemId}`);
   if (ok) {
     create("success", "Запись удалена!");
     state.value.splice(index, 1);
@@ -80,7 +73,13 @@ async function deleteItem(itemId: string, index: number) {
 
 <template>
   <!-- Выводим сообщение если данные отсутствуют -->
-  <UEmpty v-if="!state.length" size="sm" title="Нет данных" variant="naked">
+  <UEmpty
+    v-if="!state.length"
+    size="sm"
+    title="Нет данных"
+    variant="naked"
+    class="no-print"
+  >
     <template #body>
       <UButton
         v-if="session.role === Roles.user"
@@ -101,6 +100,7 @@ async function deleteItem(itemId: string, index: number) {
       v-for="(content, index) in state"
       :key="index"
       :class="{ 'animate-pulse': isLoading }"
+      class="my-2"
     >
       <!-- Выводим элемент данных -->
       <ItemDiv
@@ -122,7 +122,7 @@ async function deleteItem(itemId: string, index: number) {
       :description="
         method === 'POST' ? 'Добавить данные' : 'Редактировать данные'
       "
-      :title="props.title"
+      :title="title"
     >
       <Transition name="slide-down">
         <UButton
@@ -143,3 +143,18 @@ async function deleteItem(itemId: string, index: number) {
     </UModal>
   </div>
 </template>
+
+<style scoped>
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+  transform: scaleY(0);
+  opacity: 0;
+}
+</style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps({
+const { color1, color2 } = defineProps({
   color1: {
     type: String,
     default: "text-blue-600",
@@ -13,7 +13,7 @@ const props = defineProps({
 
 <template>
   <div class="inline-flex items-center text-xl font-bold space-x-2">
-    <div :class="props.color1">КАДРОВАЯ</div>
-    <div :class="props.color2">БЕЗОПАСНОСТЬ</div>
+    <div :class="color1">КАДРОВАЯ</div>
+    <div :class="color2">БЕЗОПАСНОСТЬ</div>
   </div>
 </template>
