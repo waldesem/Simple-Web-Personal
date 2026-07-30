@@ -1,9 +1,10 @@
 """Routes."""
 
+import getpass
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
-from flask import Blueprint, Response, abort, g, jsonify, request
+from flask import Blueprint, Response, abort, current_app, g, jsonify, request
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.depends.depend import authorize, validize
@@ -20,6 +21,9 @@ bp = Blueprint("auth", __name__, url_prefix="/auth")
 @validize()
 def post_login(json_data: Login) -> Response:
     """Handle the login process."""
+    if not current_app.config["AUTH"]:
+        return abort(400)
+
     cur: sqlite3.Cursor = g.db.cursor()
     stmt = "SELECT * FROM users WHERE username = ?"
     result = cur.execute(stmt, (json_data.username,)).fetchone()
@@ -60,6 +64,9 @@ def post_login(json_data: Login) -> Response:
 @validize()
 def patch_login(json_data: Update) -> Response:
     """Handle the login process."""
+    if not current_app.config["AUTH"]:
+        return abort(400)
+
     cur: sqlite3.Cursor = g.db.cursor()
     stmt = "SELECT * FROM users WHERE username = ?"
     result = cur.execute(stmt, (json_data.username,)).fetchone()
@@ -96,16 +103,23 @@ def patch_login(json_data: Update) -> Response:
 @bp.post("/refresh")
 def refresh_token() -> Response:
     """Refresh the access token."""
-    data = request.get_json()
-    if (refresh_token := data.get("token")) and (
-        decoded := decode_token(refresh_token, refresh=True)
-    ):
-        return jsonify(
-            {
-                "access_token": create_token(decoded["id"]),
-            },
-        )
-    return abort(400)
+    if current_app.config["AUTH"]:
+        data = request.get_json()
+        if (refresh_token := data.get("token")) and (
+            decoded := decode_token(refresh_token, refresh=True)
+        ):
+            return jsonify(
+                {
+                    "access_token": create_token(decoded["identity"]),
+                },
+            )
+        return abort(400)
+
+    return jsonify(
+        {
+            "access_token": create_token(getpass.getuser()),
+        },
+    )
 
 
 @bp.get("/session")

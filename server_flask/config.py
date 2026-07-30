@@ -12,6 +12,7 @@ setting.read(settings_ini, encoding="utf-8")
 class Config:
     """Configuration."""
 
+    AUTH = bool(setting.get("Auth", "server"))
     ACCESS_SECRET_KEY = secrets.token_hex()
     REFRESH_SECRET_KEY = secrets.token_hex()
     ACCESS_SECRET_KEY_LIVE = 15

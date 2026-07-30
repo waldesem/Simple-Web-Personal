@@ -51,11 +51,11 @@ def validate_snils(snils: str | None) -> str | None:
     return "CORRUPTED!"
 
 
-def create_token(user_id: int, item: str = "ACCESS") -> str:
+def create_token(identity: str, item: str = "ACCESS") -> str:
     """Create token."""
     return jwt.encode(
         {
-            "id": user_id,
+            "identity": identity,
             "exp": datetime.now(UTC)
             + timedelta(minutes=current_app.config[f"{item}_SECRET_KEY_LIVE"]),
         },
@@ -71,7 +71,7 @@ def decode_token(token: str, *, refresh: bool = False) -> dict | None:
             token,
             current_app.config[f"{'REFRESH' if refresh else 'ACCESS'}_SECRET_KEY"],
             algorithms=["HS256"],
-            options={"verify_exp": True},
+            options={"verify_exp": current_app.config["AUTH"]},
         )
     except jwt.exceptions.InvalidTokenError:
         return None

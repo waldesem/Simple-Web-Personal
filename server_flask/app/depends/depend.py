@@ -15,13 +15,13 @@ if TYPE_CHECKING:
 
 
 @lru_cache
-def get_user(user_id: str) -> dict | None:
+def get_user(identity: str) -> dict | None:
     """Retrieve user."""
     cur: Cursor = g.db.cursor()
     user = cur.execute(
-        "SELECT id, fullname, username, email, role, blocked, deleted \
-            FROM users WHERE id = ?",
-        (user_id,),
+        "SELECT id, fullname, username, email, role, blocked, deleted\
+            FROM users WHERE username = ?",
+        (identity,),
     ).fetchone()
     return dict(user) if user else None
 
@@ -38,7 +38,7 @@ def authorize(role: Roles | None = None) -> Callable:
             if not (decoded := decode_token(header[7:])):
                 return abort(401)
 
-            if user := get_user(decoded["id"]):
+            if user := get_user(decoded["identity"]):
                 if user["blocked"] or user["deleted"]:
                     return abort(403)
 

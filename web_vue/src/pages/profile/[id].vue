@@ -1,5 +1,6 @@
 <script lang="ts">
-import type { Items, Person } from "@/types";
+import 'html2pdf';
+import type { Items, Person } from '@/types';
 
 type ToArray<T> = {
   [K in keyof T]: T[K][];
@@ -9,17 +10,17 @@ export interface ItemsArray extends ToArray<Items> {}
 </script>
 
 <script setup lang="ts">
-import { KyInstance } from "ky";
-import { inject, ref, resolveComponent } from "vue";
-import { useAsyncState, useClipboard } from "@vueuse/core";
-import { useToasts } from "@/composables";
-import { accordion, person as personItem, tabs } from "@/schema/items";
-import { person as personForm } from "@/schema/forms";
+import { KyInstance } from 'ky';
+import { inject, ref, resolveComponent } from 'vue';
+import { useAsyncState, useClipboard } from '@vueuse/core';
+import { useToasts } from '@/composables';
+import { accordion, person as personItem, tabs } from '@/schema/items';
+import { person as personForm } from '@/schema/forms';
 
-const UAccordion = resolveComponent("UAccordion");
-const UTabs = resolveComponent("UTabs");
+const UAccordion = resolveComponent('UAccordion');
+const UTabs = resolveComponent('UTabs');
 
-definePage({ meta: { layout: "user" }, props: true });
+definePage({ meta: { layout: 'user' }, props: true });
 
 const { id: candId } = defineProps({
   id: { type: String, required: true }, // ID кандидата из persons.vue
@@ -31,34 +32,36 @@ const { create } = useToasts(toast);
 
 const { copy, copied } = useClipboard();
 
-const api = inject("api") as KyInstance;
+const api = inject('api') as KyInstance;
 
 const modal = ref(false); // Объявляем переменную модального окна
 
 const print = ref(false); // Переключатель печати
 
-const anketa = { label: "Анкета", icon: "i-lucide-user", slot: "person" };
+const element = document.getElementById('element-to-print');
+
+const anketa = { label: 'Анкета', icon: 'i-lucide-user', slot: 'person' };
 
 const { execute, state, isLoading } = useAsyncState<Person>(
-  async () => await api.get("persons/" + candId).json(),
-  {} as Person,
+  async () => await api.get('persons/' + candId).json(),
+  {} as Person
 );
 
 // Определяем функцию для отправки данных формы на сервер
 async function submit(form: Person) {
   modal.value = false;
   isLoading.value = true;
-  const { ok } = await api.patch("persons/" + candId, {
+  const { ok } = await api.patch('persons/' + candId, {
     json: form,
   });
   await execute();
-  ok ? create("info", "Данные обновлены!") : create();
+  ok ? create('info', 'Данные обновлены!') : create();
 }
 </script>
 
 <template>
   <UContainer>
-    <UPage>
+    <UPage id="element-to-print">
       <UPageHeader
         :title="`${state.surname} ${state.firstname} ${state.patronymic ?? ''}`"
         :ui="{
@@ -73,7 +76,7 @@ async function submit(form: Person) {
             :color="print ? 'error' : 'primary'"
             :title="print ? 'Отмена' : 'Печать'"
             variant="outline"
-            @click="print = !print"
+            @click="html2pdf(element)"
           />
         </template>
       </UPageHeader>
@@ -173,12 +176,12 @@ async function submit(form: Person) {
 
 <style lang="css" scoped>
 @media print {
-  :deep(div[data-state="closed"]),
+  :deep(div[data-state='closed']),
   :deep(.iconify) {
     display: none !important;
     visibility: hidden;
   }
-  :deep(span[data-slot="label"]) {
+  :deep(span[data-slot='label']) {
     font-weight: bolder;
   }
 }
