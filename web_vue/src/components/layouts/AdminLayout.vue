@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from "vue";
-
-const BrandHead = defineAsyncComponent(
-  () => import("@/components/content/BrandHead.vue"),
-);
+import BrandHead from '@/components/content/BrandHead.vue';
 </script>
+
 <template>
   <UHeader v-once>
     <template #title>
