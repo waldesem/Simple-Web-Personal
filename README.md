@@ -26,11 +26,10 @@ uv sync
 You need creating settings.ini file with:
 
 ```ini
-[Destination]
-path=
+[Options]
+path=C:\Users\Projects\PersonalDB
+login=false
 ```
-
-Where path is a destination for files share.
 
 DEFAULT_PASSWORD for created user is `88888888`.
 

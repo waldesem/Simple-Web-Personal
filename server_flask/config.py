@@ -12,10 +12,10 @@ setting.read(settings_ini, encoding="utf-8")
 class Config:
     """Configuration."""
 
-    AUTH = bool(setting.get("Auth", "server"))
+    AUTH = setting.getboolean("Options", "login")
+    BASE_PATH = setting.get("Options", "path")
+    DATABASE_URI = Path(BASE_PATH, "database.db")
     ACCESS_SECRET_KEY = secrets.token_hex()
     REFRESH_SECRET_KEY = secrets.token_hex()
     ACCESS_SECRET_KEY_LIVE = 15
     REFRESH_SECRET_KEY_LIVE = 60 * 30 * 365
-    BASE_PATH = setting.get("Destination", "path")
-    DATABASE_URI = Path(BASE_PATH, "database.db")

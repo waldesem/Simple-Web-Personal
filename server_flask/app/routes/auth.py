@@ -115,11 +115,7 @@ def refresh_token() -> Response:
             )
         return abort(400)
 
-    return jsonify(
-        {
-            "access_token": create_token(getpass.getuser()),
-        },
-    )
+    return jsonify({"access_token": create_token(getpass.getuser())})
 
 
 @bp.get("/session")

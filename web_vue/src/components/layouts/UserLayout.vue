@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from "vue";
-import { useRouter } from "vue-router";
-import { access, refresh, session } from "@/state";
-import { Roles, type Session } from "@/types";
+import { defineAsyncComponent } from 'vue';
+import { useRouter } from 'vue-router';
+import { access, refresh, session } from '@/state';
+import { Roles, type Session } from '@/types';
 
 const BrandHead = defineAsyncComponent(
-  () => import("@/components/content/BrandHead.vue"),
+  () => import('@/components/content/BrandHead.vue')
 );
 
 const router = useRouter();
 
 function logout() {
   session.value = {} as Session;
-  refresh.value = "";
-  access.value = "";
-  router.replace("/login");
+  refresh.value = '';
+  access.value = '';
+  router.replace('/login');
 }
 </script>
 
@@ -27,7 +27,6 @@ function logout() {
       <UButton
         v-if="session.role === Roles.admin"
         active-class="font-bold"
-        inactive-class="text-muted"
         color="neutral"
         icon="i-lucide-users"
         label="Пользователи"
@@ -37,12 +36,12 @@ function logout() {
     </template>
     <template #right>
       <UButton
-        v-if="session.id"
+        :avatar="{ alt: session.fullname ?? '' }"
+        :disabled="!session.auth"
         active-class="font-bold"
         inactive-class="text-muted"
-        icon="i-lucide-log-out"
-        label="Выйти"
-        variant="link"
+        trailing-icon="i-lucide-log-out"
+        variant="ghost"
         @click="logout"
       />
     </template>

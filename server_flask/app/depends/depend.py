@@ -23,7 +23,7 @@ def get_user(identity: str) -> dict | None:
             FROM users WHERE username = ?",
         (identity,),
     ).fetchone()
-    return dict(user) if user else None
+    return dict(user) | {"auth": current_app.config["AUTH"]} if user else None
 
 
 def authorize(role: Roles | None = None) -> Callable:

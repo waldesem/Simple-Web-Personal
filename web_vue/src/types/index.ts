@@ -1,22 +1,22 @@
 export enum Roles {
-  admin = "admin",
-  api = "api",
-  user = "user",
-  guest = "guest",
+  admin = 'admin',
+  api = 'api',
+  user = 'user',
+  guest = 'guest',
 }
 
 export enum Conclusions {
-  agreed = "СОГЛАСОВАНО",
-  comments = "СОГЛАСОВАНО С КОММЕНТАРИЕМ",
-  cancel = "СНЯТ С ПРОВЕРКИ",
-  denied = "ОТКАЗАНО В СОГЛАСОВАНИИ",
+  agreed = 'СОГЛАСОВАНО',
+  comments = 'СОГЛАСОВАНО С КОММЕНТАРИЕМ',
+  cancel = 'СНЯТ С ПРОВЕРКИ',
+  denied = 'ОТКАЗАНО В СОГЛАСОВАНИИ',
 }
 
 export enum Decisions {
-  agreed = "БЕЗ ЗАМЕЧАНИЙ",
-  comments = "С КОММЕНТАРИЯМИ",
-  cancel = "ОТКАЗ ОТ ПРОВЕРКИ",
-  denied = "НЕГАТИВ",
+  agreed = 'БЕЗ ЗАМЕЧАНИЙ',
+  comments = 'С КОММЕНТАРИЯМИ',
+  cancel = 'ОТКАЗ ОТ ПРОВЕРКИ',
+  denied = 'НЕГАТИВ',
 }
 
 export interface Session {
@@ -25,6 +25,7 @@ export interface Session {
   username: string;
   email: string;
   role: Roles;
+  auth: boolean;
 }
 
 export interface User extends Session {
