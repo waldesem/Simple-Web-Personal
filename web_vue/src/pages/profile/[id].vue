@@ -1,5 +1,4 @@
 <script lang="ts">
-import 'html2pdf';
 import type { Items, Person } from '@/types';
 
 type ToArray<T> = {
@@ -38,8 +37,6 @@ const modal = ref(false); // Объявляем переменную модал�
 
 const print = ref(false); // Переключатель печати
 
-const element = document.getElementById('element-to-print');
-
 const anketa = { label: 'Анкета', icon: 'i-lucide-user', slot: 'person' };
 
 const { execute, state, isLoading } = useAsyncState<Person>(
@@ -64,10 +61,7 @@ async function submit(form: Person) {
     <UPage id="element-to-print">
       <UPageHeader
         :title="`${state.surname} ${state.firstname} ${state.patronymic ?? ''}`"
-        :ui="{
-          root: print ? 'mt-0' : '',
-          title: print ? 'text-xl text-gray-800' : '',
-        }"
+        :ui="{ root: print ? 'mt-0' : '' }"
       >
         <template #links>
           <UButton
@@ -76,7 +70,7 @@ async function submit(form: Person) {
             :color="print ? 'error' : 'primary'"
             :title="print ? 'Отмена' : 'Печать'"
             variant="outline"
-            @click="html2pdf(element)"
+            @click="print = !print"
           />
         </template>
       </UPageHeader>

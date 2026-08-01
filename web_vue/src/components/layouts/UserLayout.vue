@@ -32,10 +32,8 @@ function logout() {
     </template>
     <template #right>
       <UButton
-        :avatar="{ alt: session.fullname ?? '' }"
+        :avatar="{ alt: session.fullname ?? '', size: 'lg' }"
         :disabled="!session.auth"
-        active-class="font-bold"
-        inactive-class="text-muted"
         trailing-icon="i-lucide-log-out"
         variant="ghost"
         @click="logout"
