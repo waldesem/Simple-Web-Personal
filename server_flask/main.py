@@ -1,4 +1,4 @@
-"""WebGUI module."""
+"""Main file."""
 
 from __future__ import annotations
 
@@ -10,9 +10,11 @@ import uuid
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+import click
 import psutil
 
 from app import create_app
+from config import Config
 
 
 def start_browser(address: str, port: int) -> None:
@@ -49,17 +51,23 @@ def start_browser(address: str, port: int) -> None:
             break
 
 
-def main(host: str = "127.0.0.1", port: int = 5000) -> None:
-    """Run the application based on the provided arguments."""
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        app = create_app()
-        server_future = executor.submit(app.run, host, port)
-        browser_future = executor.submit(start_browser, host, port)
-        try:
-            server_future.result()
-            browser_future.result()
-        except KeyboardInterrupt:
-            executor.shutdown()
+@click.command()
+@click.option("--host", default="localhost", help="The hostname to listen on")
+@click.option("--port", default=5000, help="The port of the webserver")
+def main(host: str, port: int) -> None:
+    """Start point of the programme."""
+    app = create_app()
+    if Config.AUTH:
+        app.run(host=host, port=port)
+    else:
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            server_future = executor.submit(app.run, host, port)
+            browser_future = executor.submit(start_browser, host, port)
+            try:
+                server_future.result()
+                browser_future.result()
+            except KeyboardInterrupt:
+                executor.shutdown()
 
 
 if __name__ == "__main__":

@@ -210,7 +210,6 @@ logs
 !.env.example
 
 # Project files & folders
-PersonalDB/
 settings.ini
 auto-imports.d.ts
 components.d.ts

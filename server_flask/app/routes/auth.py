@@ -53,8 +53,8 @@ def post_login(json_data: Login) -> Response:
         return jsonify(
             {
                 "message": "success",
-                "access_token": create_token(user["id"]),
-                "refresh_token": create_token(user["id"], "REFRESH"),
+                "access_token": create_token(user["username"]),
+                "refresh_token": create_token(user["username"], "REFRESH"),
             },
         )
     return jsonify({"message": "denied"})

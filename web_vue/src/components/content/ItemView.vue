@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { KyInstance } from "ky";
-import { inject, type PropType, shallowRef } from "vue";
-import { useAsyncState } from "@vueuse/core";
-import { useToasts } from "@/composables";
-import { itemsFields } from "@/schema/items";
-import { itemsForms } from "@/schema/forms";
-import { Roles, type Items } from "@/types";
-import { session } from "@/state";
+import { KyInstance } from 'ky';
+import { inject, type PropType, shallowRef } from 'vue';
+import { useAsyncState } from '@vueuse/core';
+import { useToasts } from '@/composables';
+import { itemsFields } from '@/schema/items';
+import { itemsForms } from '@/schema/forms';
+import { Roles, type Items } from '@/types';
+import { session } from '@/state';
 
 // Определяем данные которые передаются из родительского компонента
 const { candId, title, view } = defineProps({
@@ -25,15 +25,15 @@ const toast = useToast();
 
 const { create } = useToasts(toast);
 
-const api = inject("api") as KyInstance;
+const api = inject('api') as KyInstance;
 
 const { execute, state, isLoading } = useAsyncState<Items[keyof Items][]>(
   async () => await api.get(`items/${view}/${candId}`).json(),
-  [],
+  []
 );
 
 const item = shallowRef({} as Items[keyof Items]);
-const method = shallowRef<"POST" | "PATCH">("POST");
+const method = shallowRef<'POST' | 'PATCH'>('POST');
 const modal = shallowRef(false); // Флаг для открытия модального окна
 const visible = shallowRef(false);
 
@@ -43,20 +43,20 @@ async function submitItem(form: typeof item.value) {
   isLoading.value = true;
   const url = `items/${view}/${candId}`;
   const { ok } = await api(
-    method.value === "POST" ? url : url + "/" + item.value.id,
+    method.value === 'POST' ? url : url + '/' + item.value.id,
     {
       method: method.value,
       json: { comparator: view, ...form },
-    },
+    }
   );
   await execute();
   item.value = {} as typeof item.value;
   if (!ok) create();
-  else if (method.value === "POST") {
-    create("success", "Запись успешно добавлена!");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  else if (method.value === 'POST') {
+    create('success', 'Запись успешно добавлена!');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   } else {
-    create("info", "Запись обновлена!");
+    create('info', 'Запись обновлена!');
   }
 }
 
@@ -65,7 +65,7 @@ async function deleteItem(itemId: string, index: number) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
   const { ok } = await api.delete(`items/${view}/${itemId}`);
   if (ok) {
-    create("success", "Запись удалена!");
+    create('success', 'Запись удалена!');
     state.value.splice(index, 1);
   } else create();
 }
@@ -128,7 +128,7 @@ async function deleteItem(itemId: string, index: number) {
         <UButton
           v-if="state.length && visible && session.role === Roles.user"
           block
-          class="my-2"
+          class="my-2 no-print"
           color="neutral"
           icon="i-lucide-plus"
           title="Добавить запись"

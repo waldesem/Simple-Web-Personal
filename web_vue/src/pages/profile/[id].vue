@@ -58,10 +58,12 @@ async function submit(form: Person) {
 
 <template>
   <UContainer>
-    <UPage id="element-to-print">
+    <UPage>
       <UPageHeader
         :title="`${state.surname} ${state.firstname} ${state.patronymic ?? ''}`"
-        :ui="{ root: print ? 'mt-0' : '' }"
+        :ui="{
+          root: print ? 'relative border-b border-default py-0 mt-0' : '',
+        }"
       >
         <template #links>
           <UButton
@@ -103,6 +105,7 @@ async function submit(form: Person) {
                     v-if="state?.destination"
                     :color="copied ? 'success' : 'info'"
                     :label="copied ? 'Скопировано' : 'Копировать'"
+                    class="no-print"
                     size="sm"
                     variant="outline"
                     @click="copy(state.destination)"
@@ -168,14 +171,14 @@ async function submit(form: Person) {
   </UContainer>
 </template>
 
-<style lang="css" scoped>
+<style lang="css">
 @media print {
-  :deep(div[data-state='closed']),
-  :deep(.iconify) {
+  div[data-state='closed'],
+  .iconify {
     display: none !important;
     visibility: hidden;
   }
-  :deep(span[data-slot='label']) {
+  span[data-slot='label'] {
     font-weight: bolder;
   }
 }

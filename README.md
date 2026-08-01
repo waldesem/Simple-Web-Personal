@@ -31,6 +31,8 @@ path=C:\Users\Projects\PersonalDB
 login=false
 ```
 
+For server mode change login variable in true.
+
 DEFAULT_PASSWORD for created user is `88888888`.
 
 ## Build frontend (Optional)
@@ -47,14 +49,8 @@ Builded files can be found in `server_flask/app/static`.
 
 ## Start
 
-To start server run the command in terminal:
+To start app run the command in terminal:
 
 ```bash
-uv run server.py
-```
-
-or as desktop app:
-
-```bash
-uv run webgui.py
+uv run main.py
 ```

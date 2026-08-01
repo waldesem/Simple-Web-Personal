@@ -1,9 +1,9 @@
 <script lang="ts">
-import type { PropType } from "vue";
+import type { PropType } from 'vue';
 import type {
   person as PersonFieldsType,
   itemsFields as ItemsFieldsType,
-} from "@/schema/items";
+} from '@/schema/items';
 
 export type ItemType = Person | Items[keyof Items];
 
@@ -13,12 +13,12 @@ export type FieldsType =
 </script>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { session } from "@/state";
-import { Items, Person, Roles } from "@/types";
-import ItemRow from "./ItemRow.vue";
+import { ref } from 'vue';
+import { session } from '@/state';
+import { Items, Person, Roles } from '@/types';
+import ItemRow from './ItemRow.vue';
 
-const emits = defineEmits(["update", "delete"]);
+const emits = defineEmits(['update', 'delete']);
 
 const visible = ref(false);
 
@@ -37,7 +37,10 @@ const { fields, item } = defineProps({
 <template>
   <div @mouseover="visible = true" @mouseleave="visible = false">
     <Transition name="fade">
-      <div v-show="visible && session.role === Roles.user" class="relative">
+      <div
+        v-show="visible && session.role === Roles.user"
+        class="relative no-print"
+      >
         <UFieldGroup class="absolute right-0" size="sm">
           <UButton
             icon="i-lucide-square-pen"
