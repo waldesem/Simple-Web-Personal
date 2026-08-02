@@ -11,15 +11,15 @@ def validate_inn(inn: str | None) -> str | None:
     if not inn:
         return None
     inn = inn.replace("-", "").replace(" ", "")
-    if len(inn) != 12 and not inn.isdigit():
-        return "CORRUPTED!"
+    if len(inn) != 12 or not inn.isdigit():
+        return None
     c1 = [7, 2, 4, 10, 3, 5, 9, 4, 6, 8, 0, 0]
     c2 = [3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8, 0]
-    check1 = sum([int(inn[i]) * c1[i] for i in range(12)]) % 11 % 10
-    check2 = sum([int(inn[i]) * c2[i] for i in range(12)]) % 11 % 10
+    check1 = sum(int(inn[i]) * c1[i] for i in range(12)) % 11 % 10
+    check2 = sum(int(inn[i]) * c2[i] for i in range(12)) % 11 % 10
     if check1 == int(inn[10]) and check2 == int(inn[11]):
         return inn
-    return "CORRUPTED!"
+    return None
 
 
 def validate_snils(snils: str | None) -> str | None:
@@ -29,7 +29,7 @@ def validate_snils(snils: str | None) -> str | None:
     # Получаем первые 9 цифр и контрольное число (последние 2)
     snils = snils.replace("-", "").replace(" ", "")
     if len(snils) != 11 and not snils.isdigit():
-        return "CORRUPTED!"
+        return None
     digits = [int(d) for d in snils]
     main_part = digits[:9]
     check_sum = int(snils[9:])
