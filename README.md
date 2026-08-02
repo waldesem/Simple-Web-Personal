@@ -12,7 +12,7 @@ StaffSec is a desktop webapp for managing local database.
 
 ## Installation
 
-To use this project, you will need to have Python 3.11 or higher.
+To use this project, you will need to have Python 3.11.
 
 ```bash
 git clone https://github.com/waldesem/Simple-Web-Personal.git
@@ -23,17 +23,8 @@ uv sync
 
 ## Settings
 
-You need creating settings.ini file with:
-
-```ini
-[Options]
-path=C:\Users\Projects\PersonalDB
-login=false
-```
-
-For server mode change login variable in true.
-
-DEFAULT_PASSWORD for created user is `88888888`.
+All app options contains in settings.ini.
+For server mode change login variable in true and change default password if needs.
 
 ## Build frontend (Optional)
 

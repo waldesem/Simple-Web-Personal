@@ -3,7 +3,7 @@
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
-from flask import Blueprint, Response, g, jsonify
+from flask import Blueprint, Response, current_app, g, jsonify
 from werkzeug.security import generate_password_hash
 
 from app.classes.enums import Roles
@@ -38,7 +38,7 @@ def edit_user(user_id: int, json_query: Action) -> Response:
     params = []
     if json_query.action == "reset":
         stmt += "passhash = ?, attempt = 0, blocked = 0, change_pswd = 1"
-        params.append(generate_password_hash("88888888"))
+        params.append(generate_password_hash(current_app.config["DEFAULT_PASSWORD"]))
     elif json_query.action == "block":
         stmt += "blocked = NOT blocked"
     elif json_query.action == "delete":
@@ -66,7 +66,7 @@ def post_user(json_data: User) -> Response:
         (
             *json_data.dict().values(),
             datetime.now(UTC),
-            generate_password_hash("88888888"),
+            generate_password_hash(current_app.config["DEFAULT_PASSWORD"]),
             datetime.now(UTC),
         ),
     )

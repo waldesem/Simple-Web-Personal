@@ -28,7 +28,7 @@ def validate_snils(snils: str | None) -> str | None:
         return None
     # Получаем первые 9 цифр и контрольное число (последние 2)
     snils = snils.replace("-", "").replace(" ", "")
-    if len(snils) != 11 and not snils.isdigit():
+    if len(snils) != 11 or not snils.isdigit():
         return None
     digits = [int(d) for d in snils]
     main_part = digits[:9]
@@ -48,7 +48,7 @@ def validate_snils(snils: str | None) -> str | None:
         calculated_sum = 0 if remainder == 100 else remainder
     if calculated_sum == check_sum:
         return snils
-    return "CORRUPTED!"
+    return None
 
 
 def create_token(identity: str, item: str = "ACCESS") -> str:
