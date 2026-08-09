@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
-import sqlite3
 from typing import TYPE_CHECKING
 
-from flask import Flask, Response, g, request
+from flask import Flask, Response
 from werkzeug.exceptions import HTTPException
 
+from app.extensions.database import Database
+
+# from app.extensions.fts import FullTextSearch
 from config import Config
 
 if TYPE_CHECKING:
@@ -17,6 +19,12 @@ if TYPE_CHECKING:
 def create_app(config: type[Config] = Config) -> Flask:
     """Create and configure the Flask application."""
     app = Flask(__name__)
+
+    database = Database()
+    database.init_app(app)
+
+    # fts = FullTextSearch()
+    # fts.init_app(app, database.db)
 
     from app.routes import bp
 
@@ -28,19 +36,6 @@ def create_app(config: type[Config] = Config) -> Flask:
     @app.get("/<path:path>")
     def static_file(path: str = "index.html") -> Response:
         return app.send_static_file(path)
-
-    @app.before_request
-    def _load_connection() -> None:
-        if request.path.startswith("/api"):
-            db = sqlite3.connect(config.DATABASE_URI)
-            db.row_factory = sqlite3.Row
-            g.db = db
-
-    @app.teardown_appcontext
-    def close_connection(_exception: BaseException | None) -> None:
-        g.current_user = None
-        if db := g.pop("db", None):
-            db.close()
 
     @app.errorhandler(HTTPException)
     def handle_exception(error: HTTPException | int) -> WerkzeugResponse:
