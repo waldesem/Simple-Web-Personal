@@ -7,9 +7,8 @@ from typing import TYPE_CHECKING
 from flask import Flask, Response
 from werkzeug.exceptions import HTTPException
 
-from app.extensions.database import Database
-
-# from app.extensions.fts import FullTextSearch
+from app.extensions.db import Database
+from app.extensions.fts import FullTextSearch
 from config import Config
 
 if TYPE_CHECKING:
@@ -19,16 +18,15 @@ if TYPE_CHECKING:
 def create_app(config: type[Config] = Config) -> Flask:
     """Create and configure the Flask application."""
     app = Flask(__name__)
+    app.config.from_object(config)
 
-    database = Database()
-    database.init_app(app)
+    db = Database()
+    db.init_app(app)
 
-    # fts = FullTextSearch()
-    # fts.init_app(app, database.db)
+    fts = FullTextSearch()
+    fts.init_app(app)
 
     from app.routes import bp
-
-    app.config.from_object(config)
 
     app.register_blueprint(bp)  # Register the routes
 
@@ -40,9 +38,9 @@ def create_app(config: type[Config] = Config) -> Flask:
     @app.errorhandler(HTTPException)
     def handle_exception(error: HTTPException | int) -> WerkzeugResponse:
         if isinstance(error, int):
-            app.logger.exception("Request finished with error %.", error)
+            app.logger.error("Request finished with error %.", error)
         else:
-            app.logger.exception(error)
+            app.logger.error(error)
         return app.redirect("/")
 
     return app

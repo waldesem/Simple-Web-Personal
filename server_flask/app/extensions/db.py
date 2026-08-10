@@ -4,29 +4,26 @@ import sqlite3
 
 from flask import Flask, g, request
 
-from config import Config
-
 
 class Database:
     """Full-text search extension."""
 
-    def __init__(self, app: Flask | None = None) -> None:
+    def __init__(self) -> None:
         """Init."""
-        if app is not None:
-            self.init_app(app)
 
     def init_app(self, app: Flask) -> None:
         """Initialize the app with extension defaults."""
         if not hasattr(app, "extensions"):
             app.extensions = {}
-        app.extensions["fts"] = self
+        app.extensions["db"] = self
+        self.uri: str = app.config["DATABASE_URI"]
 
         app.before_request(self.load_connection)
         app.teardown_appcontext(self.close_connection)
 
     def load_connection(self) -> None:
         """Load connection."""
-        self.db = sqlite3.connect(Config.DATABASE_URI)
+        self.db = sqlite3.connect(self.uri)
         if request.path.startswith("/api"):
             self.db.row_factory = sqlite3.Row
             g.db = self.db
