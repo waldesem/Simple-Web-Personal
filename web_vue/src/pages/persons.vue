@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { KyInstance } from "ky";
-import { inject, ref, watch } from "vue";
-import { refDebounced, useAsyncState, useFileDialog } from "@vueuse/core";
-import { useRouter } from "vue-router";
-import { TableRow } from "@nuxt/ui";
-import { useToasts } from "@/composables";
-import { session } from "@/state";
-import { columns } from "@/schema/items";
-import { person as personForm } from "@/schema/forms";
-import { Roles, type Person, type PersonId } from "@/types";
+import { KyInstance } from 'ky';
+import { inject, ref, watch } from 'vue';
+import { refDebounced, useAsyncState, useFileDialog } from '@vueuse/core';
+import { useRouter } from 'vue-router';
+import { TableRow } from '@nuxt/ui';
+import { useToasts } from '@/composables';
+import { session } from '@/state';
+import { columns } from '@/schema/items';
+import { person as personForm } from '@/schema/forms';
+import { Roles, type Person, type PersonId } from '@/types';
 
-definePage({ meta: { layout: "user" } });
+definePage({ meta: { layout: 'user' } });
 
 const router = useRouter();
 
@@ -18,25 +18,26 @@ const toast = useToast();
 
 const { create } = useToasts(toast);
 
-const api = inject("api") as KyInstance;
+const api = inject('api') as KyInstance;
 
 const hasNext = ref(false); // Состояние наличия следующей страницы
 const limit = ref(10); // Количество записей на странице
 const modal = ref(false); // Состояние модального окна
 const page = ref(0); // Страница таблицы
-const search = ref(""); // Поисковый запрос
+const search = ref(''); // Поисковый запрос
+const check = ref(false); // Полнотекстовый поиск
 
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
 const { open, onChange } = useFileDialog({
-  accept: "*.json",
+  accept: '*.json',
   multiple: false,
 });
 
 const { execute, isLoading, state } = useAsyncState<Person[]>(
   async () =>
     await api
-      .get("candidates", {
+      .get(`candidates/${check.value ? 'fts' : 'ts'}`, {
         searchParams: {
           limit: limit.value,
           page: page.value,
@@ -50,7 +51,7 @@ const { execute, isLoading, state } = useAsyncState<Person[]>(
       hasNext.value = data.length > limit.value;
       data = hasNext.value ? data.slice(0, limit.value) : data;
     },
-  },
+  }
 );
 
 watch([debounced, limit], async () => {
@@ -62,15 +63,15 @@ watch(page, async () => await execute());
 
 function addToast(person_id: string | null) {
   if (person_id) {
-    create("success", "Анкета успешно добавлена!");
-    router.push("profile/" + person_id);
-  } else create("warning", "Возможно, анкета уже существует!");
+    create('success', 'Анкета успешно добавлена!');
+    router.push('profile/' + person_id);
+  } else create('warning', 'Возможно, анкета уже существует!');
 }
 
 // Обработчик результата загрузки данных
 async function submit(form: Person) {
   modal.value = false;
-  const resp = await api.post("persons/", { json: form });
+  const resp = await api.post('persons/', { json: form });
   if (resp.ok) {
     const { person_id } = await resp.json<PersonId>();
     addToast(person_id);
@@ -80,7 +81,7 @@ async function submit(form: Person) {
 onChange(async (files) => {
   if (files) {
     const str = (await files?.[0].text()) as string;
-    const resp = await api.post("persons/json", {
+    const resp = await api.post('persons/json', {
       json: JSON.parse(str),
     });
     if (resp.ok) {
@@ -126,15 +127,17 @@ onChange(async (files) => {
 
       <UPageBody>
         <!-- Строка поиска -->
-        <UInput
-          id="search"
-          icon="i-lucide-search"
-          v-model.trim="search"
-          :loading="isLoading"
-          type="search"
-          placeholder="поиск по фаимилии, имени, отчеству"
-        />
-
+        <div class="flex items-center space-x-2">
+          <UInput
+            id="search"
+            icon="i-lucide-search"
+            v-model.trim="search"
+            :loading="isLoading"
+            type="search"
+            placeholder="поиск по фаимилии, имени, отчеству"
+          />
+          <UCheckbox v-model="check" title="Полнотекстовый поиск" />
+        </div>
         <!-- Таблица с данными кандидатов -->
         <UTable
           class="flex-1"
