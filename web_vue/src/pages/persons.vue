@@ -25,7 +25,6 @@ const limit = ref(10); // Количество записей на страни�
 const modal = ref(false); // Состояние модального окна
 const page = ref(0); // Страница таблицы
 const search = ref(''); // Поисковый запрос
-const check = ref(false); // Полнотекстовый поиск
 
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
@@ -37,7 +36,7 @@ const { open, onChange } = useFileDialog({
 const { execute, isLoading, state } = useAsyncState<Person[]>(
   async () =>
     await api
-      .get(`candidates/${check.value ? 'fts' : 'ts'}`, {
+      .get('persons/', {
         searchParams: {
           limit: limit.value,
           page: page.value,
@@ -127,17 +126,15 @@ onChange(async (files) => {
 
       <UPageBody>
         <!-- Строка поиска -->
-        <div class="flex items-center space-x-2">
-          <UInput
-            id="search"
-            icon="i-lucide-search"
-            v-model.trim="search"
-            :loading="isLoading"
-            type="search"
-            placeholder="поиск по фаимилии, имени, отчеству"
-          />
-          <UCheckbox v-model="check" title="Полнотекстовый поиск" />
-        </div>
+        <UInput
+          id="search"
+          icon="i-lucide-search"
+          v-model.trim="search"
+          :loading="isLoading"
+          type="search"
+          placeholder="полнотекстовый поиск"
+        />
+
         <!-- Таблица с данными кандидатов -->
         <UTable
           class="flex-1"
