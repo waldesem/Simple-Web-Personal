@@ -60,7 +60,11 @@ async function submit(form: Person) {
   <UContainer>
     <UPage>
       <UPageHeader
-        :title="`${state.surname} ${state.firstname} ${state.patronymic ?? ''}`"
+        :title="
+          isLoading
+            ? 'Загружается...'
+            : `${state.surname} ${state.firstname} ${state.patronymic ?? ''}`
+        "
         :ui="{
           root: print ? 'relative border-b border-default py-0 mt-0' : '',
         }"

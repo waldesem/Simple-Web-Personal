@@ -26,6 +26,12 @@ uv sync
 All app options contains in settings.ini.
 For server mode change login variable in true and change default password if needs.
 
+To create full-text search run:
+
+```bash
+uv run fts.py
+```
+
 ## Build frontend (Optional)
 
 First install Node.js. Then run in terminal:

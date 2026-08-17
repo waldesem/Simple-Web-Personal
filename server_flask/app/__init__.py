@@ -8,7 +8,6 @@ from flask import Flask, Response
 from werkzeug.exceptions import HTTPException
 
 from app.extensions.db import Database
-from app.extensions.fts import FullTextSearch
 from config import Config
 
 if TYPE_CHECKING:
@@ -22,9 +21,6 @@ def create_app(config: type[Config] = Config) -> Flask:
 
     db = Database()
     db.init_app(app)
-
-    fts = FullTextSearch()
-    fts.init_app(app)
 
     from app.routes import bp
 
