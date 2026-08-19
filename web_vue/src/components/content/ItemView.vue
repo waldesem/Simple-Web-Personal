@@ -63,8 +63,8 @@ async function submitItem(form: typeof item.value) {
 // Определяем функцию для удаления данных
 async function deleteItem(itemId: string, index: number) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
-  const { status } = await api.delete(`items/${view}/${itemId}`);
-  if (status === 204) {
+  const { ok } = await api.delete(`items/${view}/${itemId}`);
+  if (ok) {
     create('success', 'Запись удалена!');
     state.value.splice(index, 1);
   } else create();
