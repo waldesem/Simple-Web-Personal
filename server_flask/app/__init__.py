@@ -6,6 +6,7 @@ import sqlite3
 from typing import TYPE_CHECKING
 
 from flask import Flask, Response, g, render_template, request
+from pydantic import ValidationError
 from werkzeug.exceptions import HTTPException
 
 from config import Config
@@ -21,7 +22,7 @@ def create_app(config: type[Config] = Config) -> Flask:
 
     from app.routes import bp
 
-    app.register_blueprint(bp)  # Register the routes
+    app.register_blueprint(bp)
 
     @app.get("/")
     @app.get("/<path:path>")
@@ -47,7 +48,6 @@ def create_app(config: type[Config] = Config) -> Flask:
     @app.errorhandler(sqlite3.Error)
     def handle_sqlite_error(error: sqlite3.Error) -> str:
         """Handle SQLite errors gracefully."""
-        app.logger.exception("SQLite error occurred: %s", str(error))
         if db := g.pop("db", None):
             db.rollback()
         return render_template(
@@ -59,12 +59,20 @@ def create_app(config: type[Config] = Config) -> Flask:
             },
         )
 
+    @app.errorhandler(ValidationError)
+    def handle_validation_error(error: ValidationError) -> str:
+        return render_template(
+            "error.html",
+            error={
+                "code": 500,
+                "name": "Internal Server Error",
+                "description": f"{error!s}",
+            },
+        )
+
     @app.errorhandler(HTTPException)
-    def handle_exception(error: HTTPException) -> WerkzeugResponse:
-        if isinstance(error, int):
-            app.logger.error("Request finished with error %s", error)
-        else:
-            app.logger.error(error)
+    def handle_http_exception(error: HTTPException) -> WerkzeugResponse:
+        app.logger.error("Request finished with error %s", error)
         return app.redirect("/")
 
     return app
