@@ -4,7 +4,7 @@ from collections.abc import Callable
 from functools import lru_cache, wraps
 from typing import TYPE_CHECKING, get_type_hints
 
-from flask import abort, current_app, g, request
+from flask import abort, current_app, g, render_template, request
 from pydantic import ValidationError
 
 from app.classes.enums import Roles
@@ -60,7 +60,7 @@ def validize() -> Callable:
 
     def decorator(func: Callable) -> Callable:
         @wraps(func)
-        def wrapper(*args: tuple, **kwargs: dict) -> Callable:
+        def wrapper(*args: tuple, **kwargs: dict) -> Callable | str:
             try:
                 type_hints = get_type_hints(func)
                 if model := type_hints.get("json_data"):
@@ -76,8 +76,14 @@ def validize() -> Callable:
                 return func(*args, **kwargs)
 
             except ValidationError as exc:
-                current_app.logger.warning(exc)
-                return abort(500)
+                return render_template(
+                    "error.html",
+                    error={
+                        "code": 500,
+                        "name": "Internal Server Error",
+                        "description": exc,
+                    },
+                )
 
         return wrapper
 

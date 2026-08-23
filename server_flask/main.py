@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import shutil
-import signal
-import subprocess
-import tempfile
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from signal import SIGTERM
+from subprocess import Popen
+from tempfile import mkdtemp
 
 import click
 import psutil
@@ -19,7 +19,7 @@ from config import Config
 
 def start_browser(address: str, port: int) -> None:
     """Start the browser."""
-    profile_dir = tempfile.mkdtemp(prefix=f"webgui{uuid.uuid1().hex}")
+    profile_dir = mkdtemp(prefix=f"webgui{uuid.uuid1().hex}")
     paths = [
         r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
         r"C:\Program Files\Google\Chrome\Application\chrome.exe",
@@ -28,7 +28,7 @@ def start_browser(address: str, port: int) -> None:
         "/snap/bin/chromium",
     ]
     if browser_path := next((p for p in paths if Path(p).is_file()), None):
-        subprocess.Popen(  # noqa: S603
+        Popen(  # noqa: S603
             [
                 browser_path,
                 f"--app=http://{address}:{port}",
@@ -45,20 +45,34 @@ def start_browser(address: str, port: int) -> None:
     for conn in psutil.net_connections():
         if conn.laddr.port == port:
             try:
-                psutil.Process(conn.pid).send_signal(signal.SIGTERM)
+                psutil.Process(conn.pid).send_signal(SIGTERM)
             except psutil.AccessDenied:
                 continue
             break
 
 
 @click.command()
-@click.option("--host", default="localhost", help="The hostname to listen on")
+@click.option("--host", default="127.0.0.1", help="The hostname to listen on")
 @click.option("--port", default=5000, help="The port of the webserver")
-def main(host: str, port: int) -> None:
-    """Start point of the programme."""
+@click.option("--debug", is_flag=True, help="Enable or disable debug mode")
+def main(host: str, port: int, *, debug: bool) -> None:
+    """Start point of the programme.
+
+    Args:
+      host (str): The IP address that will be used by gunicorn for serving
+        requests.
+          Defaults is localhost.
+      port(int): Port number to listen on.
+        Defautls are set in config.py
+      debug(bool):
+        If --debug, Flask's debugging mode would run.
+          This should only ever happen when developing locally.
+            defaults: False
+
+    """
     app = create_app()
     if Config.AUTH:
-        app.run(host=host, port=port)
+        app.run(host=host, port=port, debug=debug)
     else:
         with ThreadPoolExecutor(max_workers=2) as executor:
             server_future = executor.submit(app.run, host, port)
