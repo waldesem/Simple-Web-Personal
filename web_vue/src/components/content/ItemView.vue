@@ -58,12 +58,12 @@ async function submitItem(form: typeof item.value) {
 }
 
 // Определяем функцию для удаления данных
-async function deleteItem(itemId: string, index: number) {
+async function deleteItem(itemId: string) {
   if (!confirm(`Вы действительно хотите удалить запись?`)) return;
   const { ok } = await api.delete(`items/${view}/${itemId}`);
   if (ok) {
     create('success', 'Запись удалена!');
-    state.value.splice(index, 1);
+    await execute();
   } else create();
 }
 </script>
@@ -103,7 +103,7 @@ async function deleteItem(itemId: string, index: number) {
       <ItemDiv
         :item="content"
         :fields="itemsFields[view]"
-        @delete="deleteItem(content.id, index)"
+        @delete="deleteItem(content.id)"
         @update="
           item = content;
           modal = true;
