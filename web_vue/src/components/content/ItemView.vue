@@ -52,12 +52,9 @@ async function submitItem(form: typeof item.value) {
   await execute();
   item.value = {} as typeof item.value;
   if (!ok) create();
-  else if (method.value === 'POST') {
+  else if (method.value === 'POST')
     create('success', 'Запись успешно добавлена!');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else {
-    create('info', 'Запись обновлена!');
-  }
+  else create('info', 'Запись обновлена!');
 }
 
 // Определяем функцию для удаления данных
