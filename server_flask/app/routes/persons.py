@@ -165,16 +165,19 @@ def post_json_file(json_data: Anketa) -> Response:
         }
 
         for table, contents in items.items():
+            args = []
             for content in contents:
                 content["person_id"] = cand_id
                 content["created"] = datetime.now(UTC)
+                args.append(tuple(content.values()))
+            if params := contents[0].keys() if len(contents) else None:
                 stmt = "INSERT INTO {} ({}) VALUES ({})".format(  # noqa: S608
                     table,
-                    ",".join(content.keys()),
-                    ",".join(["?"] * len(content)),
+                    ",".join(params),
+                    ",".join(["?"] * len(params)),
                 )
-                cur.execute(stmt, tuple(content.values()))
-    g.db.commit()
+                cur.executemany(stmt, args)
+        g.db.commit()
 
     return jsonify({"person_id": cand_id})
 
