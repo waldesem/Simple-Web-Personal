@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { inject, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { KyInstance } from "ky";
-import { session } from "@/state";
+import { inject, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { KyInstance } from 'ky';
+import { session } from '@/state';
 
 const router = useRouter();
 
-const api = inject("api") as KyInstance;
+const api = inject('api') as KyInstance;
 
 onMounted(async () => {
   try {
-    session.value = await api.get("auth/session").json();
-    router.replace("/persons");
+    session.value = await api.get('auth/session').json();
+    router.replace('/persons');
   } catch (e) {
     console.error(e);
+    router.replace('/login');
   }
 });
 </script>
