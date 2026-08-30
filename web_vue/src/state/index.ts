@@ -1,8 +1,14 @@
-import { useStorage } from "@vueuse/core";
-import { Session } from "@/types";
+import { useStorage } from '@vueuse/core';
+import { Session } from '@/types';
 
-export const session = useStorage("session", {} as Session, sessionStorage);
+export const session = useStorage('session', {} as Session, sessionStorage);
 
-export const access = useStorage("access", "" as string, sessionStorage);
+export const access = useStorage('access', '' as string, sessionStorage);
 
-export const refresh = useStorage("refresh", "" as string, localStorage);
+export const refresh = useStorage('refresh', '' as string, localStorage);
+
+export const history = useStorage(
+  'history',
+  [] as Array<String>,
+  sessionStorage
+);

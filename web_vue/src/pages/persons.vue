@@ -5,7 +5,7 @@ import { refDebounced, useAsyncState, useFileDialog } from '@vueuse/core';
 import { useRouter } from 'vue-router';
 import { TableRow } from '@nuxt/ui';
 import { useToasts } from '@/composables';
-import { session } from '@/state';
+import { history, session } from '@/state';
 import { columns } from '@/schema/items';
 import { person as personForm } from '@/schema/forms';
 import { Roles, type Person, type PersonId } from '@/types';
@@ -23,6 +23,7 @@ const api = inject('api') as KyInstance;
 const hasNext = ref(false); // Состояние наличия следующей страницы
 const limit = ref(10); // Количество записей на странице
 const modal = ref(false); // Состояние модального окна
+const flag = ref(false); // Показать ранее открывавшеся записи
 const page = ref(0); // Страница таблицы
 const search = ref(''); // Поисковый запрос
 
@@ -36,7 +37,7 @@ const { open, onChange } = useFileDialog({
 const { execute, isLoading, state } = useAsyncState<Person[]>(
   async () =>
     await api
-      .get('persons/', {
+      .get('index/', {
         searchParams: {
           limit: limit.value,
           page: page.value,
@@ -47,16 +48,12 @@ const { execute, isLoading, state } = useAsyncState<Person[]>(
   [],
   {
     onSuccess(data) {
+      flag.value = false;
       hasNext.value = data.length > limit.value;
       data = hasNext.value ? data.slice(0, limit.value) : data;
     },
   }
 );
-
-watch([debounced, limit], async () => {
-  if (page.value === 0) await execute();
-  else page.value = 0;
-});
 
 watch(page, async () => await execute());
 
@@ -89,6 +86,28 @@ onChange(async (files) => {
     } else create();
   }
 });
+
+watch(flag, async (val?: boolean): Promise<void> => {
+  if (val) {
+    if (history.value.length > 0) {
+      state.value = await api
+        .get('index/history/', {
+          searchParams: {
+            ids: [...new Set(history.value)]
+              .reverse()
+              .slice(0, limit.value)
+              .join(','),
+          },
+        })
+        .json();
+    } else state.value = [];
+  } else await execute();
+});
+
+function openPerson(_: Event, row: TableRow<Person>) {
+  history.value.push(row.original.id);
+  router.push(`/profile/${row.original.id}`);
+}
 </script>
 
 <template>
@@ -144,22 +163,23 @@ onChange(async (files) => {
           :loading="isLoading"
           loading-animation="swing"
           loading-color="error"
-          @select="
-            (_, { original }: TableRow<Person>) =>
-              router.push(`/profile/${original.id}`)
-          "
+          @select="openPerson"
         />
 
-        <!-- Кнопка обновления -->
-        <UButton
-          v-show="state.length"
-          :loading="isLoading"
-          icon="i-lucide-refresh-cw"
-          label="Обновить"
-          size="sm"
-          variant="ghost"
-          @click="execute()"
-        />
+        <div class="flex justify-between">
+          <!-- Кнопка обновления -->
+          <UButton
+            v-show="state.length"
+            :loading="isLoading"
+            icon="i-lucide-refresh-cw"
+            label="Обновить"
+            size="sm"
+            variant="ghost"
+            @click="execute()"
+          />
+
+          <USwitch v-model="flag" label="Последние просмотренные" />
+        </div>
 
         <!-- Пагинация -->
         <div

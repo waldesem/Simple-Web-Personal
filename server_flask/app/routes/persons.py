@@ -9,7 +9,7 @@ from flask import Blueprint, Response, current_app, g, jsonify
 
 from app.classes.enums import Roles
 from app.depends.depend import authorize, validize
-from app.models.model import Anketa, Person, Query
+from app.models.model import Anketa, Person
 
 bp = Blueprint("persons", __name__, url_prefix="/persons")
 
@@ -59,25 +59,6 @@ def add_person(cur: sqlite3.Cursor, json_data: Person) -> int | None:
         cur.execute(stmt, (*data_dict.values(), cand_id))
         g.db.commit()
     return cand_id
-
-
-@bp.get("/")
-@validize()
-def get_candidates(json_query: Query) -> Response:
-    """Retrieve a paginated list of persons from the database."""
-    params = []
-    stmt = "SELECT rowid as id, surname, firstname, patronymic, birthday, created \
-        FROM persons_fts"
-    if json_query.search:
-        params.append(json_query.search)
-        stmt += " WHERE persons_fts MATCH ?"
-    # Пагинация списка кандидатов
-    cur = g.db.cursor()
-    candidates = cur.execute(
-        stmt + " ORDER BY id DESC LIMIT ? OFFSET ?",
-        (*params, json_query.limit + 1, json_query.page * json_query.limit),
-    ).fetchall()
-    return jsonify([dict(cand) for cand in candidates])
 
 
 @bp.get("/<int:person_id>")
