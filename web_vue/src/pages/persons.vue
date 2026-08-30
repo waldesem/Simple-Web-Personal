@@ -55,7 +55,7 @@ const { execute, isLoading, state } = useAsyncState<Person[]>(
   }
 );
 
-watch(page, async () => await execute());
+watch([limit, page, debounced], async () => await execute());
 
 function addToast(person_id: string | null) {
   if (person_id) {
@@ -87,25 +87,16 @@ onChange(async (files) => {
   }
 });
 
-watch(flag, async (val?: boolean): Promise<void> => {
+watch(flag, async (val: boolean): Promise<void> => {
   if (val) {
-    if (history.value.length > 0) {
-      state.value = await api
-        .get('index/history/', {
-          searchParams: {
-            ids: [...new Set(history.value)]
-              .reverse()
-              .slice(0, limit.value)
-              .join(','),
-          },
-        })
-        .json();
-    } else state.value = [];
+    const uniqueMap = new Map(history.value.map((item) => [item.id, item]));
+    const uniqueItems = Array.from(uniqueMap.values());
+    state.value = uniqueItems.toReversed().slice(0, limit.value);
   } else await execute();
 });
 
 function openPerson(_: Event, row: TableRow<Person>) {
-  history.value.push(row.original.id);
+  history.value.push(row.original);
   router.push(`/profile/${row.original.id}`);
 }
 </script>
@@ -113,7 +104,7 @@ function openPerson(_: Event, row: TableRow<Person>) {
 <template>
   <UContainer>
     <UPage>
-      <UPageHeader title="КАНДИДАТЫ">
+      <UPageHeader :title="flag ? 'НЕДАВНИЕ' : 'КАНДИДАТЫ'">
         <template #links v-if="session.role === Roles.user">
           <UButton
             icon="i-lucide-upload"
@@ -167,9 +158,9 @@ function openPerson(_: Event, row: TableRow<Person>) {
         />
 
         <div class="flex justify-between">
-          <!-- Кнопка обновления -->
+          <USwitch v-model="flag" label="Последние просмотренные" />
           <UButton
-            v-show="state.length"
+            v-show="state.length && !flag"
             :loading="isLoading"
             icon="i-lucide-refresh-cw"
             label="Обновить"
@@ -177,13 +168,11 @@ function openPerson(_: Event, row: TableRow<Person>) {
             variant="ghost"
             @click="execute()"
           />
-
-          <USwitch v-model="flag" label="Последние просмотренные" />
         </div>
 
         <!-- Пагинация -->
         <div
-          v-show="state.length"
+          v-show="state.length && !flag"
           class="flex justify-center border-t border-default pt-8"
         >
           <UButton
