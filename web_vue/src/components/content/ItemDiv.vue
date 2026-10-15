@@ -1,13 +1,15 @@
 <script lang="ts">
 import type { PropType } from 'vue';
 import type {
+  registr as RegFieldsType,
   person as PersonFieldsType,
   itemsFields as ItemsFieldsType,
 } from '@/schema/items';
 
-export type ItemType = Person | Items[keyof Items];
+export type ItemType = Person | Registry | Items[keyof Items];
 
 export type FieldsType =
+  | typeof RegFieldsType
   | typeof PersonFieldsType
   | (typeof ItemsFieldsType)[keyof typeof ItemsFieldsType];
 </script>
@@ -15,7 +17,7 @@ export type FieldsType =
 <script setup lang="ts">
 import { ref } from 'vue';
 import { session } from '@/state';
-import { Items, Person, Roles } from '@/types';
+import { Items, Person, Registry, Roles } from '@/types';
 import ItemRow from './ItemRow.vue';
 
 const emits = defineEmits(['update', 'delete']);

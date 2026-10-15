@@ -8,7 +8,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, validator
 
-from app.classes.enums import Conclusions, Decisions, Roles
+from app.classes.enums import Conclusions, Decisions, Reasons, Roles
 from app.utilities.utils import validate_inn, validate_snils
 
 ItemType = Literal[
@@ -81,6 +81,32 @@ class Query(BaseModel):
     page: int
 
 
+class Registry(BaseModel):
+    """Pydantic model Registry schema."""
+
+    surname: str = Field(max_length=255)
+    firstname: str = Field(max_length=255)
+    patronymic: str | None = Field(max_length=255)
+    birthday: date
+    staff: str
+    recruiter: str = Field(max_length=255)
+
+
+class RegExt(Registry):
+    """Pydantic model Registry schema."""
+
+    incomes: date
+    checks: str = Field(max_length=255)
+    finished: date
+    results: Conclusions
+    outcomes: date
+    reason: Reasons
+
+    class Config:
+        use_enum_values = True
+        anystr_strip_whitespace = True
+
+
 class Person(BaseModel):
     """Pydantic model form schema."""
 
@@ -95,7 +121,6 @@ class Person(BaseModel):
     inn: str | None = None
     marital: str | None = Field(alias="maritalStatus", max_length=255)
     addition: str | None = None
-    editable: bool = False
 
     class Config:
         anystr_strip_whitespace = True

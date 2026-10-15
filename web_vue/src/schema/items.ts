@@ -1,6 +1,12 @@
 import { Component, h } from 'vue';
 import type { AccordionItem, TableColumn, TabsItem } from '@nuxt/ui';
-import { Conclusions, Decisions, type Items, type Person } from '@/types';
+import {
+  Decisions,
+  Conclusions,
+  type Items,
+  type Person,
+  type Registry,
+} from '@/types';
 
 type NavigationItem = AccordionItem & TabsItem;
 
@@ -39,7 +45,7 @@ export function localStr(str: string): string {
   }
 }
 
-function timeAgoStr(str: string) {
+export function timeAgoStr(str: string) {
   const diff = Date.now() - new Date(str).getTime();
   const diffSec = Math.floor(diff / 1000);
   // Меньше минуты
@@ -73,7 +79,7 @@ function timeAgoStr(str: string) {
   return Math.floor(diffDays / 365) + ' года назад';
 }
 
-export const columns: TableColumn<Person>[] = [
+export const columnsDB: TableColumn<Person>[] = [
   {
     accessorKey: 'id',
     header: '#',
@@ -115,6 +121,59 @@ type ItemFields<T> = {
   foo?: (row: T) => string;
   component?: (row: T) => Component;
 };
+
+export const registr = [
+  { key: 'surname', label: 'Фамилия' },
+  { key: 'firstname', label: 'Имя' },
+  { key: 'patronymic', label: 'Отчество' },
+  {
+    key: 'birthday',
+    label: 'Дата рождения',
+    foo: (row) => localStr(row.birthday),
+  },
+  { key: 'staff', label: 'Должность' },
+  { key: 'recruiter', label: 'Рекрутер' },
+  { key: 'incomes', label: 'Поступил' },
+  { key: 'checks', label: 'Отметки' },
+  { key: 'officer', label: 'Сотрудник' },
+  {
+    key: 'finished',
+    label: 'окончено',
+    foo: (row) => (row.finished ? localStr(row.finished) : ''),
+  },
+  {
+    key: 'results',
+    label: 'Результат',
+    component: (row) => {
+      const color =
+        row.results === Conclusions.agreed
+          ? 'bg-green-500'
+          : row.results === Conclusions.cancel
+            ? 'bg-gray-500'
+            : row.results === Conclusions.comments
+              ? 'bg-yellow-500'
+              : row.results === Conclusions.checks
+                ? 'bg-blue-500'
+                : 'bg-red-500';
+      return h(
+        'span',
+        {
+          class: [
+            'flex inline-flex Items-center py-1 px-2 rounded-md text-sm text-white',
+            color,
+          ],
+        },
+        row.results
+      );
+    },
+  },
+  {
+    key: 'outcomes',
+    label: 'Согласован',
+    foo: (row) => (row.outcomes ? localStr(row.outcomes) : ''),
+  },
+  { key: 'reasons', label: 'Причина отказа' },
+] as ItemFields<Registry>[];
 
 export const person = [
   { key: 'surname', label: 'Фамилия' },
@@ -166,11 +225,11 @@ const checks = [
     label: 'Результат',
     component: (row) => {
       const color =
-        row.conclusion === Conclusions.agreed
+        row.conclusion === Decisions.agreed
           ? 'bg-green-500'
-          : row.conclusion === Conclusions.cancel
+          : row.conclusion === Decisions.cancel
             ? 'bg-gray-500'
-            : row.conclusion === Conclusions.comments
+            : row.conclusion === Decisions.comments
               ? 'bg-blue-500'
               : 'bg-red-500';
       return h(
@@ -258,11 +317,6 @@ const previous = [
   { key: 'reason', label: 'Причина' },
 ] as ItemFields<Items['previous']>[];
 
-const staffs = [
-  { key: 'position', label: 'Должность' },
-  { key: 'department', label: 'Подразделение' },
-] as ItemFields<Items['staffs']>[];
-
 const workplaces = [
   { key: 'starts', label: 'Начало работы', foo: (row) => localStr(row.starts) },
   {
@@ -287,6 +341,5 @@ export const itemsFields = {
   investigations,
   poligrafs,
   previous,
-  staffs,
   workplaces,
 };

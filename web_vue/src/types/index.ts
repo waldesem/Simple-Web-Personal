@@ -10,6 +10,7 @@ export enum Conclusions {
   comments = 'СОГЛАСОВАНО С КОММЕНТАРИЕМ',
   cancel = 'СНЯТ С ПРОВЕРКИ',
   denied = 'ОТКАЗАНО В СОГЛАСОВАНИИ',
+  checks = 'НА ПРОВЕРКЕ',
 }
 
 export enum Decisions {
@@ -17,6 +18,16 @@ export enum Decisions {
   comments = 'С КОММЕНТАРИЯМИ',
   cancel = 'ОТКАЗ ОТ ПРОВЕРКИ',
   denied = 'НЕГАТИВ',
+}
+
+export enum Reasons {
+  fake = 'Недостоверные анкетные данные',
+  damage = 'Причиение ущерба работодателю',
+  disclosure = 'Разглашение конфиденциальной информации',
+  finance = 'Неисполнение финансовых обязательств',
+  crime = 'Привечение к уголовной ответственности',
+  poligraf = 'Отрицательнй результат ПФО',
+  compromat = 'Негативная информация в сети интернет',
 }
 
 export interface Session {
@@ -54,6 +65,24 @@ export interface Person {
   created: string;
 }
 
+export interface Registry {
+  id: string;
+  surname: string;
+  firstname: string;
+  patronymic?: string;
+  birthday: string;
+  staff: string;
+  recruiter?: string;
+  incomes: string;
+  checks?: string;
+  officer?: string;
+  finished?: string;
+  results?: Conclusions;
+  outcomes?: string;
+  reasons?: string;
+  person_id: string;
+}
+
 export interface PersonId {
   person_id: string | null;
 }
@@ -72,12 +101,6 @@ interface Education {
   institution: string;
   finished?: string;
   specialty: string;
-}
-
-interface Staff {
-  id: string;
-  position: string;
-  department?: string;
 }
 
 interface Passport {
@@ -132,7 +155,7 @@ interface Verification {
   internet?: string;
   cronos?: string;
   addition?: string;
-  conclusion: Conclusions;
+  conclusion: Decisions;
   comment?: string;
   created: string;
 }
@@ -170,6 +193,5 @@ export interface Items {
   investigations: Inquisition;
   poligrafs: Pfo;
   previous: Previous;
-  staffs: Staff;
   workplaces: Work;
 }

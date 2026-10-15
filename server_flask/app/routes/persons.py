@@ -7,9 +7,9 @@ from typing import Any
 
 from flask import Blueprint, Response, current_app, g, jsonify
 
-from app.classes.enums import Roles
+from app.classes.enums import Conclusions, Roles
 from app.depends.depend import authorize, validize
-from app.models.model import Anketa, Person
+from app.models.model import Anketa, Person, RegExt, Registry
 
 bp = Blueprint("persons", __name__, url_prefix="/persons")
 
@@ -80,6 +80,47 @@ def post_person(json_data: Person) -> Response:
     return jsonify({"person_id": cand_id})
 
 
+@bp.post("/registry")
+@validize()
+@authorize(Roles.user)
+def post_registry(json_data: Registry) -> Response:
+    """Add a record in registry table."""
+    cur = g.db.cursor()
+    cand_id = add_person(cur, Person(json_data))
+    g.db.commit()
+    data_dict = json_data.dict(exclude={"surname", "firstanme", "patronymic"})
+    data_dict["fullname"] = (
+        f"{json_data.surname} {json_data.firstname} {json_data.patronymic}"
+    )
+    data_dict["officer"] = g.current_user["id"]
+    data_dict["incomes"] = datetime.now(UTC)
+    data_dict["results"] = Conclusions.checks.value
+    stmt = "INSERT INTO registry ({}) VALUES ({})".format(  # noqa: S608
+        ",".join(data_dict.keys()),
+        ",".join(["?"] * len(data_dict)),
+    )
+    cur.execute(stmt, tuple(data_dict.values()))
+    return jsonify({"person_id": cand_id})
+
+
+@bp.patch("/registry/<int:reg_id>")
+@validize()
+@authorize(Roles.user)
+def patch_registry(reg_id: int, json_data: RegExt) -> Response:
+    """Edit a record in registry table."""
+    data_dict = json_data.dict()
+    data_dict["officer"] = g.current_user["id"]
+    if json_data.results != Conclusions.checks.value:
+        data_dict["finished"] = datetime.now(UTC)
+    stmt = "UPDATE registry SET {} WHERE id = ?".format(  # noqa: S608
+        ",".join(f"{k}=?" for k in data_dict),
+    )
+    cur = g.db.cursor()
+    cur.execute(stmt, (*data_dict.values(), reg_id))
+    g.db.commit()
+    return jsonify({"message": "success"})
+
+
 @bp.post("/json")
 @validize()
 @authorize(Roles.user)
@@ -97,12 +138,6 @@ def post_json_file(json_data: Anketa) -> Response:
                     "series": json_data.series,
                     "issue": json_data.issue,
                     "agency": json_data.agency,
-                },
-            ],
-            "staffs": [
-                {
-                    "position": json_data.position,
-                    "department": json_data.department,
                 },
             ],
             "addresses": [
