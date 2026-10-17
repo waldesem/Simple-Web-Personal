@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const { page, hasNext, isLoading, limit, stateLength } = defineProps({
+import { toRef } from 'vue';
+
+const props = defineProps({
   page: {
     type: Number,
     required: true,
@@ -22,17 +24,19 @@ const { page, hasNext, isLoading, limit, stateLength } = defineProps({
   },
 });
 
+const limit = toRef(props.limit);
+
 const emits = defineEmits(['next', 'previous', 'limit']);
 </script>
 
 <template>
   <div
-    v-show="stateLength"
+    v-show="props.stateLength"
     class="flex justify-center border-t border-default pt-8"
   >
     <UButton
       class="me-2 rounded-full"
-      :disabled="!page || isLoading"
+      :disabled="!props.page || props.isLoading"
       icon="i-lucide-arrow-left"
       title="Вперед"
       @click="emits('previous')"
@@ -48,7 +52,7 @@ const emits = defineEmits(['next', 'previous', 'limit']);
     />
     <UButton
       class="ms-2 rounded-full"
-      :disabled="!hasNext || isLoading"
+      :disabled="!props.hasNext || props.isLoading"
       icon="i-lucide-arrow-right"
       title="Назад"
       @click="emits('next')"

@@ -34,7 +34,7 @@ def authorize(role: Roles | None = None) -> Callable:
             if not (header := request.headers.get("Authorization")):
                 return abort(401)
 
-            if not (decoded := decode_token(header[7:])):
+            if not (decoded := decode_token(header[7:], current_app.config)):
                 return abort(401)
 
             if user := get_user(decoded["identity"]):

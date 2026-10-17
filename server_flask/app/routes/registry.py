@@ -13,12 +13,17 @@ bp = Blueprint("registry", __name__, url_prefix="/registry")
 
 
 @bp.get("/")
+@validize()
 def get_registry(json_query: Query) -> Response:
     """Retrieve a registry from the database."""
+    stmt = "SELECT * FROM registry"
+    params = [json_query.search] if json_query.search else []
+    if json_query.search:
+        stmt += " WHERE fullname=?"
     cur = g.db.cursor()
     registry = cur.execute(
-        "SELECT * FROM registry ORDER BY id DESC ORDER BY id DESC LIMIT ? OFFSET ?",
-        (json_query.limit + 1, json_query.page * json_query.limit),
+        stmt + " ORDER BY id DESC ORDER BY id DESC LIMIT ? OFFSET ?",
+        (*params, json_query.limit + 1, json_query.page * json_query.limit),
     ).fetchall()
     return jsonify([dict(reg) for reg in registry])
 

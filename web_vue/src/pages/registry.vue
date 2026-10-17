@@ -27,7 +27,7 @@ const expanded = ref({ 1: true });
 const item = shallowRef({} as Registry);
 const UButton = resolveComponent('UButton');
 
-export const columnsReg: TableColumn<Registry>[] = [
+const columnsReg: TableColumn<Registry>[] = [
   {
     id: 'expand',
     cell: ({ row }) =>
@@ -52,18 +52,8 @@ export const columnsReg: TableColumn<Registry>[] = [
     meta: { class: { th: 'w-2/23' } },
   },
   {
-    accessorKey: 'surname',
-    header: 'Фамилия',
-    meta: { class: { th: 'w-5/23' } },
-  },
-  {
-    accessorKey: 'firstname',
-    header: 'Имя',
-    meta: { class: { th: 'w-5/23' } },
-  },
-  {
-    accessorKey: 'patronymic',
-    header: 'Отчество',
+    accessorKey: 'fullname',
+    header: 'Фамилия Имя Отчество',
     meta: { class: { th: 'w-5/23' } },
   },
   {

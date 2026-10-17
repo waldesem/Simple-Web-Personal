@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { resolveComponent, ref, type PropType } from "vue";
+import { resolveComponent, ref, type PropType } from 'vue';
 import type {
   user as userForm,
   person as personForm,
   itemsForms,
   FormElemAttrs,
-} from "@/schema/forms";
-import { Items, Person, User } from "@/types";
+} from '@/schema/forms';
+import { Items, Person, Registry, User } from '@/types';
 
-const emit = defineEmits(["submit"]);
+const emit = defineEmits(['submit']);
 
 const { fields, item } = defineProps({
   fields: {
@@ -20,18 +20,18 @@ const { fields, item } = defineProps({
     required: true,
   },
   item: {
-    type: Object as PropType<User | Person | Items[keyof Items]>,
+    type: Object as PropType<User | Person | Registry | Items[keyof Items]>,
     default: () => ({}),
   },
 });
 
 const form = ref(item);
 
-const matchComponent = (element: keyof FormElemAttrs = "input") => {
+const matchComponent = (element: keyof FormElemAttrs = 'input') => {
   const html = {
-    input: resolveComponent("UInput"),
-    select: resolveComponent("USelect"),
-    textarea: resolveComponent("UTextarea"),
+    input: resolveComponent('UInput'),
+    select: resolveComponent('USelect'),
+    textarea: resolveComponent('UTextarea'),
   };
   return html[element];
 };

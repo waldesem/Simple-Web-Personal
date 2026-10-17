@@ -9,7 +9,6 @@ from typing import Literal
 from pydantic import BaseModel, Field, validator
 
 from app.classes.enums import Conclusions, Decisions, Reasons, Roles
-from app.shared.share import validate_inn, validate_snils
 
 ItemType = Literal[
     "addresses",
@@ -131,18 +130,6 @@ class Person(BaseModel):
         if v and re.match(r"^[А-яЁёIV\-\s\.\,\'\(\)]*$", v):
             return v.upper()
         return None
-
-    @validator("inn")
-    @classmethod
-    def check_inn(cls, inn: str | None) -> str | None:
-        """Check inn."""
-        return validate_inn(inn)
-
-    @validator("snils")
-    @classmethod
-    def check_snils(cls, snils: str | None) -> str | None:
-        """Check snils."""
-        return validate_snils(snils)
 
 
 class Prev(BaseModel):

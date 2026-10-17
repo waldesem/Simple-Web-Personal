@@ -69,7 +69,11 @@ def post_json_file(json_data: Anketa) -> Response:
     if cand_id:
         add_registry(
             Registry(
-                fullname=f"{json_data.surname} {json_data.firstname} {json_data.patronymic}",
+                fullname="{} {} {}".format(  # noqa: UP032
+                    json_data.surname,
+                    json_data.firstname,
+                    json_data.patronymic,
+                ),
                 birthday=json_data.birthday,
                 staff=f"{json_data.position} / {json_data.department}",
             ),
