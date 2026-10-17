@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, get_type_hints
 from flask import abort, current_app, g, request
 
 from app.classes.enums import Roles
-from app.utilities.utils import decode_token
+from app.shared.share import decode_token
 
 if TYPE_CHECKING:
     from sqlite3 import Cursor

@@ -67,9 +67,7 @@ export interface Person {
 
 export interface Registry {
   id: string;
-  surname: string;
-  firstname: string;
-  patronymic?: string;
+  fullname: string;
   birthday: string;
   staff: string;
   recruiter?: string;

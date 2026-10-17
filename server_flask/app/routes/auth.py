@@ -9,7 +9,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.depends.depend import authorize, validize
 from app.models.model import Login, Update
-from app.utilities.utils import create_token, decode_token
+from app.shared.share import create_token, decode_token
 
 if TYPE_CHECKING:
     import sqlite3
@@ -53,8 +53,12 @@ def post_login(json_data: Login) -> Response:
         return jsonify(
             {
                 "message": "success",
-                "access_token": create_token(user["username"]),
-                "refresh_token": create_token(user["username"], "REFRESH"),
+                "access_token": create_token(user["username"], current_app.config),
+                "refresh_token": create_token(
+                    user["username"],
+                    current_app.config,
+                    "REFRESH",
+                ),
             },
         )
     return jsonify({"message": "denied"})
@@ -106,16 +110,21 @@ def refresh_token() -> Response:
     if current_app.config["AUTH"]:
         data = request.get_json()
         if (refresh_token := data.get("token")) and (
-            decoded := decode_token(refresh_token, refresh=True)
+            decoded := decode_token(refresh_token, current_app.config, refresh=True)
         ):
             return jsonify(
                 {
-                    "access_token": create_token(decoded["identity"]),
+                    "access_token": create_token(
+                        decoded["identity"],
+                        current_app.config,
+                    ),
                 },
             )
         return abort(400)
 
-    return jsonify({"access_token": create_token(getpass.getuser())})
+    return jsonify(
+        {"access_token": create_token(getpass.getuser(), current_app.config)},
+    )
 
 
 @bp.get("/session")

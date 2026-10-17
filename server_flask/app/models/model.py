@@ -9,7 +9,7 @@ from typing import Literal
 from pydantic import BaseModel, Field, validator
 
 from app.classes.enums import Conclusions, Decisions, Reasons, Roles
-from app.utilities.utils import validate_inn, validate_snils
+from app.shared.share import validate_inn, validate_snils
 
 ItemType = Literal[
     "addresses",
@@ -84,12 +84,10 @@ class Query(BaseModel):
 class Registry(BaseModel):
     """Pydantic model Registry schema."""
 
-    surname: str = Field(max_length=255)
-    firstname: str = Field(max_length=255)
-    patronymic: str | None = Field(max_length=255)
+    fullname: str = Field(max_length=255)
     birthday: date
     staff: str
-    recruiter: str = Field(max_length=255)
+    recruiter: str | None = Field(max_length=255)
 
 
 class RegExt(Registry):
@@ -174,18 +172,6 @@ class Education(BaseModel):
     class Config:
         anystr_strip_whitespace = True
         allow_population_by_field_name = True
-
-
-class Staff(BaseModel):
-    """Staffs schema."""
-
-    position: str
-    department: str | None
-    comparator: Literal["staffs"] = "staffs"
-
-    class Config:
-        anystr_strip_whitespace = True
-        max_anystr_length = 255
 
 
 class Document(BaseModel):
@@ -331,7 +317,6 @@ class ItemsModels(BaseModel):
         | Investigation
         | Prev
         | Poligraf
-        | Staff
         | Workplace
     ) = Field(..., discriminator="comparator")
 

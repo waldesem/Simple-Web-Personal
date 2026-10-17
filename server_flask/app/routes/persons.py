@@ -1,64 +1,44 @@
 """Routes."""
 
-import sqlite3
 from datetime import UTC, datetime
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from flask import Blueprint, Response, current_app, g, jsonify
 
-from app.classes.enums import Conclusions, Roles
+from app.classes.enums import Roles
 from app.depends.depend import authorize, validize
-from app.models.model import Anketa, Person, RegExt, Registry
+from app.models.model import Anketa, Person, Query, Registry
+from app.shared.share import add_person, add_registry
+
+if TYPE_CHECKING:
+    import sqlite3
 
 bp = Blueprint("persons", __name__, url_prefix="/persons")
 
 
-def add_person(cur: sqlite3.Cursor, json_data: Person) -> int | None:
-    """Add a record in persons table."""
-    person = cur.execute(
-        "SELECT id FROM persons WHERE\
-            surname=? AND firstname=? AND patronymic=? AND birthday=?",
-        (
-            json_data.surname,
-            json_data.firstname,
-            json_data.patronymic,
-            json_data.birthday,
-        ),
-    ).fetchone()
-
-    cand_id = person[0] if person else None
-    if cand_id:
-        return None
-
-    data_dict = json_data.dict()
-    data_dict["user_id"] = g.current_user["id"]
-    data_dict["created"] = datetime.now(UTC)
-    stmt = "INSERT INTO persons ({}) VALUES ({})".format(  # noqa: S608
-        ",".join(data_dict.keys()),
-        ",".join(["?"] * len(data_dict)),
-    )
-    cand_id = cur.execute(stmt, tuple(data_dict.values())).lastrowid
-
-    if cand_id:
-        destination = Path(
-            current_app.config["BASE_PATH"],
-            "Главный офис",
-            json_data.surname[0],
-            "{}-{} {} {}".format(
-                cand_id,
-                json_data.surname,
-                json_data.firstname,
-                json_data.patronymic or "",
-            ).rstrip(),
-        )
-        destination.mkdir(parents=True, exist_ok=True)
-        stmt = "UPDATE persons SET {} WHERE id = ?".format(  # noqa: S608
-            ",".join(f"{k}=?" for k in data_dict),
-        )
-        cur.execute(stmt, (*data_dict.values(), cand_id))
-        g.db.commit()
-    return cand_id
+@bp.get("/")
+@validize()
+def get_search(json_query: Query) -> Response:
+    """Retrieve a paginated list of persons from the database."""
+    stmt = "SELECT id, surname, firstname, patronymic, birthday, created FROM persons"
+    # Пагинация списка кандидатов
+    params = []
+    if json_query.search:
+        names = json_query.search.split()
+        params.append(names[0])
+        stmt += " WHERE surname=?"
+        if len(names) > 1:
+            params.append(names[1])
+            stmt += " AND firstname=?"
+            if len(names) > 2:
+                params.append(names[2])
+                stmt += " AND patronymic=?"
+    cur = g.db.cursor()
+    candidates = cur.execute(
+        stmt + " ORDER BY id DESC LIMIT ? OFFSET ?",
+        (*params, json_query.limit + 1, json_query.page * json_query.limit),
+    ).fetchall()
+    return jsonify([dict(cand) for cand in candidates])
 
 
 @bp.get("/<int:person_id>")
@@ -74,51 +54,8 @@ def get_person(person_id: int) -> Response:
 @authorize(Roles.user)
 def post_person(json_data: Person) -> Response:
     """Add a record in persons table."""
-    cur: sqlite3.Cursor = g.db.cursor()
-    cand_id = add_person(cur, json_data)
-    g.db.commit()
+    cand_id = add_person(json_data, current_app.config)
     return jsonify({"person_id": cand_id})
-
-
-@bp.post("/registry")
-@validize()
-@authorize(Roles.user)
-def post_registry(json_data: Registry) -> Response:
-    """Add a record in registry table."""
-    cur = g.db.cursor()
-    cand_id = add_person(cur, Person(json_data))
-    g.db.commit()
-    data_dict = json_data.dict(exclude={"surname", "firstanme", "patronymic"})
-    data_dict["fullname"] = (
-        f"{json_data.surname} {json_data.firstname} {json_data.patronymic}"
-    )
-    data_dict["officer"] = g.current_user["id"]
-    data_dict["incomes"] = datetime.now(UTC)
-    data_dict["results"] = Conclusions.checks.value
-    stmt = "INSERT INTO registry ({}) VALUES ({})".format(  # noqa: S608
-        ",".join(data_dict.keys()),
-        ",".join(["?"] * len(data_dict)),
-    )
-    cur.execute(stmt, tuple(data_dict.values()))
-    return jsonify({"person_id": cand_id})
-
-
-@bp.patch("/registry/<int:reg_id>")
-@validize()
-@authorize(Roles.user)
-def patch_registry(reg_id: int, json_data: RegExt) -> Response:
-    """Edit a record in registry table."""
-    data_dict = json_data.dict()
-    data_dict["officer"] = g.current_user["id"]
-    if json_data.results != Conclusions.checks.value:
-        data_dict["finished"] = datetime.now(UTC)
-    stmt = "UPDATE registry SET {} WHERE id = ?".format(  # noqa: S608
-        ",".join(f"{k}=?" for k in data_dict),
-    )
-    cur = g.db.cursor()
-    cur.execute(stmt, (*data_dict.values(), reg_id))
-    g.db.commit()
-    return jsonify({"message": "success"})
 
 
 @bp.post("/json")
@@ -130,6 +67,14 @@ def post_json_file(json_data: Anketa) -> Response:
 
     cand_id = add_person(cur, Person.parse_obj(json_data))
     if cand_id:
+        add_registry(
+            Registry(
+                fullname=f"{json_data.surname} {json_data.firstname} {json_data.patronymic}",
+                birthday=json_data.birthday,
+                staff=f"{json_data.position} / {json_data.department}",
+            ),
+            cand_id,
+        )
         # Сохранение дополнительной информации о кандидате в БД
         items: dict[str, list[dict[str, Any]]] = {
             "documents": [
@@ -140,16 +85,6 @@ def post_json_file(json_data: Anketa) -> Response:
                     "agency": json_data.agency,
                 },
             ],
-            "addresses": [
-                {
-                    "view": "Адрес проживания",
-                    "address": json_data.valid_address,
-                },
-                {
-                    "view": "Адрес регистрации",
-                    "address": json_data.reg_address,
-                },
-            ],
             "contacts": [
                 {
                     "view": "Телефон",
@@ -158,6 +93,14 @@ def post_json_file(json_data: Anketa) -> Response:
                 {
                     "view": "Электронная почта",
                     "contact": json_data.email,
+                },
+                {
+                    "view": "Адрес проживания",
+                    "address": json_data.valid_address,
+                },
+                {
+                    "view": "Адрес регистрации",
+                    "address": json_data.reg_address,
                 },
             ],
             "educations": [

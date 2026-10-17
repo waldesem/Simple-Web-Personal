@@ -123,9 +123,7 @@ type ItemFields<T> = {
 };
 
 export const registr = [
-  { key: 'surname', label: 'Фамилия' },
-  { key: 'firstname', label: 'Имя' },
-  { key: 'patronymic', label: 'Отчество' },
+  { key: 'fullname', label: 'Фамилия Имя Отчество' },
   {
     key: 'birthday',
     label: 'Дата рождения',

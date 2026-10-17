@@ -62,32 +62,13 @@ export const user = [
 
 export const registr = [
   {
-    key: 'surname',
-    label: 'Фамилия',
+    key: 'fullname',
+    label: 'Фамилия Имя Отчество',
     props: {
       pattern: "^[А-ЯЁ][А-ЯЁа-яё\\-.,' ]+[А-ЯЁа-яё]$",
-      placeholder: 'Фамилия',
+      placeholder: 'Фамилия Имя Отчество',
       maxlength: 255,
       required: true,
-    },
-  },
-  {
-    key: 'firstname',
-    label: 'Имя',
-    props: {
-      pattern: "^[А-ЯЁ][А-ЯЁа-яё\\-.,' ]+[А-ЯЁа-яё]$",
-      placeholder: 'Имя',
-      maxlength: 255,
-      required: true,
-    },
-  },
-  {
-    key: 'patronymic',
-    label: 'Отчество',
-    props: {
-      pattern: "^[А-ЯЁ][А-ЯЁа-яё\\-.,' ]+[А-ЯЁа-яё]$",
-      placeholder: 'Отчество',
-      maxlength: 255,
     },
   },
   {
