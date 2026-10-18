@@ -17,12 +17,12 @@ function logout() {
 
 function openDB() {
   if (find.value.length > 1)
-    router.push({ path: '/registry', query: { find: find.value } });
+    router.push({ path: '/persons', query: { find: find.value } });
 }
 </script>
 
 <template>
-  <UHeader to="/persons" class="no-print">
+  <UHeader to="/registry" class="no-print">
     <template #title>
       <BrandHead />
     </template>
@@ -38,17 +38,15 @@ function openDB() {
       />
     </template>
     <template #right>
-      <UFormField label="Найти" orientation="horizontal" required>
-        <UFieldGroup>
-          <UInput
-            v-model="find"
-            icon="i-lucide-search"
-            variant="outline"
-            placeholder="Поиск..."
-          />
-          <UButton icon="i-lucide-search" variant="solid" @click="openDB" />
-        </UFieldGroup>
-      </UFormField>
+      <UFieldGroup>
+        <UInput
+          v-model="find"
+          icon="i-lucide-search"
+          variant="outline"
+          placeholder="Поиск..."
+        />
+        <UButton icon="i-lucide-search" variant="outline" @click="openDB" />
+      </UFieldGroup>
       <UButton
         :disabled="!session.auth"
         :avatar="{

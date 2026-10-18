@@ -51,44 +51,19 @@ export const registr = [
   { key: 'recruiter', label: 'Рекрутер' },
   { key: 'incomes', label: 'Поступил' },
   { key: 'checks', label: 'Отметки' },
-  { key: 'user', label: 'Сотрудник' },
+  { key: 'officer', label: 'Сотрудник' },
   {
     key: 'finished',
     label: 'окончено',
     foo: (row) => (row.finished ? localStr(row.finished) : ''),
   },
-  {
-    key: 'conclusion',
-    label: 'Результат',
-    component: (row) => {
-      const color =
-        row.conclusion === 'СОГЛАСОВАНО'
-          ? 'bg-green-500'
-          : row.conclusion === 'СОГЛАСОВАНО С КОММЕНТАРИЕМ'
-            ? 'bg-gray-500'
-            : row.conclusion === 'СНЯТ С ПРОВЕРКИ'
-              ? 'bg-yellow-500'
-              : row.conclusion === 'НА ПРОВЕРКЕ'
-                ? 'bg-blue-500'
-                : 'bg-red-500';
-      return h(
-        'span',
-        {
-          class: [
-            'flex inline-flex Items-center py-1 px-2 rounded-md text-sm text-white',
-            color,
-          ],
-        },
-        row.conclusion
-      );
-    },
-  },
+  { key: 'results', label: 'Результат' },
   {
     key: 'outcomes',
     label: 'Согласован',
     foo: (row) => (row.outcomes ? localStr(row.outcomes) : ''),
   },
-  { key: 'motive', label: 'Причина отказа' },
+  { key: 'reason', label: 'Причина отказа' },
 ] as ItemFields<Registry>[];
 
 export const person = [

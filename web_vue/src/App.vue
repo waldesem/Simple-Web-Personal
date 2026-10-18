@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { shallowRef, watch, markRaw } from "vue";
-import { useRoute } from "vue-router";
-import UserLayout from "./components/layouts/UserLayout.vue";
-import AdminLayout from "./components/layouts/AdminLayout.vue";
+import { shallowRef, watch, markRaw } from 'vue';
+import { useRoute } from 'vue-router';
+import UserLayout from './components/layouts/UserLayout.vue';
+import AdminLayout from './components/layouts/AdminLayout.vue';
 
 const route = useRoute();
 
@@ -16,11 +16,11 @@ const layouts = {
 watch(
   () => route.meta.layout,
   async (metaLayout) => {
-    if (metaLayout) {
+    if (metaLayout && route.name !== '/login') {
       layout.value = markRaw(layouts[metaLayout as keyof typeof layouts]);
     }
   },
-  { immediate: true },
+  { immediate: true }
 );
 </script>
 

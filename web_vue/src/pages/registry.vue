@@ -79,17 +79,41 @@ const columns: TableColumn<Registry>[] = [
     accessorKey: 'user',
     header: 'Сотрудник',
     meta: { class: { th: 'w-3/23' } },
+    cell: ({ row }) => row.original.officer.split(' ')[0],
   },
   {
-    accessorKey: 'results',
+    accessorKey: 'conclusion',
     header: 'Результат',
     meta: { class: { th: 'w-3/23' } },
+    cell: ({ row }) => {
+      const color =
+        row.original.results === 'СОГЛАСОВАНО'
+          ? 'bg-green-500'
+          : row.original.results === 'СОГЛАСОВАНО С КОММЕНТАРИЕМ'
+            ? 'bg-gray-500'
+            : row.original.results === 'СНЯТ С ПРОВЕРКИ'
+              ? 'bg-yellow-500'
+              : row.original.results === 'НА ПРОВЕРКЕ'
+                ? 'bg-blue-500'
+                : 'bg-red-500';
+      return h(
+        'span',
+        {
+          class: [
+            'flex inline-flex Items-center py-1 px-2 rounded-md text-sm text-white',
+            color,
+          ],
+        },
+        row.original.results
+      );
+    },
   },
   {
     accessorKey: 'outcomes',
     header: 'Согласован',
     meta: { class: { th: 'w-3/23' } },
-    cell: ({ row }) => timeAgoStr(row.original.outcomes ?? ''),
+    cell: ({ row }) =>
+      row.original.outcomes ? timeAgoStr(row.original.outcomes) : '',
   },
 ];
 
@@ -128,18 +152,17 @@ function addToast(person_id: string | null) {
 }
 
 // Обработчик результата загрузки данных
-async function submit(form: Registry) {
+async function submit() {
   modal.value = false;
-  const url = 'persons/registry';
-  const resp = await api.post(
-    method.value === 'POST' ? url : url + '/' + item.value.id,
-    { method: method.value, json: form }
-  );
+  const url =
+    method.value === 'POST' ? '/registry/' : `/registry/${item.value.id}`;
+  const resp = await api(url, { method: method.value, json: item.value });
   item.value = {} as Registry;
-  if (resp.ok) {
+  if (resp.ok && method.value === 'POST') {
     const { person_id } = await resp.json<PersonId>();
     addToast(person_id);
   } else create();
+  await execute();
 }
 
 onChange(async (files) => {
@@ -208,7 +231,7 @@ function openPerson(_: Event, row: TableRow<Registry>) {
           v-model.trim="search"
           :loading="isLoading"
           type="search"
-          placeholder="полнотекстовый поиск"
+          placeholder="поиск по реестру"
         />
 
         <!-- Таблица с данными кандидатов -->

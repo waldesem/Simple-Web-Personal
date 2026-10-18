@@ -48,11 +48,11 @@ export interface Registry {
   recruiter?: string;
   incomes: string;
   checks?: string;
-  user?: string;
+  officer: string;
   finished?: string;
-  conclusion?: string;
+  results: string;
   outcomes?: string;
-  motive?: string;
+  reason?: string;
   person_id: string;
 }
 

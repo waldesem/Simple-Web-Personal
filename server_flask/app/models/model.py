@@ -93,11 +93,11 @@ class RegExt(Registry):
     """Pydantic model Registry schema."""
 
     incomes: date = datetime.now(UTC).date()
-    checks: str = Field(max_length=255)
-    finished: date
+    checks: str | None = Field(max_length=255)
+    finished: date | None
     results: int
-    outcomes: date
-    reason: int
+    outcomes: date | None
+    reason: int | None
 
     class Config:
         use_enum_values = True

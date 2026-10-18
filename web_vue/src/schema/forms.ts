@@ -61,7 +61,12 @@ export const regForm = [
   {
     key: 'staff',
     label: 'Место рождения',
-    props: { element: 'textarea', placeholder: 'Должность', maxlength: 4096 },
+    props: {
+      element: 'textarea',
+      placeholder: 'Должность',
+      maxlength: 4096,
+      required: true,
+    },
   },
   {
     key: 'recruiter',
@@ -75,11 +80,11 @@ export const regForm = [
   },
   {
     element: 'select',
-    key: 'conclusion',
+    key: 'results',
     label: 'Результат',
     props: {
       items: conclusions,
-      placeholder: 'Выберите ререщение',
+      placeholder: 'Выберите решение',
       required: true,
     },
   },

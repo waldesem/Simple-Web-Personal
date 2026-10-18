@@ -18,10 +18,18 @@ def get_registry(json_query: Query) -> Response:
     """Retrieve a registry from the database."""
     stmt = """
         SELECT
-            r.*,
-            u.fullname AS user,
-            c.conclusion AS conclusion,
-            m.reason AS motive
+            r.id,
+            r.fullname,
+            r.birthday,
+            r.staff,
+            r.recruiter,
+            r.incomes,
+            r.checks,
+            r.finished,
+            r.outcomes,
+            u.fullname AS officer,
+            c.conclusion AS results,
+            m.reason AS reason
         FROM registry AS r
         LEFT JOIN users AS u ON u.id = r.officer
         LEFT JOIN conclusions AS c ON c.id = r.results
@@ -43,7 +51,7 @@ def get_registry(json_query: Query) -> Response:
 @authorize(Roles.user)
 def post_registry(json_data: Registry) -> Response:
     """Add a record in registry table."""
-    names = json_data.fullname.split()
+    names = json_data.fullname.capitalize().split()
     person = Person(
         surname=names[0],
         firstname=names[1],
