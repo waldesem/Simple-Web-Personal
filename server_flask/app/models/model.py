@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import re
-from datetime import date  # noqa: TC003
+from datetime import UTC, date, datetime
 from typing import Literal
 
 from pydantic import BaseModel, Field, validator
 
-from app.classes.enums import Conclusions, Decisions, Reasons, Roles
+from app.classes.enums import Decisions, Roles
 
 ItemType = Literal[
     "addresses",
@@ -92,12 +92,12 @@ class Registry(BaseModel):
 class RegExt(Registry):
     """Pydantic model Registry schema."""
 
-    incomes: date
+    incomes: date = datetime.now(UTC).date()
     checks: str = Field(max_length=255)
     finished: date
-    results: Conclusions
+    results: int
     outcomes: date
-    reason: Reasons
+    reason: int
 
     class Config:
         use_enum_values = True
@@ -247,7 +247,7 @@ class Check(BaseModel):
     cros: str | None = None
     addition: str | None = None
     comment: str | None = None
-    conclusion: Conclusions
+    conclusion: int
     comparator: Literal["checks"] = "checks"
 
     class Config:

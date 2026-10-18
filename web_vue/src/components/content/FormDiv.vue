@@ -5,6 +5,7 @@ import type {
   person as personForm,
   itemsForms,
   FormElemAttrs,
+  regForm as RegForm,
 } from '@/schema/forms';
 import { Items, Person, Registry, User } from '@/types';
 
@@ -14,6 +15,7 @@ const { fields, item } = defineProps({
   fields: {
     type: Array as PropType<
       | typeof userForm
+      | typeof RegForm
       | typeof personForm
       | (typeof itemsForms)[keyof typeof itemsForms]
     >,

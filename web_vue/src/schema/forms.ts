@@ -1,5 +1,5 @@
-import { Conclusions, Decisions, Reasons, Roles } from '@/types';
-import type { Items, User, Person } from '@/types';
+import { Roles } from '@/types';
+import type { Items, User, Person, Registry } from '@/types';
 import { InputProps, SelectProps, TextareaProps } from '@nuxt/ui';
 
 export type FormElemAttrs = {
@@ -16,6 +16,88 @@ export type FormFields<T> = {
     props: Omit<FormElemAttrs[K], 'modelValue' | 'defaultValue'>;
   };
 }[keyof FormElemAttrs];
+
+const conclusions = [
+  { label: 'СОГЛАСОВАНО', value: 1 },
+  { label: 'СОГЛАСОВАНО С КОММЕНТАРИЕМ', value: 2 },
+  { label: 'ОТКАЗАНО В СОГЛАСОВАНИИ', value: 3 },
+  { label: 'СНЯТ С ПРОВЕРКИ', value: 4 },
+  { label: 'НА ПРОВЕРКЕ', value: 5 },
+];
+
+const decisions = [
+  { label: 'БЕЗ ЗАМЕЧАНИЙ', value: 1 },
+  { label: 'С КОММЕНТАРИЯМИ', value: 2 },
+  { label: 'НЕГАТИВ', value: 3 },
+  { label: 'СНЯТ С ПРОВЕРКИ', value: 4 },
+];
+
+const reasons = [
+  { label: 'Недостоверные анкетные данные', value: 1 },
+  { label: 'Причиение ущерба работодателю', value: 2 },
+  { label: 'Разглашение конфиденциальной информации', value: 3 },
+  { label: 'Неисполнение финансовых обязательств', value: 4 },
+  { label: 'Привечение к уголовной ответственности', value: 5 },
+  { label: 'Отрицательнй результат ПФО', value: 6 },
+  { label: 'Негативная информация в сети интернет', value: 7 },
+];
+
+export const regForm = [
+  {
+    key: 'fullname',
+    label: 'Фамилия Имя Отчество',
+    props: {
+      pattern: "^[А-ЯЁ][А-ЯЁа-яё\\-.,' ]+[А-ЯЁа-яё]$",
+      placeholder: 'Фамилия Имя Отчество',
+      maxlength: 255,
+      required: true,
+    },
+  },
+  {
+    key: 'birthday',
+    label: 'Дата рождения',
+    props: { type: 'date', required: true },
+  },
+  {
+    key: 'staff',
+    label: 'Место рождения',
+    props: { element: 'textarea', placeholder: 'Должность', maxlength: 4096 },
+  },
+  {
+    key: 'recruiter',
+    label: 'Рекрутер',
+    props: { placeholder: 'Рекрутер', maxlength: 255 },
+  },
+  {
+    key: 'checks',
+    label: 'Отметки',
+    props: { placeholder: 'Отметки', maxlength: 255 },
+  },
+  {
+    element: 'select',
+    key: 'conclusion',
+    label: 'Результат',
+    props: {
+      items: conclusions,
+      placeholder: 'Выберите ререщение',
+      required: true,
+    },
+  },
+  {
+    key: 'outcomes',
+    label: 'Согласован',
+    props: { type: 'date' },
+  },
+  {
+    element: 'select',
+    key: 'reasons',
+    label: 'Причина отказа',
+    props: {
+      items: reasons,
+      placeholder: 'Выберите причину',
+    },
+  },
+] as FormFields<Registry>[];
 
 export const user = [
   {
@@ -59,63 +141,6 @@ export const user = [
     },
   },
 ] as FormFields<User>[];
-
-export const registr = [
-  {
-    key: 'fullname',
-    label: 'Фамилия Имя Отчество',
-    props: {
-      pattern: "^[А-ЯЁ][А-ЯЁа-яё\\-.,' ]+[А-ЯЁа-яё]$",
-      placeholder: 'Фамилия Имя Отчество',
-      maxlength: 255,
-      required: true,
-    },
-  },
-  {
-    key: 'birthday',
-    label: 'Дата рождения',
-    props: { type: 'date', required: true },
-  },
-  {
-    key: 'staff',
-    label: 'Место рождения',
-    props: { element: 'textarea', placeholder: 'Должность', maxlength: 4096 },
-  },
-  {
-    key: 'recruiter',
-    label: 'Рекрутер',
-    props: { placeholder: 'Рекрутер', maxlength: 255 },
-  },
-  {
-    key: 'checks',
-    label: 'Отметки',
-    props: { placeholder: 'Отметки', maxlength: 255 },
-  },
-  {
-    element: 'select',
-    key: 'conclusion',
-    label: 'Результат',
-    props: {
-      items: Object.values(Conclusions),
-      placeholder: 'Выберите ререщение',
-      required: true,
-    },
-  },
-  {
-    key: 'outcomes',
-    label: 'Согласован',
-    props: { type: 'date' },
-  },
-  {
-    element: 'select',
-    key: 'reasons',
-    label: 'Причина отказа',
-    props: {
-      items: Object.values(Reasons),
-      placeholder: 'Выберите причину',
-    },
-  },
-] as FormFields<Person>[];
 
 export const person = [
   {
@@ -311,7 +336,7 @@ const checks = [
     key: 'conclusion',
     label: 'Результат',
     props: {
-      items: Object.values(Decisions),
+      items: decisions,
       placeholder: 'Выберите результат',
       required: true,
     },
@@ -324,7 +349,13 @@ const contacts = [
     key: 'view',
     label: 'Вид контакта',
     props: {
-      items: ['Телефон', 'Электронная почта', 'Другое'],
+      items: [
+        'Телефон',
+        'Электронная почта',
+        'Адрес регистрации',
+        'Адрес проживания',
+        'Другое',
+      ],
       placeholder: 'Выберите контакт',
       maxlength: 255,
       required: true,
@@ -464,7 +495,7 @@ const poligrafs = [
     key: 'conclusion',
     label: 'Результат',
     props: {
-      items: Object.values(Decisions),
+      items: decisions,
       placeholder: 'Выберите результат',
       required: true,
     },

@@ -1,27 +1,66 @@
 <script setup lang="ts">
 import { KyInstance } from 'ky';
+import { useRoute, useRouter } from 'vue-router';
 import { inject, ref, watch } from 'vue';
 import { refDebounced, useAsyncState } from '@vueuse/core';
-import { TableRow } from '@nuxt/ui';
-import { columnsDB } from '@/schema/items';
+import { TableColumn, TableRow } from '@nuxt/ui';
+import { localStr, timeAgoStr } from '@/utilities';
 import { type Person } from '@/types';
-import SwitchPage from '@/components/content/SwitchPage.vue';
 
 definePage({ meta: { layout: 'user' } });
 
 const api = inject('api') as KyInstance;
 
+const route = useRoute();
+const router = useRouter();
+
+const search = ref((route.query.find as string) ?? ''); // Поисковый запрос
+
 const hasNext = ref(false); // Состояние наличия следующей страницы
 const limit = ref(10); // Количество записей на странице
 const page = ref(0); // Страница таблицы
-const search = ref(''); // Поисковый запрос
 
 const debounced = refDebounced(search, 1000); // Дебаунс поиска
+
+const columns: TableColumn<Person>[] = [
+  {
+    accessorKey: 'id',
+    header: '#',
+    meta: { class: { th: 'w-2/23' } },
+  },
+  {
+    accessorKey: 'surname',
+    header: 'Фамилия',
+    meta: { class: { th: 'w-5/23' } },
+  },
+  {
+    accessorKey: 'firstname',
+    header: 'Имя',
+    meta: { class: { th: 'w-5/23' } },
+  },
+  {
+    accessorKey: 'patronymic',
+    header: 'Отчество',
+    meta: { class: { th: 'w-5/23' } },
+  },
+  {
+    accessorKey: 'birthday',
+    header: 'Дата рождения',
+    meta: { class: { th: 'w-3/23' } },
+    cell: ({ row }) => localStr(row.original.birthday),
+  },
+  {
+    accessorKey: 'created',
+    header: 'Обновлено',
+    meta: { class: { th: 'w-3/23' } },
+    cell: ({ row }) => timeAgoStr(row.original.created),
+  },
+];
 
 const { execute, isLoading, state } = useAsyncState<Person[]>(
   async () =>
     await api
-      .get('index/', {
+      .get('persons/', {
         searchParams: {
           limit: limit.value,
           page: page.value,
@@ -41,7 +80,7 @@ const { execute, isLoading, state } = useAsyncState<Person[]>(
 watch([limit, page, debounced], async () => await execute());
 
 function openPerson(_: Event, row: TableRow<Person>) {
-  window.open(`/profile/${row.original.id}`, '_blank');
+  router.push(`/profile/${row.original.id}`);
 }
 </script>
 
@@ -65,7 +104,7 @@ function openPerson(_: Event, row: TableRow<Person>) {
           class="flex-1"
           empty="Нет данных"
           :data="state"
-          :columns="columnsDB"
+          :columns="columns"
           :loading="isLoading"
           loading-animation="swing"
           loading-color="error"

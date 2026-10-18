@@ -1,17 +1,23 @@
 <script setup lang="ts">
 import { KyInstance } from 'ky';
-import { h, inject, ref, resolveComponent, shallowRef, watch } from 'vue';
+import { h, inject, ref, resolveComponent, watch } from 'vue';
 import { refDebounced, useAsyncState, useFileDialog } from '@vueuse/core';
+import { useRouter } from 'vue-router';
 import { TableColumn, TableRow } from '@nuxt/ui';
 import { useToasts } from '@/composables';
 import { session } from '@/state';
-import { localStr, registr as regItem, timeAgoStr } from '@/schema/items';
-import { registr as regForm } from '@/schema/forms';
+import { registr as regItem } from '@/schema/items';
+import { regForm } from '@/schema/forms';
+import { localStr, timeAgoStr } from '@/utilities';
 import { Roles, type Registry, type PersonId } from '@/types';
 
 definePage({ meta: { layout: 'user' } });
 
 const toast = useToast();
+
+const router = useRouter();
+
+const UButton = resolveComponent('UButton');
 
 const { create } = useToasts(toast);
 
@@ -20,14 +26,15 @@ const api = inject('api') as KyInstance;
 const hasNext = ref(false); // Состояние наличия следующей страницы
 const limit = ref(10); // Количество записей на странице
 const modal = ref(false); // Состояние модального окна
-const method = shallowRef<'POST' | 'PATCH'>('POST');
+const method = ref<'POST' | 'PATCH'>('POST');
 const page = ref(0); // Страница таблицы
-const search = ref(''); // Поисковый запрос
+const search = ref('');
 const expanded = ref({ 1: true });
-const item = shallowRef({} as Registry);
-const UButton = resolveComponent('UButton');
+const item = ref({} as Registry);
 
-const columnsReg: TableColumn<Registry>[] = [
+const debounced = refDebounced(search, 1000); // Дебаунс поиска
+
+const columns: TableColumn<Registry>[] = [
   {
     id: 'expand',
     cell: ({ row }) =>
@@ -69,7 +76,7 @@ const columnsReg: TableColumn<Registry>[] = [
     cell: ({ row }) => timeAgoStr(row.original.incomes),
   },
   {
-    accessorKey: 'officer',
+    accessorKey: 'user',
     header: 'Сотрудник',
     meta: { class: { th: 'w-3/23' } },
   },
@@ -85,8 +92,6 @@ const columnsReg: TableColumn<Registry>[] = [
     cell: ({ row }) => timeAgoStr(row.original.outcomes ?? ''),
   },
 ];
-
-const debounced = refDebounced(search, 1000); // Дебаунс поиска
 
 const { open, onChange } = useFileDialog({
   accept: '*.json',
@@ -158,7 +163,7 @@ async function deleteItem(id: string) {
 }
 
 function openPerson(_: Event, row: TableRow<Registry>) {
-  window.open(`/profile/${row.original.person_id}`, '_blank');
+  router.push(`/profile/${row.original.id}`);
 }
 </script>
 
@@ -212,7 +217,7 @@ function openPerson(_: Event, row: TableRow<Registry>) {
           class="flex-1"
           empty="Нет данных"
           :data="state"
-          :columns="columnsReg"
+          :columns="columns"
           :loading="isLoading"
           loading-animation="swing"
           loading-color="error"

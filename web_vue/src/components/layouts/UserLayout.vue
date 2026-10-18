@@ -2,15 +2,22 @@
 import { useRouter } from 'vue-router';
 import { access, refresh, session } from '@/state';
 import { Roles, type Session } from '@/types';
-import BrandHead from '@/components/content/BrandHead.vue';
+import { ref } from 'vue';
 
 const router = useRouter();
+
+const find = ref('');
 
 function logout() {
   session.value = {} as Session;
   refresh.value = '';
   access.value = '';
   router.replace('/login');
+}
+
+function openDB() {
+  if (find.value.length > 1)
+    router.push({ path: '/registry', query: { find: find.value } });
 }
 </script>
 
@@ -31,6 +38,17 @@ function logout() {
       />
     </template>
     <template #right>
+      <UFormField label="Найти" orientation="horizontal" required>
+        <UFieldGroup>
+          <UInput
+            v-model="find"
+            icon="i-lucide-search"
+            variant="outline"
+            placeholder="Поиск..."
+          />
+          <UButton icon="i-lucide-search" variant="solid" @click="openDB" />
+        </UFieldGroup>
+      </UFormField>
       <UButton
         :disabled="!session.auth"
         :avatar="{

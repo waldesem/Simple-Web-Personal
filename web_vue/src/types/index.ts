@@ -5,31 +5,6 @@ export enum Roles {
   guest = 'guest',
 }
 
-export enum Conclusions {
-  agreed = 'СОГЛАСОВАНО',
-  comments = 'СОГЛАСОВАНО С КОММЕНТАРИЕМ',
-  cancel = 'СНЯТ С ПРОВЕРКИ',
-  denied = 'ОТКАЗАНО В СОГЛАСОВАНИИ',
-  checks = 'НА ПРОВЕРКЕ',
-}
-
-export enum Decisions {
-  agreed = 'БЕЗ ЗАМЕЧАНИЙ',
-  comments = 'С КОММЕНТАРИЯМИ',
-  cancel = 'ОТКАЗ ОТ ПРОВЕРКИ',
-  denied = 'НЕГАТИВ',
-}
-
-export enum Reasons {
-  fake = 'Недостоверные анкетные данные',
-  damage = 'Причиение ущерба работодателю',
-  disclosure = 'Разглашение конфиденциальной информации',
-  finance = 'Неисполнение финансовых обязательств',
-  crime = 'Привечение к уголовной ответственности',
-  poligraf = 'Отрицательнй результат ПФО',
-  compromat = 'Негативная информация в сети интернет',
-}
-
 export interface Session {
   id: string;
   fullname: string;
@@ -73,11 +48,11 @@ export interface Registry {
   recruiter?: string;
   incomes: string;
   checks?: string;
-  officer?: string;
+  user?: string;
   finished?: string;
-  results?: Conclusions;
+  conclusion?: string;
   outcomes?: string;
-  reasons?: string;
+  motive?: string;
   person_id: string;
 }
 
@@ -153,7 +128,7 @@ interface Verification {
   internet?: string;
   cronos?: string;
   addition?: string;
-  conclusion: Decisions;
+  conclusion: number;
   comment?: string;
   created: string;
 }
@@ -162,7 +137,7 @@ interface Pfo {
   id: string;
   theme: string;
   results: string;
-  conclusion: Decisions;
+  conclusion: number;
   created: string;
 }
 

@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 
 from flask import Blueprint, Response, current_app, g, jsonify
 
-from app.classes.enums import Conclusions, Roles
+from app.classes.enums import Roles
 from app.depends.depend import authorize, validize
 from app.models.model import Person, Query, RegExt, Registry
 from app.shared.share import add_person, add_registry
@@ -16,13 +16,23 @@ bp = Blueprint("registry", __name__, url_prefix="/registry")
 @validize()
 def get_registry(json_query: Query) -> Response:
     """Retrieve a registry from the database."""
-    stmt = "SELECT * FROM registry"
-    params = [json_query.search] if json_query.search else []
+    stmt = """
+        SELECT
+            r.*,
+            u.fullname AS user,
+            c.conclusion AS conclusion,
+            m.reason AS motive
+        FROM registry AS r
+        LEFT JOIN users AS u ON u.id = r.officer
+        LEFT JOIN conclusions AS c ON c.id = r.results
+        LEFT JOIN reasons AS m ON m.id = r.reason
+        """
+    params = [json_query.search.capitalize() + "%"] if json_query.search else []
     if json_query.search:
-        stmt += " WHERE fullname=?"
+        stmt += " WHERE r.fullname like ?"
     cur = g.db.cursor()
     registry = cur.execute(
-        stmt + " ORDER BY id DESC ORDER BY id DESC LIMIT ? OFFSET ?",
+        stmt + " ORDER BY r.id DESC LIMIT ? OFFSET ?",
         (*params, json_query.limit + 1, json_query.page * json_query.limit),
     ).fetchall()
     return jsonify([dict(reg) for reg in registry])
@@ -52,8 +62,8 @@ def patch_registry(reg_id: int, json_data: RegExt) -> Response:
     """Edit a record in registry table."""
     data_dict = json_data.dict()
     data_dict["officer"] = g.current_user["id"]
-    if json_data.results != Conclusions.checks.value:
-        data_dict["finished"] = datetime.now(UTC)
+    if json_data.results != 5:
+        data_dict["finished"] = datetime.now(UTC).date()
     stmt = "UPDATE registry SET {} WHERE id = ?".format(  # noqa: S608
         ",".join(f"{k}=?" for k in data_dict),
     )

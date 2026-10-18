@@ -1,12 +1,7 @@
 import { Component, h } from 'vue';
-import type { AccordionItem, TableColumn, TabsItem } from '@nuxt/ui';
-import {
-  Decisions,
-  Conclusions,
-  type Items,
-  type Person,
-  type Registry,
-} from '@/types';
+import type { AccordionItem, TabsItem } from '@nuxt/ui';
+import { type Items, type Person, type Registry } from '@/types';
+import { localStr } from '@/utilities';
 
 type NavigationItem = AccordionItem & TabsItem;
 
@@ -37,83 +32,6 @@ export const accordion = [
   },
 ] as Navigations[];
 
-export function localStr(str: string): string {
-  try {
-    return str ? new Date(str).toLocaleDateString() : '';
-  } catch {
-    return '';
-  }
-}
-
-export function timeAgoStr(str: string) {
-  const diff = Date.now() - new Date(str).getTime();
-  const diffSec = Math.floor(diff / 1000);
-  // Меньше минуты
-  if (diffSec < 60) {
-    return 'Менее минуты назад';
-  }
-  // Меньше часа (но больше минуты)
-  const diffMin = Math.floor(diffSec / 60);
-  if (diffMin < 60) {
-    return 'Менее часа назад';
-  }
-  // Менее суток (но больше часа)
-  const diffHours = Math.floor(diffMin / 60);
-  if (diffHours < 24) {
-    return diffHours + ' часов назад';
-  }
-  const diffDays = Math.floor(diffHours / 24);
-  // Менее недели (но больше суток)
-  if (diffDays < 7) {
-    return diffDays + ' дней назад';
-  }
-  if (diffDays < 30) {
-    // Менее месяца (но больше недели)
-    return Math.floor(diffDays / 7) + ' недели назад';
-  }
-  // Менее года (но больше месяца)
-  if (diffDays < 365) {
-    return Math.floor(diffDays / 30) + ' месяцев назад';
-  }
-  // Больше года
-  return Math.floor(diffDays / 365) + ' года назад';
-}
-
-export const columnsDB: TableColumn<Person>[] = [
-  {
-    accessorKey: 'id',
-    header: '#',
-    meta: { class: { th: 'w-2/23' } },
-  },
-  {
-    accessorKey: 'surname',
-    header: 'Фамилия',
-    meta: { class: { th: 'w-5/23' } },
-  },
-  {
-    accessorKey: 'firstname',
-    header: 'Имя',
-    meta: { class: { th: 'w-5/23' } },
-  },
-  {
-    accessorKey: 'patronymic',
-    header: 'Отчество',
-    meta: { class: { th: 'w-5/23' } },
-  },
-  {
-    accessorKey: 'birthday',
-    header: 'Дата рождения',
-    meta: { class: { th: 'w-3/23' } },
-    cell: ({ row }) => localStr(row.original.birthday),
-  },
-  {
-    accessorKey: 'created',
-    header: 'Обновлено',
-    meta: { class: { th: 'w-3/23' } },
-    cell: ({ row }) => timeAgoStr(row.original.created),
-  },
-];
-
 type ItemFields<T> = {
   key: keyof T;
   label: string;
@@ -133,24 +51,24 @@ export const registr = [
   { key: 'recruiter', label: 'Рекрутер' },
   { key: 'incomes', label: 'Поступил' },
   { key: 'checks', label: 'Отметки' },
-  { key: 'officer', label: 'Сотрудник' },
+  { key: 'user', label: 'Сотрудник' },
   {
     key: 'finished',
     label: 'окончено',
     foo: (row) => (row.finished ? localStr(row.finished) : ''),
   },
   {
-    key: 'results',
+    key: 'conclusion',
     label: 'Результат',
     component: (row) => {
       const color =
-        row.results === Conclusions.agreed
+        row.conclusion === 'СОГЛАСОВАНО'
           ? 'bg-green-500'
-          : row.results === Conclusions.cancel
+          : row.conclusion === 'СОГЛАСОВАНО С КОММЕНТАРИЕМ'
             ? 'bg-gray-500'
-            : row.results === Conclusions.comments
+            : row.conclusion === 'СНЯТ С ПРОВЕРКИ'
               ? 'bg-yellow-500'
-              : row.results === Conclusions.checks
+              : row.conclusion === 'НА ПРОВЕРКЕ'
                 ? 'bg-blue-500'
                 : 'bg-red-500';
       return h(
@@ -161,7 +79,7 @@ export const registr = [
             color,
           ],
         },
-        row.results
+        row.conclusion
       );
     },
   },
@@ -170,7 +88,7 @@ export const registr = [
     label: 'Согласован',
     foo: (row) => (row.outcomes ? localStr(row.outcomes) : ''),
   },
-  { key: 'reasons', label: 'Причина отказа' },
+  { key: 'motive', label: 'Причина отказа' },
 ] as ItemFields<Registry>[];
 
 export const person = [
@@ -223,13 +141,21 @@ const checks = [
     label: 'Результат',
     component: (row) => {
       const color =
-        row.conclusion === Decisions.agreed
+        row.conclusion === 1
           ? 'bg-green-500'
-          : row.conclusion === Decisions.cancel
+          : row.conclusion === 4
             ? 'bg-gray-500'
-            : row.conclusion === Decisions.comments
+            : row.conclusion === 2
               ? 'bg-blue-500'
               : 'bg-red-500';
+      const decision =
+        row.conclusion === 1
+          ? 'БЕЗ ЗАМЕЧАНИЙ'
+          : row.conclusion === 4
+            ? 'СНЯТ С ПРОВЕРКИ'
+            : row.conclusion === 2
+              ? 'С КОММЕНТАРИЯМИ'
+              : 'НЕГАТИВ';
       return h(
         'span',
         {
@@ -238,7 +164,7 @@ const checks = [
             color,
           ],
         },
-        row.conclusion
+        decision
       );
     },
   },
@@ -285,13 +211,21 @@ const poligrafs = [
     label: 'Результат',
     component: (row) => {
       const color =
-        row.conclusion === Decisions.agreed
+        row.conclusion === 1
           ? 'bg-green-500'
-          : row.conclusion === Decisions.cancel
+          : row.conclusion === 4
             ? 'bg-gray-500'
-            : row.conclusion === Decisions.comments
+            : row.conclusion === 2
               ? 'bg-blue-500'
               : 'bg-red-500';
+      const decision =
+        row.conclusion === 1
+          ? 'БЕЗ ЗАМЕЧАНИЙ'
+          : row.conclusion === 4
+            ? 'СНЯТ С ПРОВЕРКИ'
+            : row.conclusion === 2
+              ? 'С КОММЕНТАРИЯМИ'
+              : 'НЕГАТИВ';
       return h(
         'span',
         {
@@ -300,7 +234,7 @@ const poligrafs = [
             color,
           ],
         },
-        row.conclusion
+        decision
       );
     },
   },
