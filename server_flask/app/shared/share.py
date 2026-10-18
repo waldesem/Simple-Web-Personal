@@ -56,7 +56,7 @@ def add_person(peerson_data: Person, config: dict) -> int | None:
 
     data_dict = peerson_data.dict()
     data_dict["user_id"] = g.current_user["id"]
-    data_dict["created"] = datetime.now(UTC)
+    data_dict["created"] = datetime.now(UTC).date()
     stmt = "INSERT INTO persons ({}) VALUES ({})".format(  # noqa: S608
         ",".join(data_dict.keys()),
         ",".join(["?"] * len(data_dict)),
@@ -88,7 +88,7 @@ def add_registry(json_data: Registry, cand_id: int) -> None:
     """Add a record in registry table."""
     data_dict = json_data.dict()
     data_dict["officer"] = g.current_user["id"]
-    data_dict["incomes"] = datetime.now(UTC)
+    data_dict["incomes"] = datetime.now(UTC).date()
     data_dict["results"] = Conclusions.checks.value
     data_dict["person_id"] = cand_id
     stmt = "INSERT INTO registry ({}) VALUES ({})".format(  # noqa: S608

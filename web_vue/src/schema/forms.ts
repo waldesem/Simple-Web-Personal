@@ -1,6 +1,7 @@
+import { ref } from 'vue';
 import { Roles } from '@/types';
+import { InputProps, SelectItem, SelectProps, TextareaProps } from '@nuxt/ui';
 import type { Items, User, Person, Registry } from '@/types';
-import { InputProps, SelectProps, TextareaProps } from '@nuxt/ui';
 
 export type FormElemAttrs = {
   input: InputProps;
@@ -17,22 +18,22 @@ export type FormFields<T> = {
   };
 }[keyof FormElemAttrs];
 
-const conclusions = [
+const conclusions = ref<SelectItem[]>([
   { label: 'СОГЛАСОВАНО', value: 1 },
   { label: 'СОГЛАСОВАНО С КОММЕНТАРИЕМ', value: 2 },
   { label: 'ОТКАЗАНО В СОГЛАСОВАНИИ', value: 3 },
   { label: 'СНЯТ С ПРОВЕРКИ', value: 4 },
   { label: 'НА ПРОВЕРКЕ', value: 5 },
-];
+]);
 
-const decisions = [
+const decisions = ref<SelectItem[]>([
   { label: 'БЕЗ ЗАМЕЧАНИЙ', value: 1 },
   { label: 'С КОММЕНТАРИЯМИ', value: 2 },
   { label: 'НЕГАТИВ', value: 3 },
   { label: 'СНЯТ С ПРОВЕРКИ', value: 4 },
-];
+]);
 
-const reasons = [
+const reasons = ref<SelectItem[]>([
   { label: 'Недостоверные анкетные данные', value: 1 },
   { label: 'Причиение ущерба работодателю', value: 2 },
   { label: 'Разглашение конфиденциальной информации', value: 3 },
@@ -40,7 +41,7 @@ const reasons = [
   { label: 'Привечение к уголовной ответственности', value: 5 },
   { label: 'Отрицательнй результат ПФО', value: 6 },
   { label: 'Негативная информация в сети интернет', value: 7 },
-];
+]);
 
 export const regForm = [
   {
@@ -60,7 +61,7 @@ export const regForm = [
   },
   {
     key: 'staff',
-    label: 'Место рождения',
+    label: 'Должность',
     props: {
       element: 'textarea',
       placeholder: 'Должность',
@@ -83,7 +84,7 @@ export const regForm = [
     key: 'results',
     label: 'Результат',
     props: {
-      items: conclusions,
+      items: conclusions.value,
       placeholder: 'Выберите решение',
       required: true,
     },
@@ -98,7 +99,7 @@ export const regForm = [
     key: 'reasons',
     label: 'Причина отказа',
     props: {
-      items: reasons,
+      items: reasons.value,
       placeholder: 'Выберите причину',
     },
   },
@@ -341,7 +342,7 @@ const checks = [
     key: 'conclusion',
     label: 'Результат',
     props: {
-      items: decisions,
+      items: decisions.value,
       placeholder: 'Выберите результат',
       required: true,
     },
@@ -500,7 +501,7 @@ const poligrafs = [
     key: 'conclusion',
     label: 'Результат',
     props: {
-      items: decisions,
+      items: decisions.value,
       placeholder: 'Выберите результат',
       required: true,
     },

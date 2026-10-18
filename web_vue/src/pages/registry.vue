@@ -147,21 +147,22 @@ watch([limit, page, debounced], async () => await execute());
 function addToast(person_id: string | null) {
   if (person_id) {
     create('success', 'Анкета успешно добавлена!');
-    window.open(`/profile/${person_id}`, '_blank');
   } else create('warning', 'Возможно, анкета уже существует!');
 }
 
 // Обработчик результата загрузки данных
-async function submit() {
+async function submit(form: Registry) {
+  console.log(form);
   modal.value = false;
   const url =
-    method.value === 'POST' ? '/registry/' : `/registry/${item.value.id}`;
-  const resp = await api(url, { method: method.value, json: item.value });
-  item.value = {} as Registry;
-  if (resp.ok && method.value === 'POST') {
+    method.value === 'POST' ? 'registry/' : `registry/${item.value.id}`;
+  const resp = await api(url, { method: method.value, json: form });
+  if (resp.ok) {
     const { person_id } = await resp.json<PersonId>();
     addToast(person_id);
   } else create();
+  item.value = {} as Registry;
+  method.value = 'POST';
   await execute();
 }
 
@@ -178,7 +179,8 @@ onChange(async (files) => {
   }
 });
 
-async function deleteItem(id: string) {
+async function deleteRow(id: string) {
+  if (!confirm(`Вы действительно хотите удалить запись?`)) return;
   const resp = await api.delete(`registry/${id}`);
   if (resp.ok) {
     await execute();
@@ -250,7 +252,7 @@ function openPerson(_: Event, row: TableRow<Registry>) {
             <ItemDiv
               :item="row.original"
               :fields="regItem"
-              @delete="deleteItem(row.original.id)"
+              @delete="deleteRow(row.original.id)"
               @update="
                 item = row.original;
                 modal = true;

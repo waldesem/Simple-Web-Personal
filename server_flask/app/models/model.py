@@ -100,7 +100,6 @@ class RegExt(Registry):
     reason: int | None
 
     class Config:
-        use_enum_values = True
         anystr_strip_whitespace = True
 
 
@@ -117,6 +116,7 @@ class Person(BaseModel):
     snils: str | None = None
     inn: str | None = None
     marital: str | None = Field(alias="maritalStatus", max_length=255)
+    editable: bool = True
     addition: str | None = None
 
     class Config:
